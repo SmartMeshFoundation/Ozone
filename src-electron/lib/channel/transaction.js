@@ -3,12 +3,11 @@ import web3 from '../web3Mannager'
 import db from '../dbManager'
 import log from '../log'
 
-const SEND_TRANSACTION = 'send-transaction'
-const SEND_TRANSACTION_REPLY = 'send-transaction-reply'
+import { Types } from './types'
 
 class TransactionChannel {
   bind (mainWindow) {
-    ipcMain.on(SEND_TRANSACTION, (event, obj) => {
+    ipcMain.on(Types.SEND_TRANSACTION, (event, obj) => {
       log.info('send transaction: ', obj)
       let tx = obj.tx
       web3.eth.personal
@@ -27,22 +26,38 @@ class TransactionChannel {
               Object.assign(transaction, tx)
               db.transactions.insert(transaction)
               let reply = { transactionHash: hash, transaction }
-              mainWindow.webContents.send(SEND_TRANSACTION_REPLY, reply)
+              mainWindow.webContents.send(Types.SEND_TRANSACTION_REPLY, reply)
             })
             .once('confirmation', function (confNumber, receipt) {
-              log.info(
-                '==============================>>> confirmation: confNumber=',
+              log.debug(
+                '==>> confirmation: confNumber=',
                 confNumber,
                 ', receipt: ',
                 receipt
               )
-              let transaction = db.transactions.by('hash', receipt.transactionHash)
+
+              let transaction = db.transactions.by(
+                'hash',
+                receipt.transactionHash
+              )
+
               if (transaction != null) {
                 transaction.receipt = receipt
                 db.transactions.update(transaction)
-                mainWindow.webContents.send(SEND_TRANSACTION_REPLY, receipt)
+
+                let transactions = db.transactions
+                  .chain()
+                  .simplesort('timestamp', true)
+                  .data()
+
+                mainWindow.webContents.send(Types.RESTORE_TRANSACTION, {
+                  transactions
+                })
               } else {
-                log.error('transaction not found in db: ', receipt.transactionHash)
+                log.error(
+                  'transaction not found in db: ',
+                  receipt.transactionHash
+                )
               }
             })
             .on('error', error => log.info(error))
@@ -50,7 +65,7 @@ class TransactionChannel {
         .catch(error => {
           log.error(error)
           let reply = { error: 'invalid-password' }
-          event.sender.send(SEND_TRANSACTION_REPLY, reply)
+          event.sender.send(Types.SEND_TRANSACTION_REPLY, reply)
         })
     })
   }
