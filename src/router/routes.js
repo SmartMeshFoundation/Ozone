@@ -1,0 +1,34 @@
+
+export default [
+  {
+    path: '/', redirect: '/startup'
+  },
+  {
+    path: '/startup',
+    component: () => import('pages/startup')
+  },
+  {
+    path: '/dashboard', redirect: '/wallet'
+  },
+  {
+    path: '/wallet',
+    component: () => import('layouts/default'),
+    children: [
+      { path: '', component: () => import('pages/wallet') },
+      { path: 'account/:address', component: () => import('pages/account') }
+    ]
+  },
+  {
+    path: '/transfer',
+    component: () => import('layouts/default'),
+    children: [
+      { path: '', component: () => import('pages/transfer') },
+      { path: 'account/:address', component: () => import('pages/transfer') }
+    ]
+  },
+
+  { // Always leave this as last one
+    path: '*',
+    component: () => import('pages/404')
+  }
+]
