@@ -1,8 +1,8 @@
 <template>
   <q-page class="q-pa-lg">
     <h1>
-      <em class="float-right text-warning">账户余额：<ani-number :value="account.ether" /> </em>
-      <ident-icon :value="account.address"
+      <em class="float-right text-warning">{{ $t('account.balance') }}: <ani-number :value="account.ether" /> </em>
+      <ident-icon :value="account.address.toLowerCase()"
                   class="vertical-middle q-pa-xs" /> {{ account.name }}
       <q-btn flat
              dense
@@ -17,13 +17,13 @@
     <q-btn flat
            color="secondary"
            icon="fa-exchange-alt"
-           label="转账"
+           :label="$t('account.btn.transfer')"
            @click="$router.push('/transfer/account/' + account.address)" />
 
     <q-btn flat
            color="secondary"
            icon="fa-save"
-           label="备份账户"
+           :label="$t('account.btn.backupAccount')"
            @click="backup(account.address)">
     </q-btn>
 

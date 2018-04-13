@@ -184,7 +184,7 @@ export default {
           label: account.name,
           sublabel: account.address,
           value: account.address,
-          avatar: this.$icon(account.address)
+          avatar: this.$icon(account.address.toLowerCase())
         }
       })
       return options

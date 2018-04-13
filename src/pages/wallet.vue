@@ -23,8 +23,8 @@ export default {
   computed: {},
   methods: {},
   created () {
-    // 向父组件发消息
-    this.$emit('updateToolbar', '钱包', 'fa-credit-card')
+    // pass data to parent component
+    this.$emit('updateToolbar', this.$t('nav.wallet.label'), 'fa-credit-card')
 
     // restore vue store
     ipcRenderer.send(Types.RESTORE_STATE)

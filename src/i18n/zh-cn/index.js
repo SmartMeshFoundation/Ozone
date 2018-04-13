@@ -20,5 +20,13 @@ export default {
       label: '部署合约',
       sublabel: '发布合约到区块链上'
     }
+  },
+  account: {
+    balance: '账户余额',
+    txHistory: '交易历史',
+    btn: {
+      transfer: '转账',
+      backupAccount: '备份账户'
+    }
   }
 }
