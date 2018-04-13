@@ -6,6 +6,7 @@
 
 <script>
 import { ipcRenderer } from 'electron'
+import { Types } from '../../src-electron/lib/channel/types'
 
 let loadingOption = {
   spinner: 'QSpinnerBars',
@@ -20,16 +21,16 @@ let loadingOption = {
 export default {
   methods: {
     async checkClient () {
-      // 客户端版本更新
+      // TODO check cleint update
     },
     async startClient () {
-      // 启动客户端
+      // TODO run client
     },
     checkNetwork () {
       const $vm = this
       $vm.$web3.eth.net.isListening()
         .then(() => {
-          ipcRenderer.send('client-ready')
+          ipcRenderer.send(Types.CLIENT_READY)
 
           $vm.$q.loading.hide()
           $vm.$router.push('/dashboard')

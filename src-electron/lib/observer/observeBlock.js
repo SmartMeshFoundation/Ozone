@@ -26,7 +26,7 @@ class ObserveBlock {
         if (success) {
           log.info('Successfully unsubscribed!')
         } else {
-          console.error('Failed to unsubscribe "newBlockHeaders": ', error)
+          log.error('Failed to unsubscribe "newBlockHeaders": ', error)
         }
       })
     }

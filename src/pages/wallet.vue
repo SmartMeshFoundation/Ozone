@@ -12,6 +12,7 @@
 
 <script>
 import { ipcRenderer } from 'electron'
+import { Types } from '../../src-electron/lib/channel/types'
 
 export default {
   name: 'PageWallet',
@@ -26,7 +27,7 @@ export default {
     this.$emit('updateToolbar', '钱包', 'fa-credit-card')
 
     // restore vue store
-    ipcRenderer.send('restore-state')
+    ipcRenderer.send(Types.RESTORE_STATE)
   }
 }
 </script>

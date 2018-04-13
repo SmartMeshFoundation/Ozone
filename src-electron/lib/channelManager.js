@@ -3,23 +3,21 @@ import StoreManager from './storeManager'
 import observeManager from './observeManager'
 import log from './log'
 import channels from './channel'
-
-const RESTORE_STATE = 'restore-state'
-const CLIENT_READY = 'client-ready'
+import { Types } from './channel/types'
 
 class ChannelManager {
   bind (mainWindow) {
     let store = new StoreManager(mainWindow)
 
     // client ready
-    ipcMain.on(CLIENT_READY, () => {
-      log.info(CLIENT_READY, ' event fired.')
+    ipcMain.on(Types.CLIENT_READY, () => {
+      log.info(Types.CLIENT_READY, ' event fired.')
       observeManager.start(store)
     })
 
     // restore vue-store
-    ipcMain.on(RESTORE_STATE, (event, stateName) => {
-      log.info(RESTORE_STATE, ' event fired.')
+    ipcMain.on(Types.RESTORE_STATE, (event, stateName) => {
+      log.info(Types.RESTORE_STATE, ' event fired.')
       store.restore(stateName)
     })
 

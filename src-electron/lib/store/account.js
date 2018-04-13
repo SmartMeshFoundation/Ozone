@@ -1,6 +1,7 @@
 import web3 from '../web3Mannager'
 import db from '../dbManager'
 import BigNumber from 'bignumber.js'
+import { Types } from '../channel/types'
 
 class AccountStore {
   constructor () {
@@ -50,7 +51,7 @@ class AccountStore {
       })
       .then(accounts => {
         // log.debug('Find accounts: \n', accounts)
-        this._window.webContents.send('restore-account', { accounts })
+        this._window.webContents.send(Types.RESTORE_ACCOUNT, { accounts })
       })
   }
 }

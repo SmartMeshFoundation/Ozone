@@ -98,10 +98,11 @@
 <script>
 import _ from 'lodash'
 import { required, numeric } from 'vuelidate/lib/validators'
-import { address } from '../validators'
 import { ipcRenderer } from 'electron'
 import BigNumber from 'bignumber.js'
 const BN = BigNumber
+import { address } from '../validators'
+import { Types } from '../../src-electron/lib/channel/types'
 
 export default {
   name: 'PageTransfer',
@@ -213,7 +214,7 @@ export default {
           }
         })
         .then(password => {
-          ipcRenderer.send('send-transaction', { tx, password })
+          ipcRenderer.send(Types.SEND_TRANSACTION, { tx, password })
         })
         .catch(() => {
           this.disabled = false
@@ -224,8 +225,9 @@ export default {
   created () {
     this.$emit('updateToolbar', '转账', 'fa-exchange-alt')
     const $vm = this
-    ipcRenderer.removeAllListeners('send-transaction-reply')
-    ipcRenderer.on('send-transaction-reply', (event, reply) => {
+    ipcRenderer.removeAllListeners(Types.SEND_TRANSACTION_REPLY)
+
+    ipcRenderer.on(Types.SEND_TRANSACTION_REPLY, (event, reply) => {
       console.log('send transaction reply: ', reply)
       if (reply.error && reply.error === 'invalid-password') {
         $vm.$q.notify('密码错误！')
