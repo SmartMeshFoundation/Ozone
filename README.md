@@ -1,8 +1,44 @@
-# Ozone
+# About Ozone
+
 The project demonstrates how to access and use *Spectrum* network infrastructure.
 
 # Objective
+
 The goal is to expose the functionality of the various modules in the *Spectrum* network infrastructure to developers, enabling third-party developers to easily port their services to enrich the *Spectrum* ecosystem.
 
 # Development
-coming soon...
+
+First, we install Quasar CLI. Make sure you have Node >=8 and NPM >=5 installed on your machine. If you want to learn what Quasar is and what it can do for you, read the [Introduction to Quasar](http://quasar-framework.org/guide/introduction-to-quasar.html). Otherwise, let’s get started.
+
+```bash
+# make sure you have vue-cli globally installed
+$ yarn global add vue-cli
+
+# Node.js >= 8.9.0 is required.
+$ yarn global add quasar-cli
+
+or
+
+$ npm install -g vue-cli
+$ npm install -g quasar-cli
+```
+
+Then, we checkout the source code of Ozone from github.
+```bash
+git clone git@github.com:SmartMeshFoundation/Ozone.git
+```
+
+### Run Ozone
+
+Now you're ready to initialise Ozone for development:
+
+```bash
+$ cd Ozone
+$ yarn install
+$ yarn dev
+```
+
+For development we need a *Spectrum* node running. Start the `geth` in a separate terminal window:
+```bash
+$ geth --datadir /your/private/network/data --networkid yourid --ws --wsport=8546 --wsorigins="*" --wsapi "eth,net,web3,personal,subscribe" console
+```
