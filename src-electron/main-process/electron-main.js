@@ -14,15 +14,13 @@ if (process.env.PROD) {
 }
 
 if (process.env.DEV) {
-  // TODO 修改成从环境变量读取
+  // TODO Get setting from env
 }
 
 function init () {
   log.debug('\n================= process.env ================= \n', process.env)
 
-  global.web3 = new Web3(
-    new Web3.providers.WebsocketProvider('ws://localhost:8546')
-  )
+  global.web3 = new Web3('ws://localhost:8546')
 
   log.info('web3 version: ', global.web3.version)
 

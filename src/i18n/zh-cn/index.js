@@ -23,10 +23,17 @@ export default {
   },
   account: {
     balance: '账户余额',
-    txHistory: '交易历史',
     btn: {
       transfer: '转账',
       backupAccount: '备份账户'
+    }
+  },
+  tx: {
+    list: {
+      caption: '最近交易'
+    },
+    text: {
+      noTxs: '还未有交易历史'
     }
   }
 }

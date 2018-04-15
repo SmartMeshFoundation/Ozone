@@ -2,7 +2,7 @@
   <q-page class="q-pa-lg">
     <account-list />
     <br>
-    <transaction-list />
+    <transaction-list :items="txList" />
   </q-page>
 </template>
 
@@ -20,7 +20,11 @@ export default {
     return {
     }
   },
-  computed: {},
+  computed: {
+    txList () {
+      return this.$store.state.transaction.list
+    }
+  },
   methods: {},
   created () {
     // pass data to parent component

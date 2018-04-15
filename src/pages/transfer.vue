@@ -110,11 +110,11 @@ export default {
     return {
       showConfirmModal: false,
       form: {
-        from: this.getFrom(),
+        from: this.$route.params.address || '',
         to: '',
         amount: ''
       },
-      balance: 0,
+      // balance: 0,
       gasFee: 0,
       total: 0,
       disabled: false
@@ -127,9 +127,18 @@ export default {
       amount: { required, numeric }
     }
   },
+  computed: {
+    balance () {
+      if (this.form.from !== '') {
+        return this.getAccountSMT(this.form.from)
+      } else {
+        return 0
+      }
+    }
+  },
   watch: {
     'form.from': function (newAddress, oldAddress) {
-      this.balance = this.getAccountEther(newAddress)
+      // this.balance = this.getAccountEther(newAddress)
     },
     'form.to': function () {
       this.estimateGas()
@@ -168,7 +177,7 @@ export default {
         return ''
       }
     },
-    getAccountEther (address) {
+    getAccountSMT (address) {
       if (address) {
         let account = this.$store.getters['account/get'](address)
         if (account != null) {
