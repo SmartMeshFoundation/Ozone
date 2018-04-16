@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import log4js from 'log4js'
 import settings from './settings'
+import path from 'path'
 
 const LoggerFactory = {}
 
@@ -20,7 +21,7 @@ LoggerFactory.setup = (options) => {
   const log4jsOptions = {
     appenders: {
       console: { type: 'console' },
-      file: { type: 'file', filename: settings.appDataPath + '.log' }
+      file: { type: 'file', filename: path.resolve(settings.userDataPath, 'app.log') }
     },
     categories: {
       default: { appenders: ['console', 'file'], level: 'debug' }
