@@ -1,36 +1,78 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
-import db from '../lib/dbManager'
-import channel from '../lib/channelManager'
-import setting from '../lib/setting'
+import settings from '../lib/settings'
+import db from '../lib/db'
+// import channel from '../lib/channelManager'
 import Web3 from 'web3'
-import log from '../lib/log'
+import logger from '../lib/logger'
+import path from 'path'
+
+const log = logger.create('Main')
+
+settings.init()
+
+log.info(`Running in production mode: ${settings.inProductionMode}`)
 
 if (process.env.PROD) {
-  global.__statics = require('path')
-    .join(__dirname, 'statics')
-    .replace(/\\/g, '\\\\')
+  global.__statics = path.join(__dirname, 'statics').replace(/\\/g, '\\\\')
 }
 
-if (process.env.DEV) {
-  // TODO Get setting from env
-}
+global.settings = settings
+global.db = db
 
-function init () {
-  log.debug('\n================= process.env ================= \n', process.env)
+log.debug('\n================= process.env ================= \n', process.env)
+log.debug('userDataPath = ', settings.userDataPath)
+log.debug('userHomePath = ', settings.userHomePath)
+log.debug('appDataPath = ', settings.appDataPath)
 
-  global.web3 = new Web3('ws://localhost:8546')
+// prevent crashed and close gracefully
+process.on('uncaughtException', (error) => {
+  log.error('UNCAUGHT EXCEPTION', error)
+  app.quit()
+})
 
-  log.info('web3 version: ', global.web3.version)
+// Quit when all windows are closed.
+app.on('window-all-closed', () => {
+  app.quit()
+})
 
-  global.db = db
-  global.setting = setting
-}
+// TODO change
+global.web3 = new Web3('ws://localhost:8546')
+log.info('web3 version: ', global.web3.version)
 
 let mainWindow = null
 
-function createMainWindow () {
+// app.on('window-all-closed', () => {
+//   if (process.platform !== 'darwin') {
+//     app.quit()
+//   }
+// })
+
+// app.on('activate', () => {
+//   if (mainWindow === null) {
+//     createMainWindow()
+//   }
+// })
+
+app.on('ready', () => {
+  // initialise the db
+  global.db.init().then(onReady).catch((err) => {
+    log.error(err)
+    app.quit()
+  })
+
+  // init()
+  // createMainWindow()
+  // channel.bind(mainWindow)
+})
+
+let onReady = () => {
+  // TODO show splash window
+  createMainWindow()
+}
+
+let createMainWindow = () => {
   /**
    * Initial window options
    */
@@ -46,21 +88,3 @@ function createMainWindow () {
 
   mainWindow.loadURL(process.env.APP_URL)
 }
-
-app.on('ready', () => {
-  init()
-  createMainWindow()
-  channel.bind(mainWindow)
-})
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createMainWindow()
-  }
-})

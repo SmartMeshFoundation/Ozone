@@ -1,23 +1,27 @@
 import { ipcMain } from 'electron'
 import StoreManager from './storeManager'
 import observeManager from './observeManager'
-import log from './log'
+import logger from './logger'
 import channels from './channel'
 import { Types } from './channel/types'
 
 class ChannelManager {
+  constructor () {
+    this._log = logger.create('ChannelManager')
+  }
+
   bind (mainWindow) {
     let store = new StoreManager(mainWindow)
 
     // client ready
     ipcMain.on(Types.CLIENT_READY, () => {
-      log.info(Types.CLIENT_READY, ' event fired.')
+      this._log.info(Types.CLIENT_READY, ' event fired.')
       observeManager.start(store)
     })
 
     // restore vue-store
     ipcMain.on(Types.RESTORE_STATE, (event, stateName) => {
-      log.info(Types.RESTORE_STATE, ' event fired.')
+      this._log.info(Types.RESTORE_STATE, ' event fired.')
       store.restore(stateName)
     })
 
