@@ -22,7 +22,7 @@
                      :content-class="$q.theme === 'mat' ? 'bg-grey-2 shadow-5' : null">
       <div class="bg-white q-pa-xs">
         <div class="row flex-center">
-          <img alt="Quasar logo"
+          <img alt="Ozone logo"
                src="statics/smart_mesh.jpeg"
                style="height: 75px;" />
           <big>OZONE</big>

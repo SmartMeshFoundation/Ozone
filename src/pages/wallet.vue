@@ -25,7 +25,6 @@ export default {
       return this.$store.state.transaction.list
     }
   },
-  methods: {},
   created () {
     // pass data to parent component
     this.$emit('updateToolbar', this.$t('nav.wallet.label'), 'fa-credit-card')

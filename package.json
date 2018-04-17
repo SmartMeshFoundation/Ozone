@@ -1,8 +1,8 @@
 {
   "name": "ozone",
   "version": "0.0.1",
-  "description": "Demonstrates how to access and use Spectrum network infrastructure.",
-  "productName": "OZONE powered by SmartMesh.io",
+  "description": "Ozone powered by SmartMesh.io",
+  "productName": "Ozone",
   "cordovaId": "io.smartmesh.ozone",
   "author": "wuynng <wuynng@163.com>",
   "private": true,

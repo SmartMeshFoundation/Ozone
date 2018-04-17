@@ -6,13 +6,13 @@ const packageJson = require('../../package.json')
 import _ from 'lodash'
 
 // try loading in config file
-const defaultConfig = {
-  production: false
-}
-try {
-  _.extend(defaultConfig, require('../config.json'))
-} catch (err) {
-}
+// const defaultConfig = {
+//   production: false
+// }
+// try {
+//   _.extend(defaultConfig, require('../config.json'))
+// } catch (err) {
+// }
 
 // Global log4js options
 const loggerConfig = {
@@ -59,6 +59,14 @@ class Settings {
 
   get inProductionMode () {
     return process.env.PROD
+  }
+
+  get productName () {
+    return packageJson.productName
+  }
+
+  get appDescription () {
+    return packageJson.description
   }
 
   loadUserData (path2) {

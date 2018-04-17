@@ -1,11 +1,11 @@
 
 export default [
   {
-    path: '/', redirect: '/startup'
+    path: '/', redirect: '/splash'
   },
   {
-    path: '/startup',
-    component: () => import('pages/startup')
+    path: '/splash',
+    component: () => import('pages/splash')
   },
   {
     path: '/dashboard', redirect: '/wallet'
