@@ -1,21 +1,17 @@
-const _ = global._
-const Q = require('bluebird')
-const fs = require('fs')
-const { app, dialog } = require('electron')
-const got = require('got')
-const path = require('path')
-const Settings = require('./settings')
-const Windows = require('./windows')
-const ClientBinaryManager = require('ethereum-client-binaries').Manager
-const EventEmitter = require('events').EventEmitter
+import _ from 'lodash'
+import Q from 'bluebird'
+import fs from 'fs'
+import { app, dialog } from 'electron'
+import got from 'got'
+import path from 'path'
+import Settings from './settings'
+import Windows from './windows'
+import { Manager as ClientBinaryManager } from 'ethereum-client-binaries'
+import { EventEmitter } from 'events'
 
 const log = require('./logger').create('ClientBinaryManager')
 
-// should be       'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json'
-const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json'
-
-const ALLOWED_DOWNLOAD_URLS_REGEX =
-    /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/ // eslint-disable-line max-len
+const BINARY_URL = 'https://github.com/wuynng/spectrumclient/raw/master/clientBinaries.json'
 
 class Manager extends EventEmitter {
   constructor () {
@@ -47,7 +43,6 @@ class Manager extends EventEmitter {
   }
 
   _checkForNewConfig (restart) {
-    const nodeType = 'Geth'
     let binariesDownloaded = false
     let nodeInfo
 
@@ -75,7 +70,7 @@ class Manager extends EventEmitter {
 
         let localConfig
         let skipedVersion
-        const nodeVersion = latestConfig.clients[nodeType].version
+        const nodeVersion = latestConfig.version
 
         this._emit('loadConfig', 'Fetching local config')
 
@@ -104,14 +99,13 @@ class Manager extends EventEmitter {
 
         // prepare node info
         const platform = process.platform.replace('darwin', 'mac').replace('win32', 'win').replace('freebsd', 'linux').replace('sunos', 'linux')
-        const binaryVersion = latestConfig.clients[nodeType].platforms[platform][process.arch]
+        const binaryVersion = latestConfig[platform]
         const checksums = _.pick(binaryVersion.download, 'sha256', 'md5')
         const algorithm = _.keys(checksums)[0].toUpperCase()
         const hash = _.values(checksums)[0]
 
         // get the node data, to be able to pass it to a possible error
         nodeInfo = {
-          type: nodeType,
           version: nodeVersion,
           checksum: hash,
           algorithm
@@ -124,49 +118,9 @@ class Manager extends EventEmitter {
           return new Q((resolve) => {
             log.debug('New client binaries config found, asking user if they wish to update...')
 
-            const wnd = Windows.createPopup('clientUpdateAvailable', _.extend({
-              useWeb3: false,
-              electronOptions: {
-                width: 600,
-                height: 340,
-                alwaysOnTop: false,
-                resizable: false,
-                maximizable: false
-              }
-            }, {
-              sendData: {
-                uiAction_sendData: {
-                  name: nodeType,
-                  version: nodeVersion,
-                  checksum: `${algorithm}: ${hash}`,
-                  downloadUrl: binaryVersion.download.url,
-                  restart
-                }
-              }
-            }), (update) => {
-              // update
-              if (update === 'update') {
-                this._writeLocalConfig(latestConfig)
+            this._writeLocalConfig(latestConfig)
 
-                resolve(latestConfig)
-
-                // skip
-              } else if (update === 'skip') {
-                fs.writeFileSync(
-                  path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
-                  nodeVersion
-                )
-
-                resolve(localConfig)
-              }
-
-              wnd.close()
-            })
-
-            // if the window is closed, simply continue and as again next time
-            wnd.on('close', () => {
-              resolve(localConfig)
-            })
+            resolve(latestConfig)
           })
         }
 
