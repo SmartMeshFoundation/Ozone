@@ -1,12 +1,40 @@
 import Web3 from 'web3'
+import _ from 'lodash'
 
-let web3
+const url = 'ws://localhost:9656'
 
-if (process.env.DEV) {
-  web3 = new Web3('ws://localhost:8546')
-} else {
-  // TODO
-  web3 = new Web3()
+class Web3Manager {
+  init () {
+    this._count = 0
+
+    let promise = new Promise((resolve, reject) => {
+      this._resolve = resolve
+      this._reject = reject
+    })
+
+    this.connect()
+
+    return promise
+  }
+
+  async connect () {
+    if (this._count++ < 3) {
+      let status = await this.reconnect()
+      if (status) {
+        this._resolve(status)
+      } else {
+        setTimeout(_.bind(this.connect, this), 1000)
+      }
+    } else {
+      this._reject(new Error('Can not connected to node by: ' + url))
+    }
+  }
+
+  async reconnect () {
+    this.web3 = new Web3(url)
+    let status = await this.web3.eth.isListening()
+    return status
+  }
 }
 
-export default web3
+export default new Web3Manager()

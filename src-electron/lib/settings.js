@@ -1,9 +1,8 @@
 import { app } from 'electron'
 import path from 'path'
-import fs from 'fs'
 import logger from './logger'
 const packageJson = require('../../package.json')
-import _ from 'lodash'
+import fs from 'fs-extra'
 
 // try loading in config file
 // const defaultConfig = {
@@ -18,6 +17,14 @@ import _ from 'lodash'
 const loggerConfig = {
   loglevel: 'debug'
 }
+
+const networkArgs = [
+  '--networkid=1518',
+  '--ws', '--wsport=9656',
+  '--wsorigins="*"',
+  '--wsapi="eth,net,web3,personal,subscribe"',
+  '--rpc', '--rpccorsdomain="http://localhost:3000"'
+]
 
 class Settings {
   init () {
@@ -67,6 +74,31 @@ class Settings {
 
   get appDescription () {
     return packageJson.description
+  }
+
+  get platform () {
+    return process.platform
+      .replace('darwin', 'mac')
+      .replace('win32', 'win')
+      .replace('freebsd', 'linux')
+      .replace('sunos', 'linux')
+  }
+
+  get nodeOptions () {
+    return ['--datadir', this.chainDataPath].concat(networkArgs)
+  }
+
+  get chainDataPath () {
+    let baseDir
+    if (this.platform === 'win') {
+      baseDir = this.userDataPath
+      baseDir = path.join(baseDir, this.appName)
+    } else {
+      baseDir = this.userHomePath
+      baseDir = path.join(baseDir, '.' + this.appName)
+    }
+    fs.ensureDirSync(baseDir)
+    return baseDir
   }
 
   loadUserData (path2) {

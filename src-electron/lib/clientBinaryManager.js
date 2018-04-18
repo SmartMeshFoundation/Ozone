@@ -5,11 +5,11 @@ import { app, dialog } from 'electron'
 import got from 'got'
 import path from 'path'
 import Settings from './settings'
-import Windows from './windows'
-import { Manager as ClientBinaryManager } from 'ethereum-client-binaries'
+import { Manager as ClientBinaryManager } from './client/manager'
 import { EventEmitter } from 'events'
+import logger from './logger'
 
-const log = require('./logger').create('ClientBinaryManager')
+const log = logger.create('ClientBinaryManager')
 
 const BINARY_URL = 'https://github.com/wuynng/spectrumclient/raw/master/clientBinaries.json'
 
@@ -100,7 +100,7 @@ class Manager extends EventEmitter {
         // prepare node info
         const platform = process.platform.replace('darwin', 'mac').replace('win32', 'win').replace('freebsd', 'linux').replace('sunos', 'linux')
         const binaryVersion = latestConfig[platform]
-        const checksums = _.pick(binaryVersion.download, 'sha256', 'md5')
+        const checksums = _.pick(binaryVersion.download, 'md5')
         const algorithm = _.keys(checksums)[0].toUpperCase()
         const hash = _.values(checksums)[0]
 
@@ -142,8 +142,7 @@ class Manager extends EventEmitter {
 
         return mgr.init({
           folders: [
-            path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked'),
-            path.join(Settings.userDataPath, 'binaries', 'Eth', 'unpacked')
+            path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked')
           ]
         })
           .then(() => {
@@ -164,8 +163,7 @@ class Manager extends EventEmitter {
                 binariesDownloaded = true
 
                 return mgr.download(c.id, {
-                  downloadFolder: path.join(Settings.userDataPath, 'binaries'),
-                  urlRegex: ALLOWED_DOWNLOAD_URLS_REGEX
+                  downloadFolder: path.join(Settings.userDataPath, 'binaries')
                 })
               })
             }
@@ -227,47 +225,6 @@ class Manager extends EventEmitter {
 
     this.emit('status', status, msg)
   }
-
-  _resolveEthBinPath () {
-    log.info('Resolving path to Eth client binary ...')
-
-    let platform = process.platform
-
-    // "win32" -> "win" (because nodes are bundled by electron-builder)
-    if (platform.indexOf('win') === 0) {
-      platform = 'win'
-    } else if (platform.indexOf('darwin') === 0) {
-      platform = 'mac'
-    }
-
-    log.debug(`Platform: ${platform}`)
-
-    let binPath = path.join(
-      __dirname,
-      '..',
-      'nodes',
-      'eth',
-      `${platform}-${process.arch}`
-    )
-
-    if (Settings.inProductionMode) {
-      // get out of the ASAR
-      binPath = binPath.replace('nodes', path.join('..', '..', 'nodes'))
-    }
-
-    binPath = path.join(path.resolve(binPath), 'eth')
-
-    if (platform === 'win') {
-      binPath += '.exe'
-    }
-
-    log.info(`Eth client binary path: ${binPath}`)
-
-    this._availableClients.eth = {
-      binPath,
-      version: '1.3.0'
-    }
-  }
 }
 
-module.exports = new Manager()
+export default new Manager()
