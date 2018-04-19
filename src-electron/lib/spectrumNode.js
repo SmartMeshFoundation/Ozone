@@ -3,10 +3,11 @@ import fs from 'fs'
 import Q from 'bluebird'
 import { spawn } from 'child_process'
 import { dialog } from 'electron'
-import Settings from './settings'
 import logRotate from 'log-rotate'
 import { EventEmitter } from 'events'
-import Sockets from './socketManager'
+import Web3 from 'web3'
+import net from 'net'
+import Settings from './settings'
 import ClientBinaryManager from './clientBinaryManager'
 import logger from './logger'
 
@@ -20,11 +21,11 @@ const UNABLE_TO_BIND_PORT_ERROR = 'unableToBindPort'
 const NODE_START_WAIT_MS = 3000
 
 const STATES = {
-  STARTING: 0, /* Node about to be started */
-  STARTED: 1, /* Node started */
-  CONNECTED: 2, /* IPC connected - all ready */
-  STOPPING: 3, /* Node about to be stopped */
-  STOPPED: 4, /* Node stopped */
+  STARTING: 0 /* Node about to be started */,
+  STARTED: 1 /* Node started */,
+  CONNECTED: 2 /* IPC connected - all ready */,
+  STOPPING: 3 /* Node about to be stopped */,
+  STOPPED: 4 /* Node stopped */,
   ERROR: -1 /* Unexpected error */
 }
 
@@ -43,8 +44,6 @@ class SpectrumNode extends EventEmitter {
     this._type = null
     this._network = null
 
-    this._socket = Sockets.get('node-ipc', Settings.rpcMode)
-
     this.on('data', _.bind(this._logNodeData, this))
   }
 
@@ -54,10 +53,6 @@ class SpectrumNode extends EventEmitter {
 
   get isExternalNode () {
     return !this._node
-  }
-
-  get isIpcConnected () {
-    return this._socket.isConnected
   }
 
   get type () {
@@ -138,25 +133,29 @@ class SpectrumNode extends EventEmitter {
   }
 
   /**
-     * This method should always be called first to initialise the connection.
-     * @return {Promise}
-     */
+   * This method should always be called first to initialise the connection.
+   * @return {Promise}
+   */
   init () {
-    return Promise.resolve()
-      .then(() => {
-        log.warn('Failed to connect to node. Maybe it\'s not running so let\'s start our own...')
+    return Promise.resolve().then(() => {
+      log.warn(
+        "Failed to connect to node. Maybe it's not running so let's start our own..."
+      )
 
-        log.info(`Node type: ${this.defaultNodeType}`)
-        log.info(`Network: ${this.defaultNetwork}`)
-        log.info(`SyncMode: ${this.defaultSyncMode}`)
+      log.info(`Node type: ${this.defaultNodeType}`)
+      log.info(`Network: ${this.defaultNetwork}`)
+      log.info(`SyncMode: ${this.defaultSyncMode}`)
 
-        // if not, start node yourself
-        return this._start(this.defaultNodeType, this.defaultNetwork, this.defaultSyncMode)
-          .catch((err) => {
-            log.error('Failed to start node', err)
-            throw err
-          })
+      // if not, start node yourself
+      return this._start(
+        this.defaultNodeType,
+        this.defaultNetwork,
+        this.defaultSyncMode
+      ).catch(err => {
+        log.error('Failed to start node', err)
+        throw err
       })
+    })
   }
 
   restart (newType, newNetwork, syncMode) {
@@ -169,13 +168,15 @@ class SpectrumNode extends EventEmitter {
 
       return this.stop()
         .then(() => this.emit('show-loading'))
-        .then(() => this._start(
-          newType || this.type,
-          newNetwork || this.network,
-          syncMode || this.syncMode
-        ))
+        .then(() =>
+          this._start(
+            newType || this.type,
+            newNetwork || this.network,
+            syncMode || this.syncMode
+          )
+        )
         .then(() => this.emit('hide-loading'))
-        .catch((err) => {
+        .catch(err => {
           log.error('Error restarting node', err)
           throw err
         })
@@ -183,13 +184,13 @@ class SpectrumNode extends EventEmitter {
   }
 
   /**
-     * Stop node.
-     *
-     * @return {Promise}
-     */
+   * Stop node.
+   *
+   * @return {Promise}
+   */
   stop () {
     if (!this._stopPromise) {
-      return new Q((resolve) => {
+      return new Q(resolve => {
         if (!this._node) {
           return resolve()
         }
@@ -220,11 +221,10 @@ class SpectrumNode extends EventEmitter {
 
           resolve()
         })
+      }).then(() => {
+        this.state = STATES.STOPPED
+        this._stopPromise = null
       })
-        .then(() => {
-          this.state = STATES.STOPPED
-          this._stopPromise = null
-        })
     }
     log.debug('Disconnection already in progress, returning Promise.')
     return this._stopPromise
@@ -235,28 +235,15 @@ class SpectrumNode extends EventEmitter {
   }
 
   /**
-     * Send Web3 command to socket.
-     * @param  {String} method Method name
-     * @param  {Array} [params] Method arguments
-     * @return {Promise} resolves to result or error.
-     */
-  send (method, params) {
-    return this._socket.send({
-      method,
-      params
-    })
-  }
-
-  /**
-     * Start an ethereum node.
-     * @param  {String} nodeType geth, eth, etc
-     * @param  {String} network  network id
-     * @return {Promise}
-     */
+   * Start an ethereum node.
+   * @param  {String} nodeType geth, eth, etc
+   * @param  {String} network  network id
+   * @return {Promise}
+   */
   _start (nodeType, network, syncMode) {
     log.info(`Start node: ${nodeType} ${network} ${syncMode}`)
 
-    const isTestNet = (network === 'test')
+    const isTestNet = network === 'test'
 
     if (isTestNet) {
       log.debug('Node will connect to the test network')
@@ -264,17 +251,18 @@ class SpectrumNode extends EventEmitter {
 
     return this.stop()
       .then(() => {
-        return this.__startNode(nodeType, network, syncMode)
-          .catch((err) => {
-            log.error('Failed to start node', err)
+        return this.__startNode(nodeType, network, syncMode).catch(err => {
+          log.error('Failed to start node', err)
 
-            this._showNodeErrorDialog(nodeType, network)
+          this._showNodeErrorDialog(nodeType, network)
 
-            throw err
-          })
+          throw err
+        })
       })
-      .then((proc) => {
-        log.info(`Started node successfully: ${nodeType} ${network} ${syncMode}`)
+      .then(proc => {
+        log.info(
+          `Started node successfully: ${nodeType} ${network} ${syncMode}`
+        )
 
         this._node = proc
         this.state = STATES.STARTED
@@ -283,11 +271,42 @@ class SpectrumNode extends EventEmitter {
         Settings.saveUserData('network', this._network)
         Settings.saveUserData('syncmode', this._syncMode)
 
-        return Q.resolve()
+        let web3, _resolve, _reject
+        let web3Promise = new Promise((resolve, reject) => {
+          _resolve = resolve
+          _reject = reject
+        })
+
+        // _.delay(() => {
+        //   // log.debug('Try to set provider for Web3: ', Settings.web3Provider)
+        //   web3 = new Web3(Settings.web3Provider)
+        //   web3.eth.net.isListening()
+        //     .then(() => {
+        //       _resolve(true)
+        //     })
+        //     .catch(_reject)
+        // }, 1000)
+
+        let providerUrl = Settings.web3Provider
+        if (providerUrl.startsWith('http:') || providerUrl.startsWith('ws:')) {
+          web3 = new Web3(providerUrl)
+        } else {
+          web3 = new Web3(new Web3.providers.IpcProvider(providerUrl, net))
+        }
+
+        web3.eth.net.isListening()
+          .then(() => {
+            _resolve(true)
+          })
+          .catch(_reject)
+
+        return web3Promise
           .then(() => {
             this.state = STATES.CONNECTED
+            global.web3 = web3
+            log.info('Web3 connected to ', providerUrl)
           })
-          .catch((err) => {
+          .catch(err => {
             log.error('Failed to connect to node', err)
 
             if (err.toString().indexOf('timeout') >= 0) {
@@ -299,7 +318,7 @@ class SpectrumNode extends EventEmitter {
             throw err
           })
       })
-      .catch((err) => {
+      .catch(err => {
         // set before updating state so that state change event observers
         // can pick up on this
         this.lastError = err.tag
@@ -315,8 +334,8 @@ class SpectrumNode extends EventEmitter {
   }
 
   /**
-     * @return {Promise}
-     */
+   * @return {Promise}
+   */
   __startNode (nodeType, network, syncMode) {
     this.state = STATES.STARTING
 
@@ -336,14 +355,16 @@ class SpectrumNode extends EventEmitter {
     log.info(`Start node using ${binPath}`)
 
     return new Q((resolve, reject) => {
-      this.__startProcess(nodeType, network, binPath, syncMode)
-        .then(resolve, reject)
+      this.__startProcess(nodeType, network, binPath, syncMode).then(
+        resolve,
+        reject
+      )
     })
   }
 
   /**
-     * @return {Promise}
-     */
+   * @return {Promise}
+   */
   __startProcess (nodeType, network, binPath, _syncMode) {
     let syncMode = _syncMode
     if (nodeType === 'geth' && !syncMode) {
@@ -354,142 +375,152 @@ class SpectrumNode extends EventEmitter {
       log.trace('Rotate log file')
 
       // rotate the log file
-      logRotate(Settings.constructUserDataPath('node.log'), { count: 5 }, (err) => {
-        if (err) {
-          log.error('Log rotation problems', err)
+      logRotate(
+        Settings.constructUserDataPath('node.log'),
+        { count: 5 },
+        err => {
+          if (err) {
+            log.error('Log rotation problems', err)
 
-          return reject(err)
-        }
-
-        let args
-
-        // switch (network) {
-        //   // Starts Ropsten network
-        //   case 'test':
-        //     args = [
-        //       '--testnet',
-        //       '--syncmode', syncMode,
-        //       '--cache', ((process.arch === 'x64') ? '1024' : '512'),
-        //       '--ipcpath', Settings.rpcIpcPath
-        //     ]
-        //     break
-
-        //     // Starts Rinkeby network
-        //   case 'rinkeby':
-        //     args = [
-        //       '--rinkeby',
-        //       '--syncmode', syncMode,
-        //       '--cache', ((process.arch === 'x64') ? '1024' : '512'),
-        //       '--ipcpath', Settings.rpcIpcPath
-        //     ]
-        //     break
-
-        //     // Starts local network
-        //   case 'dev':
-        //     args = [
-        //       '--dev',
-        //       '--minerthreads', '1',
-        //       '--ipcpath', Settings.rpcIpcPath
-        //     ]
-        //     break
-
-        //     // Starts Main net
-        //   default:
-        //     args = (nodeType === 'geth')
-        //       ? [
-        //         '--syncmode', syncMode,
-        //         '--cache', ((process.arch === 'x64') ? '1024' : '512')
-        //       ]
-        //       : ['--unsafe-transactions']
-        // }
-
-        args = [
-          '--syncmode', syncMode,
-          '--cache', ((process.arch === 'x64') ? '1024' : '512')
-        ]
-
-        const nodeOptions = Settings.nodeOptions
-
-        if (nodeOptions && nodeOptions.length) {
-          log.debug('Custom node options', nodeOptions)
-
-          args = args.concat(nodeOptions)
-        }
-
-        log.trace('Spawn', binPath, args)
-
-        const proc = spawn(binPath, args)
-
-        // node has a problem starting
-        proc.once('error', (error) => {
-          if (STATES.STARTING === this.state) {
-            this.state = STATES.ERROR
-
-            log.info('Node startup error')
-
-            // TODO: detect this properly
-            // this.emit('nodeBinaryNotFound');
-
-            reject(error)
+            return reject(err)
           }
-        })
 
-        // we need to read the buff to prevent node from not working
-        proc.stderr.pipe(
-          fs.createWriteStream(Settings.constructUserDataPath('node.log'), { flags: 'a' })
-        )
+          let args
 
-        // when proc outputs data
-        proc.stdout.on('data', (data) => {
-          log.trace('Got stdout data')
+          // switch (network) {
+          //   // Starts Ropsten network
+          //   case 'test':
+          //     args = [
+          //       '--testnet',
+          //       '--syncmode', syncMode,
+          //       '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+          //       '--ipcpath', Settings.rpcIpcPath
+          //     ]
+          //     break
 
-          this.emit('data', data)
+          //     // Starts Rinkeby network
+          //   case 'rinkeby':
+          //     args = [
+          //       '--rinkeby',
+          //       '--syncmode', syncMode,
+          //       '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+          //       '--ipcpath', Settings.rpcIpcPath
+          //     ]
+          //     break
 
-          // check for startup errors
-          if (STATES.STARTING === this.state) {
-            const dataStr = data.toString().toLowerCase()
+          //     // Starts local network
+          //   case 'dev':
+          //     args = [
+          //       '--dev',
+          //       '--minerthreads', '1',
+          //       '--ipcpath', Settings.rpcIpcPath
+          //     ]
+          //     break
 
-            if (nodeType === 'geth') {
-              if (dataStr.indexOf('fatal: error') >= 0) {
-                const error = new Error(`Geth error: ${dataStr}`)
+          //     // Starts Main net
+          //   default:
+          //     args = (nodeType === 'geth')
+          //       ? [
+          //         '--syncmode', syncMode,
+          //         '--cache', ((process.arch === 'x64') ? '1024' : '512')
+          //       ]
+          //       : ['--unsafe-transactions']
+          // }
 
-                if (dataStr.indexOf('bind') >= 0) {
-                  error.tag = UNABLE_TO_BIND_PORT_ERROR
+          args = [
+            '--syncmode',
+            syncMode,
+            '--cache',
+            process.arch === 'x64' ? '1024' : '512'
+          ]
+
+          const nodeOptions = Settings.nodeOptions
+
+          if (nodeOptions && nodeOptions.length) {
+            log.debug('Custom node options', nodeOptions)
+
+            args = args.concat(nodeOptions)
+          }
+
+          log.trace('Spawn', binPath, args)
+
+          const proc = spawn(binPath, args)
+
+          // node has a problem starting
+          proc.once('error', error => {
+            if (STATES.STARTING === this.state) {
+              this.state = STATES.ERROR
+
+              log.info('Node startup error')
+
+              // TODO: detect this properly
+              // this.emit('nodeBinaryNotFound');
+
+              reject(error)
+            }
+          })
+
+          // we need to read the buff to prevent node from not working
+          proc.stderr.pipe(
+            fs.createWriteStream(Settings.constructUserDataPath('node.log'), {
+              flags: 'a'
+            })
+          )
+
+          // when proc outputs data
+          proc.stdout.on('data', data => {
+            log.trace('Got stdout data')
+
+            this.emit('data', data)
+
+            // check for startup errors
+            if (STATES.STARTING === this.state) {
+              const dataStr = data.toString().toLowerCase()
+
+              if (nodeType === 'geth') {
+                if (dataStr.indexOf('fatal: error') >= 0) {
+                  const error = new Error(`Geth error: ${dataStr}`)
+
+                  if (dataStr.indexOf('bind') >= 0) {
+                    error.tag = UNABLE_TO_BIND_PORT_ERROR
+                  }
+
+                  log.debug(error)
+
+                  return reject(error)
                 }
-
-                log.debug(error)
-
-                return reject(error)
               }
             }
-          }
-        })
+          })
 
-        // when proc outputs data in stderr
-        proc.stderr.on('data', (data) => {
-          log.trace('Got stderr data')
+          // when proc outputs data in stderr
+          proc.stderr.on('data', data => {
+            log.trace('Got stderr data')
 
-          this.emit('data', data)
-        })
+            this.emit('data', data)
+          })
 
-        this.on('data', _.bind(this._logNodeData, this))
+          this.on('data', _.bind(this._logNodeData, this))
 
-        // when data is first received
-        this.once('data', () => {
-          /*
+          // when data is first received
+          this.once('data', () => {
+            /*
                         We wait a short while before marking startup as successful
                         because we may want to parse the initial node output for
                         errors, etc (see geth port-binding error above)
                     */
-          setTimeout(() => {
-            if (STATES.STARTING === this.state) {
-              log.info(`${NODE_START_WAIT_MS}ms elapsed, assuming node started up successfully`)
+            setTimeout(() => {
+              if (STATES.STARTING === this.state) {
+                log.info(
+                  `${NODE_START_WAIT_MS}ms elapsed, assuming node started up successfully`
+                )
 
-              resolve(proc)
-            }
-          }, NODE_START_WAIT_MS)
-        })
-      })
+                resolve(proc)
+              }
+            }, NODE_START_WAIT_MS)
+          })
+        }
+      )
     })
   }
 
@@ -499,21 +530,26 @@ class SpectrumNode extends EventEmitter {
     if (nodelog) {
       nodelog = `...${nodelog.slice(-1000)}`
     } else {
-      nodelog = 'It seems like the node couldn\'t be started.'
+      nodelog = "It seems like the node couldn't be started."
     }
 
     // add node type
-    nodelog = `Node type: ${nodeType}\n` +
-            `Network: ${network}\n` +
-            `Platform: ${process.platform} (Architecture ${process.arch})\n\n${
-              nodelog}`
+    nodelog =
+      `Node type: ${nodeType}\n` +
+      `Network: ${network}\n` +
+      `Platform: ${process.platform} (Architecture ${
+        process.arch
+      })\n\n${nodelog}`
 
-    dialog.showMessageBox({
-      type: 'error',
-      buttons: ['OK'],
-      message: 'Couldn\'t connect to node? See the logs for more',
-      detail: nodelog
-    }, () => {})
+    dialog.showMessageBox(
+      {
+        type: 'error',
+        buttons: ['OK'],
+        message: "Couldn't connect to node? See the logs for more",
+        detail: nodelog
+      },
+      () => {}
+    )
   }
 
   _logNodeData (data) {
@@ -530,12 +566,23 @@ class SpectrumNode extends EventEmitter {
   _loadDefaults () {
     log.trace('Load defaults')
 
-    this.defaultNodeType = Settings.nodeType || Settings.loadUserData('node') || DEFAULT_NODE_TYPE
-    this.defaultNetwork = Settings.network || Settings.loadUserData('network') || DEFAULT_NETWORK
-    this.defaultSyncMode = Settings.syncmode || Settings.loadUserData('syncmode') || DEFAULT_SYNCMODE
+    this.defaultNodeType =
+      Settings.nodeType || Settings.loadUserData('node') || DEFAULT_NODE_TYPE
+    this.defaultNetwork =
+      Settings.network || Settings.loadUserData('network') || DEFAULT_NETWORK
+    this.defaultSyncMode =
+      Settings.syncmode || Settings.loadUserData('syncmode') || DEFAULT_SYNCMODE
 
-    log.info(Settings.syncmode, Settings.loadUserData('syncmode'), DEFAULT_SYNCMODE)
-    log.info(`Defaults loaded: ${this.defaultNodeType} ${this.defaultNetwork} ${this.defaultSyncMode}`)
+    log.info(
+      Settings.syncmode,
+      Settings.loadUserData('syncmode'),
+      DEFAULT_SYNCMODE
+    )
+    log.info(
+      `Defaults loaded: ${this.defaultNodeType} ${this.defaultNetwork} ${
+        this.defaultSyncMode
+      }`
+    )
   }
 }
 

@@ -18,16 +18,30 @@ const loggerConfig = {
   loglevel: 'debug'
 }
 
+const wsport = 9656
+const networkid = 1518
+
 const networkArgs = [
-  '--networkid=1518',
-  '--ws', '--wsport=9656',
-  '--wsorigins="*"',
-  '--wsapi="eth,net,web3,personal,subscribe"',
-  '--rpc', '--rpccorsdomain="http://localhost:3000"'
+  '--networkid',
+  `${networkid}`,
+  '--ws',
+  '--wsport',
+  `${wsport}`,
+  '--wsorigins',
+  '*',
+  '--wsapi',
+  'eth,net,web3,personal,subscribe',
+  '--rpc',
+  '--rpccorsdomain',
+  'http://localhost:3000'
 ]
 
 class Settings {
-  init () {
+  constructor () {
+    this.initLogger()
+  }
+
+  initLogger () {
     logger.setup(loggerConfig)
 
     this._log = logger.create('Settings')
@@ -101,6 +115,11 @@ class Settings {
     return baseDir
   }
 
+  get web3Provider () {
+    // return `ws://localhost:${wsport}`
+    return path.join(this.chainDataPath, 'geth.ipc')
+  }
+
   loadUserData (path2) {
     const fullPath = this.constructUserDataPath(path2)
 
@@ -143,6 +162,4 @@ class Settings {
   }
 }
 
-const settings = new Settings()
-
-export default settings
+export default new Settings()

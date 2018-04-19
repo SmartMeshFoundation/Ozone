@@ -9,25 +9,24 @@ import logger from '../lib/logger'
 import clientBinaryManager from '../lib/clientBinaryManager'
 import spectrumNode from '../lib/spectrumNode'
 import nodeSync from '../lib/nodeSync'
-import web3Mannager from '../lib/web3Mannager'
-
-if (process.env.PROD) {
-  global.__statics = path.join(__dirname, 'statics').replace(/\\/g, '\\\\')
-}
 
 const log = logger.create('Main')
 
-Settings.init()
-
 log.info(`Running in production mode: ${Settings.inProductionMode}`)
+// log.debug('\n================= process.env ================= \n', process.env)
+// log.debug('userDataPath = ', Settings.userDataPath)
+// log.debug('userHomePath = ', Settings.userHomePath)
+// log.debug('appDataPath = ', Settings.appDataPath)
 
-global.settings = Settings
+if (process.env.PROD) {
+  global.__statics = path.join(__dirname, 'statics').replace(/\\/g, '\\\\')
+} else {
+  global.__statics = __statics
+}
+
+global.icon = path.join(global.__statics, 'icon_smart.png')
+
 global.db = db
-
-log.debug('\n================= process.env ================= \n', process.env)
-log.debug('userDataPath = ', Settings.userDataPath)
-log.debug('userHomePath = ', Settings.userHomePath)
-log.debug('appDataPath = ', Settings.appDataPath)
 
 let mainWindow = null
 
@@ -142,12 +141,7 @@ function kickStart () {
       return spectrumNode.init()
     })
     .then(() => {
-      return web3Mannager.init()
-    })
-    .then(() => {
       log.info('Spectrum node started.')
-      global.web3 = web3Mannager.web3
-
       // TODO
       // update menu, to show node switching possibilities
       // appMenu()
@@ -156,9 +150,10 @@ function kickStart () {
       return syncResultPromise
     })
     .then(function allDone () {
-      startMainWindow()
+      // TODO notify UI all done
+      log.info('all done!')
     })
     .catch((err) => {
       log.error('Error starting up node and/or syncing', err)
     }) /* socket connected to geth */
-}; /* kick start */
+} /* kick start */

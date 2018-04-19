@@ -8,12 +8,7 @@ import tmp from 'tmp'
 import mkdirp from 'mkdirp'
 import unzip from 'node-unzip-2'
 import spawn from 'buffered-spawn'
-
-const _ = {
-  isEmpty: require('lodash.isempty'),
-  get: require('lodash.get'),
-  values: require('lodash.values')
-}
+import _ from 'lodash'
 
 function copyFile (src, dst) {
   return new Promise((resolve, reject) => {

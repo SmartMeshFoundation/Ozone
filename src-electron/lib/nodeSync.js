@@ -9,8 +9,11 @@ import _ from 'lodash'
 import Q from 'bluebird'
 import { EventEmitter } from 'events'
 import { ipcMain as ipc } from 'electron'
+import Web3 from 'web3'
+import net from 'net'
 import spectrumNode from './spectrumNode'
 import logger from './logger'
+import Settings from './settings'
 
 const log = logger.create('NodeSync')
 
@@ -111,8 +114,39 @@ class NodeSync extends EventEmitter {
       let web3 = global.web3
       web3.eth.isSyncing().then(result => {
         if (!result) {
-          // TODO
-          this._onSyncDone()
+          // got no result, let's check the block number
+          log.debug('Check latest block number')
+
+          return web3.eth.getBlock('latest')
+            .then(block => {
+              const blockResult = block
+              const now = Math.floor(new Date().getTime() / 1000)
+
+              if (!blockResult) {
+                return this._sync()
+              }
+
+              log.debug(
+                `Last block: ${Number(blockResult.number)}; timestamp: ${
+                  blockResult.timestamp
+                }`
+              )
+
+              const diff = now - +blockResult.timestamp
+
+              // need sync if > 1 minute
+              if (diff > 60) {
+                this.emit('nodeSyncing', result)
+
+                log.trace('Keep syncing...')
+
+                return this._sync()
+              }
+
+              log.info('No more sync necessary')
+
+              return this._onSyncDone()
+            })
         } else {
           log.trace('Sync status ', result)
           // got an error?
@@ -132,67 +166,6 @@ class NodeSync extends EventEmitter {
           }
         }
       })
-      spectrumNode
-        .send('eth_syncing', [])
-        .then(ret => {
-          const result = ret.result
-
-          // got a result, check for error
-          if (result) {
-            log.trace('Sync status', result)
-
-            // got an error?
-            if (result.error) {
-              if (result.error.code === -32601) {
-                log.warn('Sync method not implemented, skipping sync.')
-
-                return this._onSyncDone()
-              }
-
-              throw new Error(`Unexpected error: ${result.error}`)
-            } else {
-              // no error, so call again in a bit
-              this.emit('nodeSyncing', result)
-
-              return this._sync()
-            }
-          } else {
-            // got no result, let's check the block number
-            log.debug('Check latest block number')
-
-            return spectrumNode
-              .send('eth_getBlockByNumber', ['latest', false])
-              .then(ret2 => {
-                const blockResult = ret2.result
-                const now = Math.floor(new Date().getTime() / 1000)
-
-                if (!blockResult) {
-                  return this._sync()
-                }
-
-                log.debug(
-                  `Last block: ${Number(blockResult.number)}; timestamp: ${
-                    blockResult.timestamp
-                  }`
-                )
-
-                const diff = now - +blockResult.timestamp
-
-                // need sync if > 1 minute
-                if (diff > 60) {
-                  this.emit('nodeSyncing', result)
-
-                  log.trace('Keep syncing...')
-
-                  return this._sync()
-                }
-
-                log.info('No more sync necessary')
-
-                return this._onSyncDone()
-              })
-          }
-        })
         .catch(err => {
           log.error('Node crashed while syncing?', err)
 
@@ -212,13 +185,43 @@ class NodeSync extends EventEmitter {
       // auto-sync whenever node gets connected
       case spectrumNode.STATES.CONNECTED:
         log.info('Spectrum node connected, re-start sync')
-
-        // stop syncing, then start again
-        this.stop().then(() => {
-          this.start()
-        })
+        this._web3Init()
+          .then(() => {
+            // stop syncing, then start again
+            this.stop().then(() => {
+              this.start()
+            })
+          })
+          .catch((err) => {
+            log.error('Web3 failed to connected to node.')
+            this.emit('error', err)
+          })
         break
     }
+  }
+
+  _web3Init () {
+    let web3, _resolve, _reject
+    let web3Promise = new Promise((resolve, reject) => {
+      _resolve = resolve
+      _reject = reject
+    })
+
+    let providerUrl = Settings.web3Provider
+    if (providerUrl.startsWith('http:') || providerUrl.startsWith('ws:')) {
+      web3 = new Web3(providerUrl)
+    } else {
+      web3 = new Web3(new Web3.providers.IpcProvider(providerUrl, net))
+    }
+
+    web3.eth.net.isListening()
+      .then(() => {
+        global.web3 = web3
+        _resolve(true)
+      })
+      .catch(_reject)
+
+    return web3Promise
   }
 }
 

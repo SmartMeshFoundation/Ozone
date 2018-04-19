@@ -4,14 +4,17 @@ import fs from 'fs'
 import { app, dialog } from 'electron'
 import got from 'got'
 import path from 'path'
-import Settings from './settings'
 import { Manager as ClientBinaryManager } from './client/manager'
 import { EventEmitter } from 'events'
+import Settings from './setting'
 import logger from './logger'
 
 const log = logger.create('ClientBinaryManager')
 
-const BINARY_URL = 'https://github.com/wuynng/spectrumclient/raw/master/clientBinaries.json'
+const BINARY_URL =
+  'https://github.com/wuynng/spectrumclient/raw/master/clientBinaries.json'
+
+import defaultClientBinaries from './clientBinaries.json'
 
 class Manager extends EventEmitter {
   constructor () {
@@ -43,6 +46,7 @@ class Manager extends EventEmitter {
   }
 
   _checkForNewConfig (restart) {
+    const nodeType = 'Geth'
     let binariesDownloaded = false
     let nodeInfo
 
@@ -55,17 +59,17 @@ class Manager extends EventEmitter {
       timeout: 3000,
       json: true
     })
-      .then((res) => {
+      .then(res => {
         if (!res || _.isEmpty(res.body)) {
           throw new Error('Invalid fetch result')
         } else {
           return res.body
         }
       })
-      .catch((err) => {
+      .catch(err => {
         log.warn('Error fetching client binaries config from repo', err)
       })
-      .then((latestConfig) => {
+      .then(latestConfig => {
         if (!latestConfig) return
 
         let localConfig
@@ -77,46 +81,67 @@ class Manager extends EventEmitter {
         try {
           // now load the local json
           localConfig = JSON.parse(
-            fs.readFileSync(path.join(Settings.userDataPath, 'clientBinaries.json')).toString()
+            fs
+              .readFileSync(
+                path.join(Settings.userDataPath, 'clientBinaries.json')
+              )
+              .toString()
           )
         } catch (err) {
-          log.warn(`Error loading local config - assuming this is a first run: ${err}`)
+          log.warn(
+            `Error loading local config - assuming this is a first run: ${err}`
+          )
 
           if (latestConfig) {
             localConfig = latestConfig
 
             this._writeLocalConfig(localConfig)
           } else {
-            throw new Error('Unable to load local or remote config, cannot proceed!')
+            throw new Error(
+              'Unable to load local or remote config, cannot proceed!'
+            )
           }
         }
 
         try {
-          skipedVersion = fs.readFileSync(path.join(Settings.userDataPath, 'skippedNodeVersion.json')).toString()
+          skipedVersion = fs
+            .readFileSync(
+              path.join(Settings.userDataPath, 'skippedNodeVersion.json')
+            )
+            .toString()
         } catch (err) {
           log.info('No "skippedNodeVersion.json" found.')
         }
 
         // prepare node info
-        const platform = process.platform.replace('darwin', 'mac').replace('win32', 'win').replace('freebsd', 'linux').replace('sunos', 'linux')
-        const binaryVersion = latestConfig[platform]
+        const platform = process.platform
+          .replace('darwin', 'mac')
+          .replace('win32', 'win')
+          .replace('freebsd', 'linux')
+          .replace('sunos', 'linux')
+        const binaryVersion = latestConfig.clients[nodeType].platforms[platform]
         const checksums = _.pick(binaryVersion.download, 'md5')
         const algorithm = _.keys(checksums)[0].toUpperCase()
         const hash = _.values(checksums)[0]
 
         // get the node data, to be able to pass it to a possible error
         nodeInfo = {
+          type: nodeType,
           version: nodeVersion,
           checksum: hash,
           algorithm
         }
 
         // if new config version available then ask user if they wish to update
-        if (latestConfig &&
-                JSON.stringify(localConfig) !== JSON.stringify(latestConfig) &&
-                nodeVersion !== skipedVersion) {
-          return new Q((resolve) => {
-            log.debug('New client binaries config found, asking user if they wish to update...')
+        if (
+          latestConfig &&
+          JSON.stringify(localConfig) !== JSON.stringify(latestConfig) &&
+          nodeVersion !== skipedVersion
+        ) {
+          return new Q(resolve => {
+            log.debug(
+              'New client binaries config found, asking user if they wish to update...'
+            )
 
             this._writeLocalConfig(latestConfig)
 
@@ -126,12 +151,19 @@ class Manager extends EventEmitter {
 
         return localConfig
       })
-      .then((localConfig) => {
+      .then(localConfig => {
         if (!localConfig) {
-          log.info('No config for the ClientBinaryManager could be loaded, using local clientBinaries.json.')
+          log.info(
+            'No config for the ClientBinaryManager could be loaded, using local clientBinaries.json.'
+          )
 
-          const localConfigPath = path.join(Settings.userDataPath, 'clientBinaries.json')
-          localConfig = (fs.existsSync(localConfigPath)) ? require(localConfigPath) : require('../clientBinaries.json') // eslint-disable-line no-param-reassign, global-require, import/no-dynamic-require, import/no-unresolved
+          const localConfigPath = path.join(
+            Settings.userDataPath,
+            'clientBinaries.json'
+          )
+          localConfig = fs.existsSync(localConfigPath)
+            ? JSON.parse(fs.readFileSync(localConfigPath))
+            : defaultClientBinaries
         }
 
         // scan for node
@@ -140,11 +172,12 @@ class Manager extends EventEmitter {
 
         this._emit('scanning', 'Scanning for binaries')
 
-        return mgr.init({
-          folders: [
-            path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked')
-          ]
-        })
+        return mgr
+          .init({
+            folders: [
+              path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked')
+            ]
+          })
           .then(() => {
             const clients = mgr.clients
 
@@ -159,7 +192,7 @@ class Manager extends EventEmitter {
 
               this._emit('downloading', 'Downloading binaries')
 
-              return Q.map(_.values(clients), (c) => {
+              return Q.map(_.values(clients), c => {
                 binariesDownloaded = true
 
                 return mgr.download(c.id, {
@@ -171,12 +204,13 @@ class Manager extends EventEmitter {
           .then(() => {
             this._emit('filtering', 'Filtering available clients')
 
-            _.each(mgr.clients, (client) => {
+            _.each(mgr.clients, client => {
               if (client.state.available) {
                 const idlcase = client.id.toLowerCase()
 
                 this._availableClients[idlcase] = {
-                  binPath: Settings[`${idlcase}Path`] || client.activeCli.fullPath,
+                  binPath:
+                    Settings[`${idlcase}Path`] || client.activeCli.fullPath,
                   version: client.version
                 }
               }
@@ -192,7 +226,7 @@ class Manager extends EventEmitter {
             this._emit('done')
           })
       })
-      .catch((err) => {
+      .catch(err => {
         log.error(err)
 
         this._emit('error', err.message)
@@ -200,19 +234,25 @@ class Manager extends EventEmitter {
         // show error
         if (err.message.indexOf('Hash mismatch') !== -1) {
           // show hash mismatch error
-          dialog.showMessageBox({
-            type: 'warning',
-            buttons: ['OK'],
-            message: global.i18n.t('mist.errors.nodeChecksumMismatch.title'),
-            detail: global.i18n.t('mist.errors.nodeChecksumMismatch.description', {
-              type: nodeInfo.type,
-              version: nodeInfo.version,
-              algorithm: nodeInfo.algorithm,
-              hash: nodeInfo.checksum
-            })
-          }, () => {
-            app.quit()
-          })
+          dialog.showMessageBox(
+            {
+              type: 'warning',
+              buttons: ['OK'],
+              message: global.i18n.t('mist.errors.nodeChecksumMismatch.title'),
+              detail: global.i18n.t(
+                'mist.errors.nodeChecksumMismatch.description',
+                {
+                  type: nodeInfo.type,
+                  version: nodeInfo.version,
+                  algorithm: nodeInfo.algorithm,
+                  hash: nodeInfo.checksum
+                }
+              )
+            },
+            () => {
+              app.quit()
+            }
+          )
 
           // throw so the main.js can catch it
           throw err
