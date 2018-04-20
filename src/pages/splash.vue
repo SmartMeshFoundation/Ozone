@@ -6,7 +6,7 @@
 
 <script>
 import { ipcRenderer as ipc } from 'electron'
-import { Types } from '../../src-electron/lib/channel/types'
+import { Types } from '../../src-electron/modules/ipc/types'
 
 let loadingOption = {
   spinner: 'QSpinnerBars',
@@ -22,13 +22,13 @@ export default {
   created () {
     this.$q.loading.show(loadingOption)
 
-    ipc.on(Types.NODE_CONNECTED, (event, params) => {
+    ipc.on(Types.NODE_ALL_DONE, (event, params) => {
       this.$q.loading.hide()
       this.$router.push('/dashboard')
     })
   },
   destroyed () {
-    ipc.removeAllListeners(Types.NODE_CONNECTED)
+    ipc.removeAllListeners(Types.NODE_ALL_DONE)
   }
 }
 </script>

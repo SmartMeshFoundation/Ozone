@@ -2,8 +2,8 @@ import { ipcMain } from 'electron'
 import StoreManager from './storeManager'
 import observeManager from './observeManager'
 import logger from './logger'
-import channels from './channel'
-import { Types } from './channel/types'
+import channels from './ipc'
+import { Types } from './ipc/types'
 
 class ChannelManager {
   constructor () {

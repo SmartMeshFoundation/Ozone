@@ -1,13 +1,16 @@
-import { ipcMain } from 'electron'
-import web3 from '../web3Mannager'
-import db from '../dbManager'
-import log from '../log'
-
+import { ipcMain as ipc } from 'electron'
+import _ from 'lodash'
+import logger from '../logger'
 import { Types } from './types'
 
+const log = logger.create('TransactionChannel')
+
+const db = global.db
+const web3 = global.web3
+
 class TransactionChannel {
-  bind (mainWindow) {
-    ipcMain.on(Types.SEND_TRANSACTION, (event, obj) => {
+  init (winManager) {
+    ipc.on(Types.SEND_TRANSACTION, (event, obj) => {
       log.info('send transaction: ', obj)
       let tx = obj.tx
       web3.eth.personal
@@ -17,16 +20,15 @@ class TransactionChannel {
             .sendTransaction(tx)
             .once('transactionHash', function (hash) {
               log.info('transactionHash: ', hash)
-              let transaction = {
-                hash,
+              tx = {
+                _id: hash,
                 timestamp: Date.now()
               }
-              log.debug('typeof tx.from: ', typeof tx.from, ' - ', tx.from)
 
-              Object.assign(transaction, tx)
-              db.transactions.insert(transaction)
-              let reply = { transactionHash: hash, transaction }
-              mainWindow.webContents.send(Types.SEND_TRANSACTION_REPLY, reply)
+              tx = _.assign(transaction, obj.tx)
+              db.transactions.insert(tx)
+              let reply = { transactionHash: hash, tx }
+              event.sender.send(Types.SEND_TRANSACTION_REPLY, reply)
             })
             .once('confirmation', function (confNumber, receipt) {
               log.debug(
@@ -36,13 +38,10 @@ class TransactionChannel {
                 receipt
               )
 
-              let transaction = db.transactions.by(
-                'hash',
-                receipt.transactionHash
-              )
+              tx = db.transactions.by('_id', receipt.transactionHash)
 
-              if (transaction != null) {
-                transaction.receipt = receipt
+              if (tx != null) {
+                tx.receipt = receipt
                 db.transactions.update(transaction)
 
                 let transactions = db.transactions
@@ -50,7 +49,7 @@ class TransactionChannel {
                   .simplesort('timestamp', true)
                   .data()
 
-                mainWindow.webContents.send(Types.RESTORE_TRANSACTION, {
+                event.sender.send(Types.RESTORE_TRANSACTION, {
                   transactions
                 })
               } else {
@@ -60,7 +59,7 @@ class TransactionChannel {
                 )
               }
             })
-            .on('error', error => log.info(error))
+            .on('error', log.error)
         })
         .catch(error => {
           log.error(error)

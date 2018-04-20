@@ -1,11 +1,11 @@
 <template>
   <q-layout view="LHh Lpr LFf">
-    <q-layout-header>
+    <q-layout-header style="-webkit-app-region: drag">
       <q-toolbar color="primary"
                  glossy
                  :inverted="$q.theme === 'ios'">
         <q-toolbar-title>
-          <q-icon :name="toolbarIcon" /> {{ toolbarTitle }}
+          <q-icon :name="toolbarIcon" /> <span>{{ toolbarTitle }}</span>
           <!-- <div slot="subtitle">Impossible made possible</div> -->
         </q-toolbar-title>
         <q-btn flat

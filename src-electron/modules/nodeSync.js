@@ -9,11 +9,9 @@ import _ from 'lodash'
 import Q from 'bluebird'
 import { EventEmitter } from 'events'
 import { ipcMain as ipc } from 'electron'
-import Web3 from 'web3'
-import net from 'net'
+
 import spectrumNode from './spectrumNode'
 import logger from './logger'
-import Settings from './settings'
 
 const log = logger.create('NodeSync')
 
@@ -112,13 +110,13 @@ class NodeSync extends EventEmitter {
 
       log.trace('Check sync status')
       let web3 = global.web3
-      web3.eth.isSyncing().then(result => {
-        if (!result) {
-          // got no result, let's check the block number
-          log.debug('Check latest block number')
+      web3.eth.isSyncing()
+        .then(result => {
+          if (!result) {
+            // got no result, let's check the block number
+            log.debug('Check latest block number')
 
-          return web3.eth.getBlock('latest')
-            .then(block => {
+            return web3.eth.getBlock('latest').then(block => {
               const blockResult = block
               const now = Math.floor(new Date().getTime() / 1000)
 
@@ -147,25 +145,25 @@ class NodeSync extends EventEmitter {
 
               return this._onSyncDone()
             })
-        } else {
-          log.trace('Sync status ', result)
-          // got an error?
-          if (result.error) {
-            if (result.error.code === -32601) {
-              log.warn('Sync method not implemented, skipping sync.')
-
-              return this._onSyncDone()
-            }
-
-            throw new Error(`Unexpected error: ${result.error}`)
           } else {
-            // no error, so call again in a bit
-            this.emit('nodeSyncing', result)
+            log.trace('Sync status ', result)
+            // got an error?
+            if (result.error) {
+              if (result.error.code === -32601) {
+                log.warn('Sync method not implemented, skipping sync.')
 
-            return this._sync()
+                return this._onSyncDone()
+              }
+
+              throw new Error(`Unexpected error: ${result.error}`)
+            } else {
+              // no error, so call again in a bit
+              this.emit('nodeSyncing', result)
+
+              return this._sync()
+            }
           }
-        }
-      })
+        })
         .catch(err => {
           log.error('Node crashed while syncing?', err)
 
@@ -185,43 +183,14 @@ class NodeSync extends EventEmitter {
       // auto-sync whenever node gets connected
       case spectrumNode.STATES.CONNECTED:
         log.info('Spectrum node connected, re-start sync')
-        this._web3Init()
-          .then(() => {
-            // stop syncing, then start again
-            this.stop().then(() => {
-              this.start()
-            })
-          })
-          .catch((err) => {
-            log.error('Web3 failed to connected to node.')
-            this.emit('error', err)
-          })
+
+        // stop syncing, then start again
+        this.stop().then(() => {
+          this.start()
+        })
+
         break
     }
-  }
-
-  _web3Init () {
-    let web3, _resolve, _reject
-    let web3Promise = new Promise((resolve, reject) => {
-      _resolve = resolve
-      _reject = reject
-    })
-
-    let providerUrl = Settings.web3Provider
-    if (providerUrl.startsWith('http:') || providerUrl.startsWith('ws:')) {
-      web3 = new Web3(providerUrl)
-    } else {
-      web3 = new Web3(new Web3.providers.IpcProvider(providerUrl, net))
-    }
-
-    web3.eth.net.isListening()
-      .then(() => {
-        global.web3 = web3
-        _resolve(true)
-      })
-      .catch(_reject)
-
-    return web3Promise
   }
 }
 

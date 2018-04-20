@@ -7,6 +7,7 @@ import logRotate from 'log-rotate'
 import { EventEmitter } from 'events'
 import Web3 from 'web3'
 import net from 'net'
+import pretry from 'promise-retry'
 import Settings from './settings'
 import ClientBinaryManager from './clientBinaryManager'
 import logger from './logger'
@@ -271,51 +272,13 @@ class SpectrumNode extends EventEmitter {
         Settings.saveUserData('network', this._network)
         Settings.saveUserData('syncmode', this._syncMode)
 
-        let web3, _resolve, _reject
-        let web3Promise = new Promise((resolve, reject) => {
-          _resolve = resolve
-          _reject = reject
-        })
-
-        // _.delay(() => {
-        //   // log.debug('Try to set provider for Web3: ', Settings.web3Provider)
-        //   web3 = new Web3(Settings.web3Provider)
-        //   web3.eth.net.isListening()
-        //     .then(() => {
-        //       _resolve(true)
-        //     })
-        //     .catch(_reject)
-        // }, 1000)
-
-        let providerUrl = Settings.web3Provider
-        if (providerUrl.startsWith('http:') || providerUrl.startsWith('ws:')) {
-          web3 = new Web3(providerUrl)
-        } else {
-          web3 = new Web3(new Web3.providers.IpcProvider(providerUrl, net))
-        }
-
-        web3.eth.net.isListening()
-          .then(() => {
-            _resolve(true)
-          })
-          .catch(_reject)
-
-        return web3Promise
+        return this._web3Init()
           .then(() => {
             this.state = STATES.CONNECTED
-            global.web3 = web3
-            log.info('Web3 connected to ', providerUrl)
           })
           .catch(err => {
-            log.error('Failed to connect to node', err)
-
-            if (err.toString().indexOf('timeout') >= 0) {
-              this.emit('nodeConnectionTimeout')
-            }
-
-            this._showNodeErrorDialog(nodeType, network)
-
-            throw err
+            log.error('Web3 failed to connected to node.')
+            this.emit('error', err)
           })
       })
       .catch(err => {
@@ -331,6 +294,26 @@ class SpectrumNode extends EventEmitter {
 
         throw err
       })
+  }
+
+  _web3Init () {
+    if (!global.web3) {
+      global.web3 = new Web3()
+    }
+
+    let providerUrl = Settings.web3Provider
+    return pretry((retry, number) => {
+      log.debug(`web3 try to set provider ${number} times.`)
+      if (providerUrl.startsWith('http:') || providerUrl.startsWith('ws:')) {
+        global.web3.setProvider(providerUrl)
+      } else {
+        global.web3.setProvider(
+          new Web3.providers.IpcProvider(providerUrl, net)
+        )
+      }
+
+      return global.web3.eth.net.isListening().catch(retry)
+    }, {retries: 5})
   }
 
   /**

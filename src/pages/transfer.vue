@@ -102,7 +102,7 @@ import { ipcRenderer } from 'electron'
 import BigNumber from 'bignumber.js'
 const BN = BigNumber
 import { address } from '../validators'
-import { Types } from '../../src-electron/lib/channel/types'
+import { Types } from '../../src-electron/modules/ipc/types'
 
 export default {
   name: 'PageTransfer',

@@ -25,7 +25,7 @@ class Window extends EventEmitter {
       width: 1100,
       height: 720,
       icon: global.icon,
-      titleBarStyle: 'hidden-inset', // hidden-inset: more space
+      // titleBarStyle: 'hiddenInset',
       backgroundColor: '#F6F6F6',
       acceptFirstMouse: true,
       darkTheme: true,
@@ -38,7 +38,7 @@ class Window extends EventEmitter {
       }
     }
 
-    electronOptions = _.deepExtend(electronOptions, opts.electronOptions)
+    electronOptions = _.extend(electronOptions, opts.electronOptions)
 
     this._log.debug('Creating browser window')
 
@@ -75,7 +75,7 @@ class Window extends EventEmitter {
     })
 
     // prevent droping files
-    this.webContents.on('will-navigate', (e) => {
+    this.webContents.on('will-navigate', e => {
       e.preventDefault()
     })
 
@@ -89,15 +89,15 @@ class Window extends EventEmitter {
       this.emit('closed')
     })
 
-    this.window.once('close', (e) => {
+    this.window.once('close', e => {
       this.emit('close', e)
     })
 
-    this.window.on('show', (e) => {
+    this.window.on('show', e => {
       this.emit('show', e)
     })
 
-    this.window.on('hide', (e) => {
+    this.window.on('hide', e => {
       this.emit('hide', e)
     })
 
@@ -123,10 +123,7 @@ class Window extends EventEmitter {
 
     this._log.trace('Sending data', arguments)
 
-    this.webContents.send.apply(
-      this.webContents,
-      arguments
-    )
+    this.webContents.send.apply(this.webContents, arguments)
   }
 
   hide () {
@@ -170,38 +167,15 @@ class Windows {
   }
 
   init () {
-    log.info('Creating commonly-used windows')
-
-    this.loading = this.create('loading', {
-      show: false,
-      url: `${global.interfacePopupsUrl}#loadingWindow`,
-      electronOptions: {
-        title: '',
-        alwaysOnTop: true,
-        resizable: false,
-        width: 100,
-        height: 80,
-        center: true,
-        frame: false,
-        useContentSize: true,
-        titleBarStyle: '', // hidden-inset: more space
-        skipTaskbar: true
-      }
-    })
-
-    this.loading.on('show', () => {
-      this.loading.window.center()
-    })
-
     // when a window gets initalized it will send us its id
-    ipc.on('backendAction_setWindowId', (event) => {
+    ipc.on('backendAction_setWindowId', event => {
       const id = event.sender.id
 
       log.debug('Set window id', id)
 
       const bwnd = BrowserWindow.fromWebContents(event.sender)
-      const wnd = _.find(this._windows, (w) => {
-        return (w.window === bwnd)
+      const wnd = _.find(this._windows, w => {
+        return w.window === bwnd
       })
 
       if (wnd) {
@@ -218,16 +192,21 @@ class Windows {
     const existing = this.getByType(type)
 
     if (existing && existing.ownerId === options.ownerId) {
-      log.debug(`Window ${type} with owner ${options.ownerId} already existing.`)
+      log.debug(
+        `Window ${type} with owner ${options.ownerId} already existing.`
+      )
 
       return existing
     }
 
     const category = options.primary ? 'primary' : 'secondary'
 
-    log.info(`Create ${category} window: ${type}, owner: ${options.ownerId || 'notset'}`)
+    log.info(
+      `Create ${category} window: ${type}, owner: ${options.ownerId ||
+        'notset'}`
+    )
 
-    const wnd = this._windows[type] = new Window(this, type, options)
+    const wnd = (this._windows[type] = new Window(this, type, options))
     wnd.on('closed', this._onWindowClosed.bind(this, wnd))
 
     if (callback) {
@@ -237,66 +216,10 @@ class Windows {
     return wnd
   }
 
-  createPopup (type, options, callback) {
-    options = options || {}
-
-    let opts = {
-      url: `${global.interfacePopupsUrl}#${type}`,
-      show: true,
-      ownerId: null,
-      useWeb3: true,
-      electronOptions: {
-        title: '',
-        width: 400,
-        height: 400,
-        resizable: false,
-        center: true,
-        useContentSize: true,
-        titleBarStyle: 'hidden', // hidden-inset: more space
-        autoHideMenuBar: true, // TODO: test on windows
-        webPreferences: {
-          textAreasAreResizable: false
-        }
-      }
-    }
-
-    // always show on top of main window
-    const parent = _.find(this._windows, (w) => {
-      return w.type === 'main'
-    })
-
-    if (parent) {
-      opts.electronOptions.parent = parent.window
-    }
-
-    opts = _.deepExtend(opts, options)
-
-    // mark it as a pop-up window
-    opts.isPopup = true
-
-    if (opts.useWeb3) {
-      opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindows.js`
-    } else {
-      opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindowsNoWeb3.js`
-    }
-
-    this.loading.show()
-
-    log.info(`Create popup window: ${type}`)
-
-    const wnd = this.create(type, opts, callback)
-
-    wnd.once('ready', () => {
-      this.loading.hide()
-    })
-
-    return wnd
-  }
-
   getByType (type) {
     log.trace('Get by type', type)
 
-    return _.find(this._windows, (w) => {
+    return _.find(this._windows, w => {
       return w.type === type
     })
   }
@@ -304,8 +227,8 @@ class Windows {
   getById (id) {
     log.trace('Get by id', id)
 
-    return _.find(this._windows, (w) => {
-      return (w.id === id)
+    return _.find(this._windows, w => {
+      return w.id === id
     })
   }
 
@@ -314,21 +237,21 @@ class Windows {
 
     log.trace('Broadcast', data)
 
-    _.each(this._windows, (wnd) => {
+    _.each(this._windows, wnd => {
       wnd.send(...data)
     })
   }
 
   /**
-     * Handle a window being closed.
-     *
-     * This will remove the window from the internal list.
-     *
-     * This also checks to see if any primary windows are still visible
-     * (even if hidden). If none found then it quits the app.
-     *
-     * @param {Window} wnd
-     */
+   * Handle a window being closed.
+   *
+   * This will remove the window from the internal list.
+   *
+   * This also checks to see if any primary windows are still visible
+   * (even if hidden). If none found then it quits the app.
+   *
+   * @param {Window} wnd
+   */
   _onWindowClosed (wnd) {
     log.debug(`Removing window from list: ${wnd.type}`)
 
@@ -340,7 +263,7 @@ class Windows {
       }
     }
 
-    const anyOpen = _.find(this._windows, (wnd) => {
+    const anyOpen = _.find(this._windows, wnd => {
       return wnd.isPrimary && !wnd.isClosed && wnd.isShown
     })
 
@@ -352,4 +275,4 @@ class Windows {
   }
 }
 
-module.exports = new Windows()
+export default new Windows()

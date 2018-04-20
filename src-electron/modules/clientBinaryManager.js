@@ -6,7 +6,7 @@ import got from 'got'
 import path from 'path'
 import { Manager as ClientBinaryManager } from './client/manager'
 import { EventEmitter } from 'events'
-import Settings from './setting'
+import Settings from './settings'
 import logger from './logger'
 
 const log = logger.create('ClientBinaryManager')

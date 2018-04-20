@@ -1,20 +1,19 @@
-import web3 from '../web3Mannager'
-import db from '../dbManager'
 import BigNumber from 'bignumber.js'
-import { Types } from '../channel/types'
+import { Types } from '../ipc/types'
 
-class AccountStore {
+class AccountState {
   constructor () {
-    this._window = null
+    this._windows = null
   }
 
-  restore (mainWindow) {
-    this._window = mainWindow
-    this._restoreAccounts()
+  sync (manager) {
+    this._windows = manager
+    this._syncAccunts()
   }
 
   _getAccountName (address, index) {
-    let account = db.accounts.findOne({ address })
+    let db = global.db
+    let account = db.accounts.by('_id', address)
     if (account == null) {
       return 'Account ' + index
     } else {
@@ -23,19 +22,19 @@ class AccountStore {
   }
 
   _toEther (balance) {
+    let web3 = global.web3
     let eth = web3.utils.fromWei(balance, 'ether')
     return new BigNumber(eth).toFixed(2)
   }
 
-  _restoreAccounts () {
-    web3.eth
-      .getAccounts()
+  _syncAccunts () {
+    let web3 = global.web3
+    web3.eth.getAccounts()
       .then(addresses => {
         return Promise.all(
           addresses.map((address, index) => {
             return new Promise((resolve, reject) => {
-              web3.eth
-                .getBalance(address)
+              web3.eth.getBalance(address)
                 .then(balance => {
                   resolve({
                     name: this._getAccountName(address, index),
@@ -50,12 +49,11 @@ class AccountStore {
         )
       })
       .then(accounts => {
-        // log.debug('Find accounts: \n', accounts)
-        this._window.webContents.send(Types.RESTORE_ACCOUNT, { accounts })
+        this._windows.broadcast(Types.SYNC_ACCOUNT, { accounts })
       })
   }
 }
 
-const account = new AccountStore()
+const account = new AccountState()
 
 export default account

@@ -1,5 +1,7 @@
-import log from '../log'
+import logger from '../logger'
 import _ from 'lodash'
+
+const log = logger.create('ObserveBlock')
 
 class ObserveBlock {
   constructor () {
@@ -12,7 +14,8 @@ class ObserveBlock {
       throw new Error('No pass "state" parameter!')
     }
 
-    this.subscription = web3.eth.subscribe('newBlockHeaders')
+    this.subscription = web3.eth
+      .subscribe('newBlockHeaders')
       .on('data', function (blockHeader) {
         // log.debug('Emitted newBlockHeaders: ', blockHeader)
         state.restore('account')

@@ -65,9 +65,7 @@
 
 <script>
 import { required, minLength, sameAs } from 'vuelidate/lib/validators'
-// import { shell } from 'electron'
-// import setting from '../../src-electron/lib/setting'
-// import fs from 'fs-extra'
+
 import BigNumber from 'bignumber.js'
 import { ipcRenderer } from 'electron'
 
