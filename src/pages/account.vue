@@ -15,12 +15,14 @@
     <br/>
     <br/>
     <q-btn flat
+           size="lg"
            color="secondary"
            icon="fa-exchange-alt"
            :label="$t('account.btn.transfer')"
            @click="$router.push('/transfer/account/' + account.address)" />
 
     <q-btn flat
+           size="lg"
            color="secondary"
            icon="fa-save"
            :label="$t('account.btn.backupAccount')"
@@ -29,13 +31,8 @@
 
     <br><br>
 
-    <h1>交易历史</h1>
-    <q-list highlight
-            inset-separator
-            no-border
-            class="q-mt-lg">
-      <q-list-header v-if="trans.length == 0">暂时还没有最近的历史交易</q-list-header>
-    </q-list>
+    <transaction-list :items="txList" />
+
   </q-page>
 </template>
 
@@ -59,6 +56,12 @@ export default {
   computed: {
     account () {
       return this.$store.getters['account/get'](this.$route.params.address)
+    },
+    txList () {
+      let address = this.$route.params.address.toLowerCase()
+      return this.$store.state.transaction.list.filter((item) => {
+        return item.from === address || item.to === address
+      })
     }
   },
   methods: {

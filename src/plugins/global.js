@@ -6,13 +6,7 @@ const cache = {}
 export default ({ Vue }) => {
   Vue.prototype.$unit = 'smt'
 
-  const db = remote.getGlobal('db')
-  Vue.prototype.$db = typeof db === 'object' ? db : {}
-
-  const web3 = remote.getGlobal('web3')
-  Vue.prototype.$web3 = typeof web3 === 'object' ? web3 : {}
-
-  Vue.prototype.$setting = remote.getGlobal('setting')
+  Vue.prototype.$setting = remote.getGlobal('settings')
 
   // 生成 identicon
   Vue.prototype.$icon = (seed, size) => {

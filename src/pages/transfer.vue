@@ -41,15 +41,16 @@
     </div>
     <div class="row gutter-md">
       <div class="col-sm">
+        估计交易费用：{{gasFee}}
+      </div>
+      <div class="col-sm">
         <q-btn icon="send"
+               size="lg"
                label="确认转账"
                color="secondary"
                @click="transfer"
                :disable="disabled">
         </q-btn>
-      </div>
-      <div class="col-sm">
-        估计交易费用：{{gasFee}}
       </div>
     </div>
 
@@ -98,11 +99,13 @@
 <script>
 import _ from 'lodash'
 import { required, numeric } from 'vuelidate/lib/validators'
-import { ipcRenderer } from 'electron'
+// import { ipc } from 'electron'
 import BigNumber from 'bignumber.js'
 const BN = BigNumber
 import { address } from '../validators'
 import { Types } from '../../src-electron/modules/ipc/types'
+
+const ipc = window.ipc
 
 export default {
   name: 'PageTransfer',
@@ -223,10 +226,12 @@ export default {
           }
         })
         .then(password => {
-          ipcRenderer.send(Types.SEND_TRANSACTION, { tx, password })
+          this.$q.loading.show({ delay: 400 })
+          ipc.send(Types.SEND_TRANSACTION, { tx, password })
         })
         .catch(() => {
           this.disabled = false
+          this.$q.loading.hide()
         })
     }
   },
@@ -234,10 +239,10 @@ export default {
   created () {
     this.$emit('updateToolbar', '转账', 'fa-exchange-alt')
     const $vm = this
-    ipcRenderer.removeAllListeners(Types.SEND_TRANSACTION_REPLY)
 
-    ipcRenderer.on(Types.SEND_TRANSACTION_REPLY, (event, reply) => {
+    ipc.on(Types.SEND_TRANSACTION_REPLY, (event, reply) => {
       console.log('send transaction reply: ', reply)
+      this.$q.loading.hide()
       if (reply.error && reply.error === 'invalid-password') {
         $vm.$q.notify('密码错误！')
         $vm.disabled = false
@@ -245,6 +250,10 @@ export default {
         $vm.$router.push('/wallet')
       }
     })
+  },
+
+  destroyed () {
+    ipc.removeAllListeners(Types.SEND_TRANSACTION_REPLY)
   }
 }
 </script>

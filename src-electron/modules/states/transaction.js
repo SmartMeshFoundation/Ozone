@@ -11,7 +11,7 @@ class TransactionState extends EventEmitter {
     super()
     this.on('sync', this._sync)
 
-    ipc.on(Types.SEND_TRANSACTION, this._sendTransaction)
+    ipc.on(Types.SEND_TRANSACTION, _.bind(this._sendTransaction, this))
   }
 
   _sync () {
@@ -27,14 +27,15 @@ class TransactionState extends EventEmitter {
   _sendTransaction (event, obj) {
     const web3 = global.web3
     const db = global.db
-    log.info('send transaction: ', obj)
+    log.info('send transaction: ', _.pick(obj, ['from', 'to', 'value']))
     let tx = obj.tx
+    // let _this = this
     web3.eth.personal
       .unlockAccount(tx.from, obj.password)
       .then(result => {
         web3.eth
           .sendTransaction(tx)
-          .once('transactionHash', function (hash) {
+          .once('transactionHash', (hash) => {
             log.info('transactionHash: ', hash)
             tx = {
               _id: hash,
@@ -45,8 +46,9 @@ class TransactionState extends EventEmitter {
             db.transactions.insert(tx)
             let reply = { transactionHash: hash, tx }
             event.sender.send(Types.SEND_TRANSACTION_REPLY, reply)
+            this._sync()
           })
-          .once('confirmation', function (confNumber, receipt) {
+          .once('confirmation', (confNumber, receipt) => {
             log.debug(
               '==>> confirmation: confNumber=',
               confNumber,

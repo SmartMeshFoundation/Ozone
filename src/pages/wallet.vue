@@ -11,11 +11,10 @@
 </style>
 
 <script>
-import { ipcRenderer as ipc } from 'electron'
-import { Types } from '../../src-electron/modules/ipc/types'
+// import { ipcRenderer as ipc } from 'electron'
+// import { Types } from '../../src-electron/modules/ipc/types'
 
 export default {
-  name: 'PageWallet',
   data () {
     return {
     }
@@ -29,7 +28,7 @@ export default {
     // pass data to parent component
     this.$emit('updateToolbar', this.$t('nav.wallet.label'), 'fa-credit-card')
 
-    ipc.send(Types.SYNC_ALL_STATE)
+    // ipc.send(Types.SYNC_ALL_STATE)
   }
 }
 </script>

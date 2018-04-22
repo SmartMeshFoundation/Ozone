@@ -18,6 +18,7 @@
     </q-list>
 
     <q-btn flat
+           size="lg"
            color="secondary"
            icon="add"
            label="创建一个新账户"
