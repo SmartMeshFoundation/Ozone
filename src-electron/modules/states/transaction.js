@@ -1,12 +1,17 @@
+import { ipcMain as ipc } from 'electron'
+import { EventEmitter } from 'events'
+import _ from 'lodash'
 import logger from '../logger'
 import { Types } from '../ipc/types'
 
 const log = logger.create('TransactionState')
 
-class TransactionState {
-  sync (manager) {
-    this._windows = manager
-    this._sync()
+class TransactionState extends EventEmitter {
+  constructor () {
+    super()
+    this.on('sync', this._sync)
+
+    ipc.on(Types.SEND_TRANSACTION, this._sendTransaction)
   }
 
   _sync () {
@@ -16,10 +21,60 @@ class TransactionState {
       .chain()
       .simplesort('timestamp', true)
       .data()
-    this._windows.broadcast(Types.SYNC_TRANSACTION, { transactions })
+    global.windows.broadcast(Types.SYNC_TRANSACTION, { transactions })
+  }
+
+  _sendTransaction (event, obj) {
+    const web3 = global.web3
+    const db = global.db
+    log.info('send transaction: ', obj)
+    let tx = obj.tx
+    web3.eth.personal
+      .unlockAccount(tx.from, obj.password)
+      .then(result => {
+        web3.eth
+          .sendTransaction(tx)
+          .once('transactionHash', function (hash) {
+            log.info('transactionHash: ', hash)
+            tx = {
+              _id: hash,
+              timestamp: Date.now()
+            }
+
+            tx = _.assign(tx, obj.tx)
+            db.transactions.insert(tx)
+            let reply = { transactionHash: hash, tx }
+            event.sender.send(Types.SEND_TRANSACTION_REPLY, reply)
+          })
+          .once('confirmation', function (confNumber, receipt) {
+            log.debug(
+              '==>> confirmation: confNumber=',
+              confNumber,
+              ', receipt: ',
+              receipt
+            )
+
+            tx = db.transactions.by('_id', receipt.transactionHash)
+
+            if (tx != null) {
+              tx.receipt = receipt
+              db.transactions.update(tx)
+              this._sync()
+            } else {
+              log.error(
+                'transaction not found in db: ',
+                receipt.transactionHash
+              )
+            }
+          })
+          .on('error', log.error)
+      })
+      .catch(error => {
+        log.error(error)
+        let reply = { error: 'invalid-password' }
+        event.sender.send(Types.SEND_TRANSACTION_REPLY, reply)
+      })
   }
 }
 
-const transaction = new TransactionState()
-
-export default transaction
+export default new TransactionState()

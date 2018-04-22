@@ -8,17 +8,14 @@ class ObserveBlock {
     this.subscription = null
   }
 
-  start (state) {
+  start () {
     const web3 = global.web3
-    if (_.isUndefined(state)) {
-      throw new Error('No pass "state" parameter!')
-    }
 
     this.subscription = web3.eth
       .subscribe('newBlockHeaders')
       .on('data', function (blockHeader) {
         // log.debug('Emitted newBlockHeaders: ', blockHeader)
-        state.restore('account')
+        global.stateManager.emit('sync', 'account')
       })
   }
 
@@ -36,6 +33,4 @@ class ObserveBlock {
   }
 }
 
-const observeBlock = new ObserveBlock()
-
-export default observeBlock
+export default new ObserveBlock()

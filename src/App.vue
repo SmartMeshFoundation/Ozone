@@ -5,18 +5,18 @@
 </template>
 
 <script>
-import {ipcRenderer} from 'electron'
+import {ipcRenderer as ipc} from 'electron'
 import { Types } from '../src-electron/modules/ipc/types'
 
 export default {
   name: 'App',
   beforeCreate () {
-    ipcRenderer.on(Types.SYNC_ACCOUNT, (event, { accounts }) => {
+    ipc.on(Types.SYNC_ACCOUNT, (event, { accounts }) => {
       // console.log('restore accounts: ', accounts)
       this.$store.commit('account/reset', accounts)
     })
 
-    ipcRenderer.on(Types.SYNC_TRANSACTION, (event, { transactions }) => {
+    ipc.on(Types.SYNC_TRANSACTION, (event, { transactions }) => {
       // console.log('restore transactions: ', transactions)
       this.$store.commit('transaction/reset', transactions)
     })

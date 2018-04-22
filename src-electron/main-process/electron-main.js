@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, dialog, BrowserWindow, ipcMain as ipc } from 'electron'
+import { app, dialog, BrowserWindow } from 'electron'
 import path from 'path'
 import Q from 'bluebird'
 import Web3 from 'web3'
@@ -10,9 +10,11 @@ import logger from '../modules/logger'
 import clientBinaryManager from '../modules/clientBinaryManager'
 import spectrumNode from '../modules/spectrumNode'
 import nodeSync from '../modules/nodeSync'
-import Windows from '../modules/windows'
+import windows from '../modules/windows'
+import stateManager from '../modules/stateManager'
+import observeManager from '../modules/observeManager'
+import ipc from '../modules/ipc'
 import { Types } from '../modules/ipc/types'
-import StateManager from '../modules/stateManager'
 
 const log = logger.create('Main')
 
@@ -32,6 +34,8 @@ global.icon = path.join(global.__statics, 'icon_smart.png')
 
 global.db = db
 global.web3 = new Web3()
+global.windows = windows
+global.stateManager = stateManager
 
 // prevent crashed and close gracefully
 process.on('uncaughtException', error => {
@@ -79,7 +83,7 @@ app.on('ready', () => {
 let mainWin = null
 
 function onReady () {
-  mainWin = Windows.create('main', {
+  mainWin = windows.create('main', {
     primary: true,
     electronOptions: {
       show: false,
@@ -102,28 +106,26 @@ function onReady () {
   })
 
   mainWin.load(process.env.APP_URL)
-
-  StateManager.init(Windows)
 }
 
 function kickStart () {
   // client binary stuff
   clientBinaryManager.on('status', (status, data) => {
-    Windows.broadcast('uiAction_clientBinaryStatus', status, data)
+    windows.broadcast('uiAction_clientBinaryStatus', status, data)
   })
 
   // node connection stuff
   spectrumNode.on('nodeConnectionTimeout', () => {
-    Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout')
+    windows.broadcast('uiAction_nodeStatus', 'connectionTimeout')
   })
 
   spectrumNode.on('nodeLog', data => {
-    Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]]/, ''))
+    windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]]/, ''))
   })
 
   // state change
   spectrumNode.on('state', (state, stateAsText) => {
-    Windows.broadcast('uiAction_nodeStatus', stateAsText,
+    windows.broadcast('uiAction_nodeStatus', stateAsText,
       spectrumNode.STATES.ERROR === state ? spectrumNode.lastError : null
     )
   })
@@ -131,11 +133,11 @@ function kickStart () {
   // capture sync results
   const syncResultPromise = new Q((resolve, reject) => {
     nodeSync.on('nodeSyncing', result => {
-      Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result)
+      windows.broadcast(Types.NODE_SYNC_STATUS, 'inProgress', result)
     })
 
     nodeSync.on('stopped', () => {
-      Windows.broadcast('uiAction_nodeSyncStatus', 'stopped')
+      windows.broadcast(Types.NODE_SYNC_STATUS, 'stopped')
     })
 
     nodeSync.on('error', err => {
@@ -170,10 +172,15 @@ function kickStart () {
     })
     .then(function allDone () {
       log.info('all done!')
-      // sync data to front
-      StateManager.emit('sync')
 
-      Windows.broadcast(Types.NODE_ALL_DONE)
+      ipc.bind()
+
+      // sync data to front vuex store
+      stateManager.emit('sync')
+
+      observeManager.start()
+
+      windows.broadcast(Types.NODE_ALL_DONE)
     })
     .catch(err => {
       log.error('Error starting up node and/or syncing', err)

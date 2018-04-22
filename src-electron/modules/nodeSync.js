@@ -12,6 +12,7 @@ import { ipcMain as ipc } from 'electron'
 
 import spectrumNode from './spectrumNode'
 import logger from './logger'
+import { Types } from './ipc/types'
 
 const log = logger.create('NodeSync')
 
@@ -48,8 +49,8 @@ class NodeSync extends EventEmitter {
 
         this.emit('starting')
 
-        ipc.on('backendAction_skipSync', () => {
-          ipc.removeAllListeners('backendAction_skipSync')
+        ipc.on(Types.NODE_SYNC_SKIP, () => {
+          ipc.removeAllListeners(Types.NODE_SYNC_SKIP)
           log.info('Sync has been skipped')
 
           this._onSyncDone()

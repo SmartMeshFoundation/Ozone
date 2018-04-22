@@ -89,10 +89,6 @@ class Window extends EventEmitter {
       this.emit('closed')
     })
 
-    this.window.once('close', e => {
-      this.emit('close', e)
-    })
-
     this.window.on('show', e => {
       this.emit('show', e)
     })

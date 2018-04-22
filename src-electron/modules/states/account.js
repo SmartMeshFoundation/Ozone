@@ -1,14 +1,20 @@
+import { ipcMain as ipc } from 'electron'
 import BigNumber from 'bignumber.js'
+import { EventEmitter } from 'events'
 import { Types } from '../ipc/types'
+import logger from '../logger'
 
-class AccountState {
+const log = logger.create('AccountState')
+
+class AccountState extends EventEmitter {
   constructor () {
-    this._windows = null
-  }
+    super()
+    this.on('sync', this._sync)
 
-  sync (manager) {
-    this._windows = manager
-    this._syncAccunts()
+    ipc.on(Types.SYNC_ACCOUNT, () => {
+      log.debug('ipc call: ', Types.SYNC_ACCOUNT)
+      this._sync()
+    })
   }
 
   _getAccountName (address, index) {
@@ -27,7 +33,7 @@ class AccountState {
     return new BigNumber(eth).toFixed(2)
   }
 
-  _syncAccunts () {
+  _sync () {
     let web3 = global.web3
     web3.eth.getAccounts()
       .then(addresses => {
@@ -49,11 +55,9 @@ class AccountState {
         )
       })
       .then(accounts => {
-        this._windows.broadcast(Types.SYNC_ACCOUNT, { accounts })
+        global.windows.broadcast(Types.SYNC_ACCOUNT, { accounts })
       })
   }
 }
 
-const account = new AccountState()
-
-export default account
+export default new AccountState()

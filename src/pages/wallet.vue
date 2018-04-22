@@ -29,8 +29,7 @@ export default {
     // pass data to parent component
     this.$emit('updateToolbar', this.$t('nav.wallet.label'), 'fa-credit-card')
 
-    // restore vue store
-    ipc.send(Types.RESTORE_STATE)
+    ipc.send(Types.SYNC_ALL_STATE)
   }
 }
 </script>

@@ -53,8 +53,12 @@ export default {
   name: 'PageAccount',
   data () {
     return {
-      account: this.$store.getters['account/get'](this.$route.params.address),
       trans: []
+    }
+  },
+  computed: {
+    account () {
+      return this.$store.getters['account/get'](this.$route.params.address)
     }
   },
   methods: {

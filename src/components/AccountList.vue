@@ -67,7 +67,10 @@
 import { required, minLength, sameAs } from 'vuelidate/lib/validators'
 
 import BigNumber from 'bignumber.js'
-import { ipcRenderer } from 'electron'
+import { Types } from '../../src-electron/modules/ipc/types'
+
+const ipc = window.ipc
+const web3 = window.web3
 
 export default {
   name: 'AccountList',
@@ -119,14 +122,13 @@ export default {
       this.showPasswordField = true
     },
     createAccount () {
-      console.log('call createAccount()')
+      // console.log('call createAccount()')
       // let $vm = this
-      // ipcRenderer.send(channels.NEW_ACCOUNT, { password: this.form.password })
-      this.$web3.eth.personal
+      web3.eth.personal
         .newAccount(this.form.password)
         .then(() => {
           // $vm.refreshAccountList()
-          ipcRenderer.send('restore-state', 'account')
+          ipc.send(Types.SYNC_ACCOUNT)
         })
         .catch(console.log)
     }

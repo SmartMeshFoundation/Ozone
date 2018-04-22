@@ -9,12 +9,8 @@ const log = logger.create('StateManager')
  * Initial vue store state
  */
 class StateManager extends EventEmitter {
-  init (manager) {
-    if (_.isUndefined(manager)) {
-      throw new Error('Not pass the windows manager argument')
-    }
-    this._windows = manager
-
+  constructor () {
+    super()
     this.on('sync', this._sync)
   }
 
@@ -22,14 +18,14 @@ class StateManager extends EventEmitter {
     if (!_.isUndefined(name)) {
       // log.debug('restore state ==> ', name)
       if (states[name]) {
-        states[name].sync(this._windows)
+        states[name].emit('sync')
       } else {
         log.debug('Could not sync state! state name: ', name, ' not found!')
       }
     } else {
       log.info('Sync all state to UI...')
       for (let key in states) {
-        states[key].sync(this._windows)
+        states[key].emit('sync')
       }
     }
   }

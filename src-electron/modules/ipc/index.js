@@ -1,7 +1,14 @@
-import transaction from './transaction'
+// import transaction from './transaction'
 
 const channels = [
-  transaction
 ]
 
-export default channels
+class IpcManager {
+  bind () {
+    channels.forEach(channel => {
+      channel.bind()
+    })
+  }
+}
+
+export default new IpcManager()

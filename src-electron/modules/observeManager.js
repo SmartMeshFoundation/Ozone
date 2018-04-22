@@ -1,9 +1,9 @@
 import observers from './observer'
 
 class ObserveManager {
-  start (store) {
+  start () {
     observers.forEach(observer => {
-      observer.start(store)
+      observer.start()
     })
   }
 
@@ -16,6 +16,4 @@ class ObserveManager {
   }
 }
 
-const observeManager = new ObserveManager()
-
-export default observeManager
+export default new ObserveManager()
