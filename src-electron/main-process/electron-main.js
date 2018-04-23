@@ -34,6 +34,7 @@ if (process.env.PROD) {
 global.icon = path.join(global.__statics, 'icon_smart.png')
 
 global._ = _
+global.settings = Settings
 global.db = db
 global.web3 = new Web3()
 global.windows = windows

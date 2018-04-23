@@ -309,25 +309,21 @@ class SpectrumNode extends EventEmitter {
     }
 
     let providerUrl = Settings.ipcConnection
-    if (fs.existsSync(providerUrl)) {
-      return pretry(
-        (retry, number) => {
-          log.debug(`web3 try to set provider ${number} times.`)
-          if (providerUrl.startsWith('http:') || providerUrl.startsWith('ws:')) {
-            global.web3.setProvider(providerUrl)
-          } else {
-            global.web3.setProvider(
-              new Web3.providers.IpcProvider(providerUrl, net)
-            )
-          }
+    return pretry(
+      (retry, number) => {
+        log.debug(`web3 try to set provider ${number} times.`)
+        if (providerUrl.startsWith('http:') || providerUrl.startsWith('ws:')) {
+          global.web3.setProvider(providerUrl)
+        } else {
+          global.web3.setProvider(
+            new Web3.providers.IpcProvider(providerUrl, net)
+          )
+        }
 
-          return global.web3.eth.net.isListening().catch(retry)
-        },
-        { retries: 5 }
-      )
-    } else {
-      return Q.reject(new Error('Ipc file no exists: ' + providerUrl))
-    }
+        return global.web3.eth.net.isListening().catch(retry)
+      },
+      { retries: 5 }
+    )
   }
 
   /**
@@ -389,16 +385,14 @@ class SpectrumNode extends EventEmitter {
             case 'test':
               args = [
                 '--testnet',
-                '--syncmode', syncMode,
-                '--cache', ((process.arch === 'x64') ? '1024' : '512')
+                '--syncmode', syncMode
               ]
               break
 
               // Starts Main net
             default:
               args = [
-                '--syncmode', syncMode,
-                '--cache', ((process.arch === 'x64') ? '1024' : '512')
+                '--syncmode', syncMode
               ]
           }
 

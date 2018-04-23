@@ -17,17 +17,16 @@
     <q-btn flat
            size="lg"
            color="secondary"
-           icon="fa-exchange-alt"
-           :label="$t('account.btn.transfer')"
-           @click="$router.push('/transfer/account/' + account.address)" />
+           icon="fa-save"
+           :label="$t('account.btn.backupAccount')"
+           @click="backup(account.address)" />
 
     <q-btn flat
            size="lg"
            color="secondary"
-           icon="fa-save"
-           :label="$t('account.btn.backupAccount')"
-           @click="backup(account.address)">
-    </q-btn>
+           icon="fa-exchange-alt"
+           :label="$t('account.btn.transfer')"
+           @click="$router.push('/transfer/account/' + account.address)" />
 
     <br><br>
 
@@ -113,9 +112,7 @@ export default {
         })
     },
     backup (address) {
-      address = address.replace('0x', '')
-      address = address.toLowerCase()
-      let keystore = path.join(this.$setting.chainDataPath, 'keystore')
+      let keystore = path.join(this.$settings.chainDataPath, 'keystore')
       shell.showItemInFolder(keystore)
     }
   }

@@ -6,7 +6,7 @@ const cache = {}
 export default ({ Vue }) => {
   Vue.prototype.$unit = 'smt'
 
-  Vue.prototype.$setting = remote.getGlobal('settings')
+  Vue.prototype.$settings = remote.getGlobal('settings')
 
   // 生成 identicon
   Vue.prototype.$icon = (seed, size) => {
