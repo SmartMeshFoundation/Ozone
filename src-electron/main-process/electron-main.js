@@ -4,6 +4,7 @@ import { app, dialog, BrowserWindow } from 'electron'
 import path from 'path'
 import Q from 'bluebird'
 import Web3 from 'web3'
+import _ from 'lodash'
 import Settings from '../modules/settings'
 import db from '../modules/db'
 import logger from '../modules/logger'
@@ -32,6 +33,7 @@ if (process.env.PROD) {
 
 global.icon = path.join(global.__statics, 'icon_smart.png')
 
+global._ = _
 global.db = db
 global.web3 = new Web3()
 global.windows = windows
@@ -111,7 +113,7 @@ function onReady () {
 function kickStart () {
   // client binary stuff
   clientBinaryManager.on('status', (status, data) => {
-    windows.broadcast('uiAction_clientBinaryStatus', status, data)
+    windows.broadcast(Types.UI_ACTION_CLIENTBINARYSTATUS, status, data)
   })
 
   // node connection stuff

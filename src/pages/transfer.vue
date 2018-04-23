@@ -106,6 +106,7 @@ import { address } from '../validators'
 import { Types } from '../../src-electron/modules/ipc/types'
 
 const ipc = window.ipc
+const web3 = window.web3
 
 export default {
   name: 'PageTransfer',
@@ -152,22 +153,22 @@ export default {
   },
   methods: {
     estimateGas: _.debounce(function () {
-      let validTo = this.$web3.utils.isAddress(this.form.to)
+      let validTo = web3.utils.isAddress(this.form.to)
       let amount = _.toNumber(this.form.amount)
 
       if (validTo && !isNaN(amount) && amount > 0) {
         let from = this.form.from
         let to = this.form.to
-        let value = this.$web3.utils.toWei(new BN(amount).toFixed())
+        let value = web3.utils.toWei(new BN(amount).toFixed())
         Promise.all([
-          this.$web3.eth.estimateGas({ from, to, value }),
-          this.$web3.eth.getGasPrice()
+          web3.eth.estimateGas({ from, to, value }),
+          web3.eth.getGasPrice()
         ])
           .then(([gas, price]) => {
             console.log('estimateGas = ', gas, ', gasPrice = ', price)
             let fee = new BN(gas).times(new BN(price)).toFixed()
             console.log('transfer fee: ', fee)
-            this.gasFee = this.$web3.utils.fromWei(fee)
+            this.gasFee = web3.utils.fromWei(fee)
             this.total = new BN(this.gasFee).plus(new BN(this.form.amount)).toFixed()
           })
           .catch(console.log)
@@ -214,7 +215,7 @@ export default {
       let tx = {
         from: this.form.from,
         to: this.form.to,
-        value: this.$web3.utils.toWei(this.form.amount.toString())
+        value: web3.utils.toWei(this.form.amount.toString())
       }
       this.$q
         .dialog({

@@ -93,7 +93,7 @@ export default {
       let total = this.$store.state.account.list.reduce((prev, curr) => {
         return prev.plus(curr.balance)
       }, new BigNumber(0))
-      return new BigNumber(this.$web3.utils.fromWei(total.toFixed())).toFixed(2)
+      return new BigNumber(web3.utils.fromWei(total.toFixed())).toFixed(2)
     }
   },
   methods: {

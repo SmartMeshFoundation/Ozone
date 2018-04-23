@@ -67,7 +67,8 @@ module.exports = function (ctx) {
         'QSelect',
         'QSpinner',
         'QSpinnerBars',
-        'QSpinnerGears'
+        'QSpinnerGears',
+        'QProgress'
       ],
       directives: ['Ripple', 'CloseOverlay'],
       // Quasar plugins

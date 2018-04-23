@@ -143,9 +143,22 @@ class Manager extends EventEmitter {
               'New client binaries config found, asking user if they wish to update...'
             )
 
-            this._writeLocalConfig(latestConfig)
-
-            resolve(latestConfig)
+            let bwin = global.getByType('main')
+            let num = dialog.showMessageBox(bwin, {
+              type: 'info',
+              message: '发现客户端的新版本，是否升级？',
+              buttons: ['CANCEL', 'OK']
+            })
+            if (num === 0) {
+              fs.writeFileSync(
+                path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
+                nodeVersion
+              )
+              resolve(localConfig)
+            } else {
+              this._writeLocalConfig(latestConfig)
+              resolve(latestConfig)
+            }
           })
         }
 

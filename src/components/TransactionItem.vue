@@ -30,6 +30,7 @@
 
 <script>
 import BigNumber from 'bignumber.js'
+const web3 = window.web3
 
 export default {
   name: 'TransactionItem',
@@ -46,7 +47,7 @@ export default {
       return this.$moment(timestamp).fromNow()
     },
     toSMT (value) {
-      return this.$web3.utils.fromWei(new BigNumber(value, 16).toFixed())
+      return web3.utils.fromWei(new BigNumber(value, 16).toFixed())
     },
     accountName (address) {
       return this.$store.getters['account/name'](address)

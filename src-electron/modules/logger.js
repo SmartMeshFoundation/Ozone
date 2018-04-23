@@ -3,6 +3,11 @@ import log4js from 'log4js'
 import path from 'path'
 import { app } from 'electron'
 
+// Global log4js options
+const defaultOptions = {
+  loglevel: 'debug'
+}
+
 const LoggerFactory = {}
 
 /**
@@ -54,5 +59,7 @@ LoggerFactory.create = category => {
 
   return logger
 }
+
+LoggerFactory.setup(defaultOptions)
 
 export default LoggerFactory

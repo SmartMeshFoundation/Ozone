@@ -9,5 +9,6 @@ export const Types = {
   SYNC_TRANSACTION: 'sync-transaction',
   SYNC_ALL_STATE: 'sync-all-state', // main
   SEND_TRANSACTION: 'send-transaction', // main
-  SEND_TRANSACTION_REPLY: 'send-transaction-reply'
+  SEND_TRANSACTION_REPLY: 'send-transaction-reply',
+  UI_ACTION_CLIENTBINARYSTATUS: 'uiAction_clientBinaryStatus'
 }

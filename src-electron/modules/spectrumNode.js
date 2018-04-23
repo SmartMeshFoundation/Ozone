@@ -139,23 +139,30 @@ class SpectrumNode extends EventEmitter {
    */
   init () {
     return Promise.resolve().then(() => {
-      log.warn(
-        "Failed to connect to node. Maybe it's not running so let's start our own..."
-      )
+      this._web3Init()
+        .then(() => {
+          log.info('web3 connected to exists node success!')
+          this.state = STATES.CONNECTED
+        })
+        .catch(() => {
+          log.warn(
+            "Failed to connect to node. Maybe it's not running so let's start our own..."
+          )
 
-      log.info(`Node type: ${this.defaultNodeType}`)
-      log.info(`Network: ${this.defaultNetwork}`)
-      log.info(`SyncMode: ${this.defaultSyncMode}`)
+          log.info(`Node type: ${this.defaultNodeType}`)
+          log.info(`Network: ${this.defaultNetwork}`)
+          log.info(`SyncMode: ${this.defaultSyncMode}`)
 
-      // if not, start node yourself
-      return this._start(
-        this.defaultNodeType,
-        this.defaultNetwork,
-        this.defaultSyncMode
-      ).catch(err => {
-        log.error('Failed to start node', err)
-        throw err
-      })
+          // if not, start node yourself
+          return this._start(
+            this.defaultNodeType,
+            this.defaultNetwork,
+            this.defaultSyncMode
+          ).catch(err => {
+            log.error('Failed to start node', err)
+            throw err
+          })
+        })
     })
   }
 
@@ -301,19 +308,26 @@ class SpectrumNode extends EventEmitter {
       global.web3 = new Web3()
     }
 
-    let providerUrl = Settings.web3Provider
-    return pretry((retry, number) => {
-      log.debug(`web3 try to set provider ${number} times.`)
-      if (providerUrl.startsWith('http:') || providerUrl.startsWith('ws:')) {
-        global.web3.setProvider(providerUrl)
-      } else {
-        global.web3.setProvider(
-          new Web3.providers.IpcProvider(providerUrl, net)
-        )
-      }
+    let providerUrl = Settings.ipcConnection
+    if (fs.existsSync(providerUrl)) {
+      return pretry(
+        (retry, number) => {
+          log.debug(`web3 try to set provider ${number} times.`)
+          if (providerUrl.startsWith('http:') || providerUrl.startsWith('ws:')) {
+            global.web3.setProvider(providerUrl)
+          } else {
+            global.web3.setProvider(
+              new Web3.providers.IpcProvider(providerUrl, net)
+            )
+          }
 
-      return global.web3.eth.net.isListening().catch(retry)
-    }, {retries: 5})
+          return global.web3.eth.net.isListening().catch(retry)
+        },
+        { retries: 5 }
+      )
+    } else {
+      return Q.reject(new Error('Ipc file no exists: ' + providerUrl))
+    }
   }
 
   /**
@@ -370,52 +384,23 @@ class SpectrumNode extends EventEmitter {
 
           let args
 
-          // switch (network) {
-          //   // Starts Ropsten network
-          //   case 'test':
-          //     args = [
-          //       '--testnet',
-          //       '--syncmode', syncMode,
-          //       '--cache', ((process.arch === 'x64') ? '1024' : '512'),
-          //       '--ipcpath', Settings.rpcIpcPath
-          //     ]
-          //     break
+          switch (network) {
+            // Starts Ropsten network
+            case 'test':
+              args = [
+                '--testnet',
+                '--syncmode', syncMode,
+                '--cache', ((process.arch === 'x64') ? '1024' : '512')
+              ]
+              break
 
-          //     // Starts Rinkeby network
-          //   case 'rinkeby':
-          //     args = [
-          //       '--rinkeby',
-          //       '--syncmode', syncMode,
-          //       '--cache', ((process.arch === 'x64') ? '1024' : '512'),
-          //       '--ipcpath', Settings.rpcIpcPath
-          //     ]
-          //     break
-
-          //     // Starts local network
-          //   case 'dev':
-          //     args = [
-          //       '--dev',
-          //       '--minerthreads', '1',
-          //       '--ipcpath', Settings.rpcIpcPath
-          //     ]
-          //     break
-
-          //     // Starts Main net
-          //   default:
-          //     args = (nodeType === 'geth')
-          //       ? [
-          //         '--syncmode', syncMode,
-          //         '--cache', ((process.arch === 'x64') ? '1024' : '512')
-          //       ]
-          //       : ['--unsafe-transactions']
-          // }
-
-          args = [
-            '--syncmode',
-            syncMode,
-            '--cache',
-            process.arch === 'x64' ? '1024' : '512'
-          ]
+              // Starts Main net
+            default:
+              args = [
+                '--syncmode', syncMode,
+                '--cache', ((process.arch === 'x64') ? '1024' : '512')
+              ]
+          }
 
           const nodeOptions = Settings.nodeOptions
 
@@ -557,14 +542,7 @@ class SpectrumNode extends EventEmitter {
       Settings.syncmode || Settings.loadUserData('syncmode') || DEFAULT_SYNCMODE
 
     log.info(
-      Settings.syncmode,
-      Settings.loadUserData('syncmode'),
-      DEFAULT_SYNCMODE
-    )
-    log.info(
-      `Defaults loaded: ${this.defaultNodeType} ${this.defaultNetwork} ${
-        this.defaultSyncMode
-      }`
+      `Defaults loaded: ${this.defaultNodeType} ${this.defaultNetwork} ${this.defaultSyncMode}`
     )
   }
 }

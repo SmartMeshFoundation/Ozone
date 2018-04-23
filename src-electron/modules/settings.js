@@ -1,54 +1,41 @@
 import { app } from 'electron'
 import path from 'path'
 import logger from './logger'
-const packageJson = require('../../package.json')
 import fs from 'fs-extra'
 
-// try loading in config file
-// const defaultConfig = {
-//   production: false
-// }
-// try {
-//   _.extend(defaultConfig, require('../config.json'))
-// } catch (err) {
-// }
-
-// Global log4js options
-const loggerConfig = {
-  loglevel: 'debug'
+let packageJson
+if (process.env.PROD) {
+  packageJson = require(path.join(__dirname, 'package.json'))
+} else {
+  packageJson = require('../../package.json')
 }
-
-const wsport = 9656
-const networkid = 1518
-
-const networkArgs = [
-  '--networkid',
-  `${networkid}`,
-  '--ws',
-  '--wsport',
-  `${wsport}`,
-  '--wsorigins',
-  '*',
-  '--wsapi',
-  'eth,net,web3,personal,subscribe',
-  '--rpc',
-  '--rpccorsdomain',
-  'http://localhost:3000'
-]
 
 class Settings {
   constructor () {
-    this.initLogger()
+    this.init()
   }
 
-  initLogger () {
-    logger.setup(loggerConfig)
-
+  init () {
     this._log = logger.create('Settings')
   }
 
+  get syncmode () {
+    return 'fast'
+  }
+
+  get network () {
+    return 'test'
+  }
+
+  get nodeType () {
+    return 'geth'
+  }
+
+  get nodeOptions () {
+    return []
+  }
+
   get userDataPath () {
-    // Application Aupport/Mist
     return app.getPath('userData')
   }
 
@@ -98,27 +85,34 @@ class Settings {
       .replace('sunos', 'linux')
   }
 
-  get nodeOptions () {
-    return ['--datadir', this.chainDataPath].concat(networkArgs)
+  get isTestnet () {
+    return this.network === 'test'
   }
 
   get chainDataPath () {
-    let baseDir
+    let dataDir = this.userHomePath
     if (this.platform === 'win') {
-      baseDir = this.userDataPath
-      baseDir = path.join(baseDir, this.appName)
+      dataDir = path.join(dataDir, 'AppData', 'Roaming', 'Spectrum')
+    } else if (this.platform === 'mac') {
+      dataDir = path.join(dataDir, 'Library', 'Spectrum')
     } else {
-      baseDir = this.userHomePath
-      baseDir = path.join(baseDir, '.' + this.appName)
+      dataDir = path.join(dataDir, '.spectrum')
     }
-    fs.ensureDirSync(baseDir)
-    return baseDir
+    if (this.isTestnet) {
+      dataDir = path.join(dataDir, 'testnet')
+    }
+
+    return dataDir
   }
 
-  get web3Provider () {
-    // return `ws://localhost:${wsport}`
-    return path.join(this.chainDataPath, 'geth.ipc')
+  get ipcConnection () {
+    return path.join(this.chainDataPath, 'smc.ipc')
   }
+
+  // get web3Provider () {
+  //   // return `ws://localhost:${wsport}`
+  //   return path.join(this.chainDataPath, 'geth.ipc')
+  // }
 
   loadUserData (path2) {
     const fullPath = this.constructUserDataPath(path2)
