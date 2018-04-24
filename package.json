@@ -7,8 +7,8 @@
   "author": "wuynng <wuynng@163.com>",
   "private": true,
   "scripts": {
-    "dev": "quasar dev -m electron",
-    "build": "quasar build -m electron",
+    "dev": "quasar dev -m electron -t ios",
+    "build": "quasar build -m electron -t ios",
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0"
   },
