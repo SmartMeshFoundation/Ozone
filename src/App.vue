@@ -20,6 +20,10 @@ export default {
       // console.log('restore transactions: ', transactions)
       this.$store.commit('transaction/reset', transactions)
     })
+
+    ipc.on(Types.NEW_BLOCK_INCOME, (event, number) => {
+      this.$store.commit('block/setNumber', number)
+    })
   }
 }
 </script>

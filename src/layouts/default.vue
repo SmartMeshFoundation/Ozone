@@ -20,17 +20,19 @@
 
     <q-layout-drawer v-model="leftDrawerOpen"
                      :content-class="$q.theme === 'mat' ? 'bg-grey-2 shadow-5' : null">
-      <div class="bg-white q-pa-xs">
+      <div class="bg-white">
         <div class="row flex-center">
           <img alt="Ozone logo"
                src="statics/smart_mesh.jpeg"
                style="height: 75px;" />
           <big>OZONE</big>
         </div>
-        <div class="row flex-center q-caption">
+        <div class="row bg-grey-3 q-pa-xs">
           <!-- <q-chip dense
                   icon="info"> ver {{$appVer}} </q-chip> -->
-          <lang-switcher />
+          <!-- <lang-switcher /> -->
+            <q-chip dense icon="layers" class="" > {{blockNumber}} </q-chip>
+            <q-chip dense icon="timer" class="q-ml-sm" > {{elapsedTime}} s</q-chip>
         </div>
       </div>
       <q-list no-border
@@ -66,22 +68,41 @@
 </template>
 
 <script>
-
+let timer
 export default {
   name: 'LayoutDefault',
   data () {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop,
       toolbarTitle: 'Ozone',
-      toolbarIcon: 'layers'
+      toolbarIcon: 'layers',
+      elapsedTime: 0
     }
   },
-  computed: {},
+  computed: {
+    blockNumber () {
+      return this.$store.state.block.number
+    }
+  },
+  watch: {
+    blockNumber: function () {
+      this.elapsedTime = 0
+    }
+  },
   methods: {
     updateToolbar (title, icon) {
       this.toolbarTitle = title
       this.toolbarIcon = icon
     }
+  },
+  created () {
+    let $vm = this
+    timer = setInterval(() => {
+      $vm.elapsedTime += 1
+    }, 1000)
+  },
+  destroyed () {
+    clearInterval(timer)
   }
 }
 </script>
