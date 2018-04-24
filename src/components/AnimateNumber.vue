@@ -27,7 +27,7 @@ export default {
     return {
       startVal: 0,
       endVal: Number(this.value),
-      decimals: 2,
+      decimals: 3,
       duration: 2.5,
       options: {
         useEasing: true,

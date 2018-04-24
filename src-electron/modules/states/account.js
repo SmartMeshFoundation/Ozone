@@ -30,7 +30,7 @@ class AccountState extends EventEmitter {
   _toEther (balance) {
     let web3 = global.web3
     let eth = web3.utils.fromWei(balance, 'ether')
-    return new BigNumber(eth).toFixed(2)
+    return new BigNumber(eth).toFixed(3, 1)
   }
 
   _sync () {
