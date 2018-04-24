@@ -3,12 +3,7 @@ import path from 'path'
 import logger from './logger'
 import fs from 'fs-extra'
 
-let packageJson
-if (process.env.PROD) {
-  packageJson = require(path.join(__dirname, 'package.json'))
-} else {
-  packageJson = require('../../package.json')
-}
+import packageJson from '../../package.json'
 
 class Settings {
   constructor () {
@@ -29,6 +24,14 @@ class Settings {
 
   get nodeType () {
     return 'geth'
+  }
+
+  get rpcPort () {
+    return '18545'
+  }
+
+  get wsPort () {
+    return '18546'
   }
 
   get nodeOptions () {

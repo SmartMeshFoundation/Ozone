@@ -138,32 +138,43 @@ class SpectrumNode extends EventEmitter {
    * @return {Promise}
    */
   init () {
-    return Promise.resolve().then(() => {
-      this._web3Init()
+    let rpcPort = Settings.rpcPort
+    let wsPort = Settings.wsPort
+    return new Q((resolve, reject) => {
+      Q.all([this._checkPort(rpcPort), this._checkPort(wsPort)])
         .then(() => {
-          log.info('web3 connected to exists node success!')
-          this.state = STATES.CONNECTED
+          reject()
         })
         .catch(() => {
-          log.warn(
-            "Failed to connect to node. Maybe it's not running so let's start our own..."
-          )
-
-          log.info(`Node type: ${this.defaultNodeType}`)
-          log.info(`Network: ${this.defaultNetwork}`)
-          log.info(`SyncMode: ${this.defaultSyncMode}`)
-
-          // if not, start node yourself
-          return this._start(
-            this.defaultNodeType,
-            this.defaultNetwork,
-            this.defaultSyncMode
-          ).catch(err => {
-            log.error('Failed to start node', err)
-            throw err
-          })
+          resolve()
         })
     })
+      .then(() => {
+        return this._web3Init()
+      })
+      .then(() => {
+        log.info('web3 connected to exists node success!')
+        this.state = STATES.CONNECTED
+      })
+      .catch(() => {
+        log.warn(
+          "Failed to connect to node. Maybe it's not running so let's start our own..."
+        )
+
+        log.info(`Node type: ${this.defaultNodeType}`)
+        log.info(`Network: ${this.defaultNetwork}`)
+        log.info(`SyncMode: ${this.defaultSyncMode}`)
+
+        // if not, start node yourself
+        return this._start(
+          this.defaultNodeType,
+          this.defaultNetwork,
+          this.defaultSyncMode
+        ).catch(err => {
+          log.error('Failed to start node', err)
+          throw err
+        })
+      })
   }
 
   restart (newType, newNetwork, syncMode) {
@@ -309,6 +320,7 @@ class SpectrumNode extends EventEmitter {
     }
 
     let providerUrl = Settings.ipcConnection
+
     return pretry(
       (retry, number) => {
         log.debug(`web3 try to set provider ${number} times.`)
@@ -322,8 +334,32 @@ class SpectrumNode extends EventEmitter {
 
         return global.web3.eth.net.isListening().catch(retry)
       },
-      { retries: 5 }
+      { retries: 3 }
     )
+  }
+
+  _checkPort (port) {
+    let promise = new Q((resolve, reject) => {
+      let server = net.createServer().listen(port, '127.0.0.1')
+
+      server.on('listening', function () {
+        server.close()
+        log.info('The port【', port, '】 is available.')
+        resolve(port)
+      })
+
+      server.on('error', function (err) {
+        if (err.code === 'EADDRINUSE') {
+          log.info(
+            'The port【',
+            port,
+            '】 is occupied, please change other port.'
+          )
+        }
+        reject(new Error('The port was occupied.'))
+      })
+    })
+    return promise
   }
 
   /**
@@ -383,17 +419,12 @@ class SpectrumNode extends EventEmitter {
           switch (network) {
             // Starts Ropsten network
             case 'test':
-              args = [
-                '--testnet',
-                '--syncmode', syncMode
-              ]
+              args = ['--testnet', '--syncmode', syncMode]
               break
 
-              // Starts Main net
+            // Starts Main net
             default:
-              args = [
-                '--syncmode', syncMode
-              ]
+              args = ['--syncmode', syncMode]
           }
 
           const nodeOptions = Settings.nodeOptions
@@ -536,7 +567,9 @@ class SpectrumNode extends EventEmitter {
       Settings.syncmode || Settings.loadUserData('syncmode') || DEFAULT_SYNCMODE
 
     log.info(
-      `Defaults loaded: ${this.defaultNodeType} ${this.defaultNetwork} ${this.defaultSyncMode}`
+      `Defaults loaded: ${this.defaultNodeType} ${this.defaultNetwork} ${
+        this.defaultSyncMode
+      }`
     )
   }
 }

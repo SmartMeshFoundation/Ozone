@@ -14,7 +14,7 @@ const log = logger.create('ClientBinaryManager')
 const BINARY_URL =
   'https://github.com/wuynng/spectrumclient/raw/master/clientBinaries.json'
 
-import defaultClientBinaries from './clientBinaries.json'
+import defaultClientBinaries from './client/config.json'
 
 class Manager extends EventEmitter {
   constructor () {

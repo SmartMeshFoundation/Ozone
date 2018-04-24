@@ -10,5 +10,7 @@ export const Types = {
   SYNC_ALL_STATE: 'sync-all-state', // main
   SEND_TRANSACTION: 'send-transaction', // main
   SEND_TRANSACTION_REPLY: 'send-transaction-reply',
-  UI_ACTION_CLIENTBINARYSTATUS: 'uiAction_clientBinaryStatus'
+  UI_ACTION_CLIENTBINARYSTATUS: 'ui-action-clientbinarystatus',
+  UI_ACTION_NODE_STATUS: 'ui-action-node-status',
+  UI_ACTION_NODE_LOGTEXT: 'ui-action-node-logtext'
 }

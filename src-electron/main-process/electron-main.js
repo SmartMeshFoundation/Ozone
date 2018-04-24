@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, dialog, BrowserWindow } from 'electron'
+import { app, Menu, dialog, BrowserWindow } from 'electron'
 import path from 'path'
 import Q from 'bluebird'
 import Web3 from 'web3'
@@ -30,6 +30,7 @@ if (process.env.PROD) {
 } else {
   global.__statics = __statics
 }
+log.debug('global.__statics = ', global.__statics)
 
 global.icon = path.join(global.__statics, 'icon_smart.png')
 
@@ -75,7 +76,8 @@ app.on('before-quit', event => {
 
 app.on('ready', () => {
   // initialise the db
-  global.db.init()
+  global.db
+    .init()
     .then(onReady)
     .catch(err => {
       log.error(err)
@@ -90,7 +92,7 @@ function onReady () {
     primary: true,
     electronOptions: {
       show: false,
-      title: Settings.appDescription,
+      title: Settings.productName,
       width: 1000,
       height: 600,
       backgroundColor: '#2e2c29',
@@ -103,10 +105,39 @@ function onReady () {
     }
   })
 
-  mainWin.window.once('ready-to-show', () => {
+  let mwin = mainWin.window
+  mwin.once('ready-to-show', () => {
     mainWin.show()
-    mainWin.window.webContents.on('did-finish-load', kickStart)
+    mwin.webContents.on('did-finish-load', kickStart)
   })
+
+  /** for context menus */
+  const selectionMenu = Menu.buildFromTemplate([
+    { role: 'copy' },
+    { type: 'separator' },
+    { role: 'selectall' }
+  ])
+
+  const inputMenu = Menu.buildFromTemplate([
+    { role: 'undo' },
+    { role: 'redo' },
+    { type: 'separator' },
+    { role: 'cut' },
+    { role: 'copy' },
+    { role: 'paste' },
+    { type: 'separator' },
+    { role: 'selectall' }
+  ])
+
+  mwin.webContents.on('context-menu', (e, props) => {
+    const { selectionText, isEditable } = props
+    if (isEditable) {
+      inputMenu.popup(mwin)
+    } else if (selectionText && selectionText.trim() !== '') {
+      selectionMenu.popup(mwin)
+    }
+  })
+  /** for context menus */
 
   mainWin.load(process.env.APP_URL)
 }
@@ -119,16 +150,18 @@ function kickStart () {
 
   // node connection stuff
   spectrumNode.on('nodeConnectionTimeout', () => {
-    windows.broadcast('uiAction_nodeStatus', 'connectionTimeout')
+    windows.broadcast(Types.UI_ACTION_NODE_STATUS, 'connectionTimeout')
   })
 
   spectrumNode.on('nodeLog', data => {
-    windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]]/, ''))
+    windows.broadcast(Types.UI_ACTION_NODE_LOGTEXT, data.replace(/^.*[0-9]]/, ''))
   })
 
   // state change
   spectrumNode.on('state', (state, stateAsText) => {
-    windows.broadcast('uiAction_nodeStatus', stateAsText,
+    windows.broadcast(
+      'uiAction_nodeStatus',
+      stateAsText,
       spectrumNode.STATES.ERROR === state ? spectrumNode.lastError : null
     )
   })

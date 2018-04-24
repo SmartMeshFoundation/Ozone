@@ -20,7 +20,7 @@
 </template>
 
 <script>
-const copy = require('clipboard-copy')
+import copy from 'clipboard-copy'
 
 export default {
   name: 'AccountItem',

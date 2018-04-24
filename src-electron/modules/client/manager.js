@@ -53,7 +53,7 @@ const DUMMY_LOGGER = {
   error: function () { }
 }
 
-const DefaultConfig = require('./config.json')
+import DefaultConfig from './config.json'
 
 class Manager {
   /**
