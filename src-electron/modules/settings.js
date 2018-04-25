@@ -5,6 +5,15 @@ import fs from 'fs-extra'
 
 import packageJson from '../../package.json'
 
+const _defaults = {
+  network: 'test',
+  syncmode: 'fast',
+  nodeType: 'geth',
+  rpcPort: 18545,
+  wsPort: 18546,
+  requiredConfirmations: 12
+}
+
 class Settings {
   constructor () {
     this.init()
@@ -15,23 +24,23 @@ class Settings {
   }
 
   get syncmode () {
-    return 'fast'
+    return _defaults.syncmode
   }
 
   get network () {
-    return 'test'
+    return _defaults.network
   }
 
   get nodeType () {
-    return 'geth'
+    return _defaults.nodeType
   }
 
   get rpcPort () {
-    return '18545'
+    return _defaults.rpcPort
   }
 
   get wsPort () {
-    return '18546'
+    return _defaults.wsPort
   }
 
   get nodeOptions () {
@@ -39,7 +48,7 @@ class Settings {
   }
 
   get requiredConfirmations () {
-    return 12
+    return _defaults.requiredConfirmations
   }
 
   get userDataPath () {

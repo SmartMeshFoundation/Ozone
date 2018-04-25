@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import logger from '../logger'
 import { Types } from '../ipc/types'
 import observeTransaction from '../observer/observeTransaction'
