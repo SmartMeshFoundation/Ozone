@@ -5,7 +5,8 @@
                  :glossy="$q.theme === 'mat'"
                  :inverted="$q.theme === 'ios'">
         <q-toolbar-title>
-          <q-icon :name="toolbarIcon" /> <span>{{ toolbarTitle }}</span>
+          <q-icon :name="toolbarIcon" />
+          <span>{{ toolbarTitle }}</span>
           <!-- <div slot="subtitle">Impossible made possible</div> -->
         </q-toolbar-title>
         <q-btn flat
@@ -21,18 +22,36 @@
     <q-layout-drawer v-model="leftDrawerOpen"
                      :content-class="$q.theme === 'mat' ? 'bg-grey-2 shadow-5' : null">
       <div class="bg-white">
-        <div class="row flex-center">
+        <div class="row flex-center q-my-sm">
           <img alt="Ozone logo"
                src="statics/smart_mesh.jpeg"
                style="height: 75px;" />
-          <big>OZONE</big>
+          <q-btn flat
+                 dense
+                 disable
+                 text-color="black"
+                 size="xl"
+                 label="OZONE">
+          <q-chip dense
+                  floating
+                  :class="{hidden: !isTestNet}"
+                  color="negative"> test net </q-chip>
+          <q-chip dense
+                  floating
+                  :class="{hidden: !isPrivateNet}"
+                  color="negative"> private net </q-chip>
+          </q-btn>
         </div>
-        <div class="row bg-grey-3 q-pa-xs">
-          <!-- <q-chip dense
-                  icon="info"> ver {{$appVer}} </q-chip> -->
-          <!-- <lang-switcher /> -->
-            <q-chip dense icon="layers" class="" > {{blockNumber}} </q-chip>
-            <q-chip dense icon="timer" class="q-ml-sm" > {{elapsedTime}} s</q-chip>
+        <div class="row q-pa-sm justify-center">
+          <q-chip dense
+                  icon="layers"
+                  class=""> {{blockNumber}} </q-chip>
+          <q-chip dense
+                  icon="timer"
+                  class="q-ml-sm"> {{elapsedTime}} s</q-chip>
+          <!-- <div>
+            <lang-switcher />
+          </div> -->
         </div>
       </div>
       <q-list no-border
@@ -69,6 +88,8 @@
 
 <script>
 let timer
+const web3 = window.web3
+
 export default {
   name: 'LayoutDefault',
   data () {
@@ -76,7 +97,9 @@ export default {
       leftDrawerOpen: this.$q.platform.is.desktop,
       toolbarTitle: 'Ozone',
       toolbarIcon: 'layers',
-      elapsedTime: 0
+      elapsedTime: 0,
+      isTestNet: false,
+      isPrivateNet: false
     }
   },
   computed: {
@@ -100,13 +123,17 @@ export default {
     timer = setInterval(() => {
       $vm.elapsedTime += 1
     }, 1000)
+
+    web3.eth.net.getId().then(num => {
+      if (num === 3) {
+        this.isTestNet = true
+      } else if (num !== 19840711) {
+        this.isPrivateNet = true
+      }
+    })
   },
   destroyed () {
     clearInterval(timer)
   }
 }
 </script>
-
-<style>
-
-</style>
