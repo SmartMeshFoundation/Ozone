@@ -127,7 +127,7 @@ export default {
     web3.eth.net.getId().then(num => {
       if (num === 3) {
         this.isTestNet = true
-      } else if (num !== 19840711) {
+      } else if (num !== 1 && num !== 19840711) {
         this.isPrivateNet = true
       }
     })
