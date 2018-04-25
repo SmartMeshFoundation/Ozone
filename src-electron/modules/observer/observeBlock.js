@@ -1,8 +1,8 @@
+import _ from 'lodash'
 import logger from '../logger'
 import { Types } from '../ipc/types'
 
 const log = logger.create('ObserveBlock')
-const _ = global._
 
 class ObserveBlock {
   constructor () {
@@ -33,7 +33,7 @@ class ObserveBlock {
     this.web3.eth.getBlock('latest')
       .then(block => {
         if (block.transactions.length > 0) {
-          block.transactions.each(txHash => {
+          block.transactions.forEach(txHash => {
             this._saveTx(txHash)
           })
         }
@@ -59,6 +59,9 @@ class ObserveBlock {
           transactions.insert(_.assign({_id: txHash}, t))
         }
         global.stateManager.emit('sync', 'transaction')
+      })
+      .catch(err => {
+        log.error('Get transaction occur error.', err)
       })
   }
 

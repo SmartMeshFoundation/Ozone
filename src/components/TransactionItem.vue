@@ -47,7 +47,7 @@ export default {
       return this.$moment(timestamp).fromNow()
     },
     toSMT (value) {
-      return web3.utils.fromWei(new BigNumber(value, 16).toFixed())
+      return web3.utils.fromWei(new BigNumber(value).toFixed())
     },
     accountName (address) {
       return this.$store.getters['account/name'](address)
