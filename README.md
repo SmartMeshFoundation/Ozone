@@ -40,5 +40,9 @@ $ yarn dev
 
 For development we need a *Spectrum* node running. Start the `geth` in a separate terminal window:
 ```bash
-$ geth --datadir /your/private/network/data --networkid yourid --ws --wsport=8546 --wsorigins="*" --wsapi "eth,net,web3,personal,subscribe" console
+$ geth --testnet --syncmode fast console
 ```
+
+### Issues
+---
+- If you encounter that the chain data cann't sync, maybe you need to get the lastest of *Spectrum* source code from [github repo](https://github.com/SmartMeshFoundation/Spectrum), and recompile it.
