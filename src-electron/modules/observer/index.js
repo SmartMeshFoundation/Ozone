@@ -1,7 +1,9 @@
 import observeBlock from './observeBlock'
+import observePendingTransaction from './observePendingTransaction'
 
 const observers = [
-  observeBlock
+  observeBlock,
+  observePendingTransaction
 ]
 
 export default observers

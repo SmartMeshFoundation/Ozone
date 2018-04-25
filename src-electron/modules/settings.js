@@ -38,6 +38,10 @@ class Settings {
     return []
   }
 
+  get requiredConfirmations () {
+    return 12
+  }
+
   get userDataPath () {
     return app.getPath('userData')
   }
