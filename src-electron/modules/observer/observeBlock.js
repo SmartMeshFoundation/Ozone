@@ -14,14 +14,35 @@ class ObserveBlock {
 
     this.subscription = this.web3.eth
       .subscribe('newBlockHeaders')
-      .on('data', (blockHeader) => {
+      .on('data', blockHeader => {
         // log.debug('Emitted newBlockHeaders: ', blockHeader)
         let { number } = blockHeader
         if (number != null) {
           this._syncAccount()
           this._syncTransaction()
-          global.windows.broadcast(Types.NEW_BLOCK_INCOME, number)
+          this._updateNodeState()
         }
+      })
+  }
+
+  // update the node status
+  _updateNodeState () {
+    let blockNumber, peers
+    this.web3.eth.getBlock('latest')
+      .then(block => {
+        if (block != null) {
+          blockNumber = block.number
+          return this.web3.eth.net.getPeerCount()
+        } else {
+          throw new Error('Can not found "latest" block.')
+        }
+      })
+      .then(count => {
+        peers = count
+        global.windows.broadcast(Types.NODE_STATE_CHANGE, { blockNumber, peers })
+      })
+      .catch(err => {
+        log.error('Try to update node state occur error.', err)
       })
   }
 
@@ -30,20 +51,20 @@ class ObserveBlock {
   }
 
   _syncTransaction (blockHeader) {
-    this.web3.eth.getBlock('latest')
-      .then(block => {
-        if (block.transactions.length > 0) {
-          block.transactions.forEach(txHash => {
-            this._saveTx(txHash)
-          })
-        }
-      })
+    this.web3.eth.getBlock('latest').then(block => {
+      if (block.transactions.length > 0) {
+        block.transactions.forEach(txHash => {
+          this._saveTx(txHash)
+        })
+      }
+    })
   }
 
   _saveTx (txHash) {
     let transactions = global.db.transactions
     let t
-    this.web3.eth.getTransaction(txHash)
+    this.web3.eth
+      .getTransaction(txHash)
       .then(tx => {
         t = tx
         return this.web3.eth.getTransactionReceipt(txHash)
@@ -52,11 +73,16 @@ class ObserveBlock {
         if (receipt != null) {
           t.receipt = receipt
         }
+        return this.web3.eth.getBlock(receipt.blockNumber)
+      })
+      .then(block => {
         let item = transactions.by('_id', txHash)
         if (item != null) {
-          transactions.update(_.assign(item, t))
+          transactions.update(_.assign(item, t, { timestamp: block.timestamp }))
         } else {
-          transactions.insert(_.assign({_id: txHash}, t))
+          transactions.insert(
+            _.assign({ _id: txHash }, t, { timestamp: block.timestamp })
+          )
         }
         global.stateManager.emit('sync', 'transaction')
       })

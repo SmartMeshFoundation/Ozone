@@ -45,10 +45,16 @@
         <div class="row q-pa-sm justify-center">
           <q-chip dense
                   icon="layers"
+                  title="block number"
                   class=""> {{blockNumber}} </q-chip>
           <q-chip dense
                   icon="timer"
+                  title="elapsed time"
                   class="q-ml-sm"> {{elapsedTime}} s</q-chip>
+          <q-chip dense
+                  icon="router"
+                  title="peers"
+                  class="q-ml-sm"> {{peerCount}} </q-chip>
           <!-- <div>
             <lang-switcher />
           </div> -->
@@ -104,7 +110,10 @@ export default {
   },
   computed: {
     blockNumber () {
-      return this.$store.state.block.number
+      return this.$store.state.node.blockNumber
+    },
+    peerCount () {
+      return this.$store.state.node.peers
     }
   },
   watch: {

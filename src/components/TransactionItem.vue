@@ -44,7 +44,7 @@ export default {
       return this.$moment(timestamp).format('MMMM Do')
     },
     now (timestamp) {
-      return this.$moment(timestamp).fromNow()
+      return this.$moment.unix(timestamp).fromNow()
     },
     toSMT (value) {
       return web3.utils.fromWei(new BigNumber(value).toFixed())

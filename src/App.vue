@@ -21,8 +21,17 @@ export default {
       this.$store.commit('transaction/reset', transactions)
     })
 
-    ipc.on(Types.NEW_BLOCK_INCOME, (event, number) => {
-      this.$store.commit('block/setNumber', number)
+    ipc.on(Types.NODE_STATE_CHANGE, (event, state) => {
+      this.$store.commit('node/update', state)
+    })
+  },
+  destroyed () {
+    [
+      Types.SYNC_ACCOUNT,
+      Types.SYNC_TRANSACTION,
+      Types.NODE_STATE_CHANGE
+    ].forEach(channel => {
+      ipc.removeAllListeners(channel)
     })
   }
 }
