@@ -25,7 +25,7 @@ class Window extends EventEmitter {
       width: 1100,
       height: 720,
       icon: global.icon,
-      // titleBarStyle: 'hiddenInset',
+      titleBarStyle: 'hiddenInset',
       backgroundColor: '#F6F6F6',
       acceptFirstMouse: true,
       darkTheme: true,
