@@ -16,8 +16,17 @@
       </q-item-tile>
     </q-item-main>
     <q-item-main>
-      <q-item-tile>
+      <q-item-tile :class="{hidden: !showElapsedTime}">
         <span> {{now(item.timestamp)}} </span>
+      </q-item-tile>
+      <q-item-tile :class="{hidden: !showProgress}">
+        <q-progress :percentage="progress" />
+      </q-item-tile>
+      <q-item-tile :class="{hidden: !showProgress}">
+        <span> {{item.confirmCount}} / {{$settings.requiredConfirmations}} 块确认 </span>
+      </q-item-tile>
+      <q-item-tile :class="{hidden: !isPending}">
+        <span> 待确认 </span>
       </q-item-tile>
     </q-item-main>
     <q-item-side right>
@@ -37,6 +46,22 @@ export default {
   props: ['item'],
   data () {
     return {
+    }
+  },
+  computed: {
+    progress () {
+      let required = this.$settings.requiredConfirmations
+      let confirmCount = this.item.confirmCount
+      return confirmCount / required * 100
+    },
+    showElapsedTime () {
+      return !this.showProgress && !this.isPending
+    },
+    showProgress () {
+      return !this.item.confirmed && !this.isPending
+    },
+    isPending () {
+      return this.item.blockNumber == null
     }
   },
   methods: {

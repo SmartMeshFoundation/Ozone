@@ -59,7 +59,9 @@ export default {
     txList () {
       let address = this.$route.params.address.toLowerCase()
       return this.$store.state.transaction.list.filter((item) => {
-        return item.from === address || item.to === address
+        let from = item.from.toLowerCase()
+        let to = item.to.toLowerCase()
+        return from === address || to === address
       })
     }
   },

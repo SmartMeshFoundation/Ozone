@@ -11,24 +11,29 @@ class ObservePendingTransaction {
 
   start () {
     this.web3 = global.web3
-    this.db = global.db
+    this.transactions = global.db.transactions
 
     this.subscription = this.web3.eth
       .subscribe('pendingTransactions')
-      .on('data', transaction => {
-        log.info('Incoming pending transaction: ', transaction)
+      .on('data', txHash => {
+        log.info('Incoming pending transactionHash: ', txHash)
+        this.web3.eth.getTransaction(txHash)
+          .then(tx => {
+            if (tx) {
+              log.debug('Incoming pending transaction: ', tx)
+              let transaction = {
+                _id: txHash,
+                confirmed: false,
+                confirmCount: 0,
+                timestamp: moment().unix()
+              }
 
-        let tx = {
-          _id: transaction.hash,
-          confirmed: false,
-          confirmations: 0,
-          timestamp: moment.unix()
-        }
+              tx = _.assign(transaction, tx)
+              this.transactions.insert(tx)
 
-        tx = _.assign(tx, transaction)
-        this.db.transaction.insert(tx)
-
-        global.stateManager.emit('sync', 'transaction')
+              global.stateManager.emit('sync', 'transaction')
+            }
+          })
       })
   }
 
