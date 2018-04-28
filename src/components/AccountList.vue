@@ -7,9 +7,9 @@
             sparse
             inset-separator
             no-border>
-      <q-list-header v-if="accounts.length == 0">现在开始，点击下面的
+      <!--<q-list-header v-if="accounts.length == 0">现在开始，点击下面的
         <q-icon round
-                name="add" />按钮，添加一个账户吧！</q-list-header>
+                name="add" />按钮，添加一个账户吧！</q-list-header>-->
 
       <account-item v-for="account of accounts"
                     :account="account"

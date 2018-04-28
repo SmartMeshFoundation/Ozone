@@ -8,11 +8,11 @@
     <q-item-main>
       <q-item-tile>
         <ident-icon :value="item.from.toLowerCase()" />
-        <span class="trans-from"> {{accountName(item.from)}} </span>
+        <span :title="item.from" class="trans-from"> {{accountName(item.from)}} </span>
         <q-icon name="send"
                 color="grey-5 q-px-md" />
         <ident-icon :value="item.to.toLowerCase()" />
-        <span class="trans-to"> {{accountName(item.to)}} </span>
+        <span :title="item.to" class="trans-to"> {{accountName(item.to)}} </span>
       </q-item-tile>
     </q-item-main>
     <q-item-main>
@@ -52,9 +52,9 @@ div.trans-item .q-item-side
 div.trans-item .trans-fee
     color #FA5A53 !important
 div.trans-item .trans-from
-  margin-left: 10px
+    margin-left: 10px
 div.trans-item .trans-to
-  margin-left: 10px
+    margin-left 10px
 </style>
 
 <script>
@@ -95,7 +95,11 @@ export default {
       return web3.utils.fromWei(new BigNumber(value).toFixed())
     },
     accountName (address) {
-      return this.$store.getters['account/name'](address)
+      let accountName = this.$store.getters['account/name'](address)
+      if (accountName.length > 10) {
+        return accountName.substr(0, 10) + '...'
+      }
+      return accountName
     }
   }
 }
