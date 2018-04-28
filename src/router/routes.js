@@ -26,6 +26,13 @@ export default [
       { path: 'account/:address', component: () => import('pages/transfer') }
     ]
   },
+  {
+    path: '/contract',
+    component: () => import('layouts/default'),
+    children: [
+      { path: 'deploy', component: () => import('pages/contract-deploy') }
+    ]
+  },
 
   { // Always leave this as last one
     path: '*',
