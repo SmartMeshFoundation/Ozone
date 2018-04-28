@@ -1,15 +1,13 @@
 <template>
   <q-layout view="LHh Lpr LFf">
     <q-layout-header style="-webkit-app-region: drag">
-      <q-toolbar color="primary"
-                 :glossy="$q.theme === 'mat'"
+      <q-toolbar :glossy="$q.theme === 'mat'"
                  :inverted="$q.theme === 'ios'">
         <q-toolbar-title>
-          <q-icon :name="toolbarIcon" />
-          <span>{{ toolbarTitle }}</span>
+          <span class="toolbar-title">{{ toolbarTitle }}</span>
           <!-- <div slot="subtitle">Impossible made possible</div> -->
         </q-toolbar-title>
-        <q-btn flat
+        <q-btn class="toolbar-btn" flat
                dense
                round
                @click="leftDrawerOpen = !leftDrawerOpen"
@@ -55,34 +53,33 @@
                   icon="router"
                   title="peers"
                   class="q-ml-sm"> {{peerCount}} </q-chip>
-          <!-- <div>
-            <lang-switcher />
-          </div> -->
+        </div>
+        <div class="row q-pa-sm justify-center">
+          <lang-switcher />
         </div>
       </div>
-      <q-list no-border
+      <q-list class="ozone-menu" no-border
               link
-              inset-delimiter
-              separator>
+              inset-delimiter>
         <q-list-header>{{ $t('nav.header.account') }}</q-list-header>
         <q-item to="/wallet"
                 @click.native="updateToolbar($t('nav.wallet.label'), 'fa-credit-card')">
-          <q-item-side icon="fa-credit-card" />
+          <q-item-side class="wallet-menu" />
           <q-item-main :label="$t('nav.wallet.label')"
                        :sublabel="$t('nav.wallet.sublabel')" />
         </q-item>
         <q-item to="/transfer/"
                 @click.native="updateToolbar($t('nav.transfer.label'), 'fa-exchange-alt')">
-          <q-item-side icon="fa-exchange-alt" />
+          <q-item-side class="trans-menu" />
           <q-item-main :label="$t('nav.transfer.label')"
                        :sublabel="$t('nav.transfer.sublabel')" />
         </q-item>
-        <q-list-header>{{ $t('nav.header.contract') }}</q-list-header>
+        <!--<q-list-header>{{ $t('nav.header.contract') }}</q-list-header>
         <q-item to="/deployContract">
           <q-item-side icon="code" />
           <q-item-main :label="$t('nav.deploy_contract.label')"
                        :sublabel="$t('nav.deploy_contract.sublabel')" />
-        </q-item>
+        </q-item>-->
       </q-list>
     </q-layout-drawer>
 
@@ -91,7 +88,54 @@
     </q-page-container>
   </q-layout>
 </template>
-
+<style lang="stylus">
+.toolbar-title
+    position absolute
+    left 27px
+    line-height 22px
+    top 14px
+    font-size 16px
+    color #788083 !important
+.toolbar-btn
+    color: #cccccc
+.q-layout-drawer
+    width: 298px
+.q-layout-page
+    background-color: #F1F3F6
+div.ozone-menu > .q-item.router-link-active
+    background-color #F4F8F9
+.q-item:after
+    visibility hidden
+.q-list-header
+    color #868686
+    font-size 14px
+    line-height 20px
+div.q-item-label
+    color #333333
+    font-size 15px
+    line-height 21px
+div.q-item-sublabel
+    color #999999
+    font-size 14px
+    line-height 20px
+div.wallet-menu
+    width 30px
+    height 30px
+    background url("../assets/wallet@2x.png") no-repeat center
+div.trans-menu
+    width 30px
+    height 30px
+    background url("../assets/trans@2x.png") no-repeat center
+.modal-content
+    border-radius 2px
+.q-alert-content
+    font-size 16px
+    color: #FFFFFF
+    background-color #10A0F8
+    border-radius 2px
+    width 141px
+    height 44px
+</style>
 <script>
 let timer
 const web3 = window.web3

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1> {{$t('tx.list.caption')}} </h1>
+    <h1 class="trans-title"> {{$t('tx.list.caption')}} </h1>
     <q-list highlight
             no-border
             striped-odd
@@ -17,6 +17,12 @@ div.transaction img.q-item-avatar
     width 24px
     height 24px
     vertical-align middle
+h1.trans-title
+    font-weight bold
+    color #333333
+    font-size 16px
+    line-height 22px
+    padding 13px 0px
 </style>
 
 <script>

@@ -1,13 +1,14 @@
 <template>
-  <q-page class="q-pa-lg">
+  <q-page class="q-pa-lg wallet">
     <account-list />
     <br>
     <transaction-list :items="txList" />
   </q-page>
 </template>
 
-<style>
-
+<style lang="stylus">
+.wallet .trans-title
+    margin-top 40px
 </style>
 
 <script>

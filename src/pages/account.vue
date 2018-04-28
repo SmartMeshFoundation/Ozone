@@ -1,30 +1,25 @@
 <template>
-  <q-page class="q-pa-lg">
-    <h1>
+  <q-page class="q-pa-lg account-item">
+    <h1 class="account-name">
       <em class="float-right text-warning">{{ $t('account.balance') }}: <ani-number :value="account.ether" /> </em>
       <ident-icon :value="account.address.toLowerCase()"
                   class="vertical-middle q-pa-xs" /> {{ account.name }}
-      <q-btn flat
+      <q-btn class="account-edit"
              dense
              round
              color="grey-4"
-             icon="fa-edit"
              @click="changeName" />
-      <small>{{ account.address }}</small>
+      <br/>
+      <small class="account-address">{{ account.address }}</small>
     </h1>
     <br/>
-    <br/>
-    <q-btn flat
-           size="lg"
-           color="secondary"
-           icon="fa-save"
+    <q-btn class="account-save" size="lg"
+           color="primary"
            :label="$t('account.btn.backupAccount')"
            @click="backup(account.address)" />
 
-    <q-btn flat
-           size="lg"
-           color="secondary"
-           icon="fa-exchange-alt"
+    <q-btn class="account-trans" size="lg"
+           color="primary"
            :label="$t('account.btn.transfer')"
            @click="$router.push('/transfer/account/' + account.address)" />
 
@@ -35,8 +30,42 @@
   </q-page>
 </template>
 
-<style>
-
+<style lang="stylus">
+.account-name
+    font-size 18px !important
+    font-weight bold
+    color #333333 !important
+    line-height 25px !important
+.account-name .text-warning
+    color #FFBB44 !important
+    font-size 17px
+    line-height 35px
+.account-address
+    font-size 16px !important
+    color #999999 !important
+    font-weight normal !important
+    line-height 22px !important
+    margin-top 15px
+.account-edit
+    width 30px !important
+    height 30px !important
+    background url("../assets/edit@2x.png") no-repeat center !important
+    margin-left 21px
+.account-save
+    width 120px
+    font-size 14px !important
+    background-color #74CC47 !important
+    border-radius 2px
+    height 36px
+.account-trans
+    width 120px
+    height 36px
+    font-size 14px !important
+    background-color #10A0F8  !important
+    margin-left 16px
+    border-radius 2px
+.account-item .trans-title
+    margin-top 180px
 </style>
 
 <script>

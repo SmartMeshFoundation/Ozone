@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>账户列表
-      <em class="text-warning float-right"> 总资产：<ani-number :value="total"/> {{$unit}}</em>
+    <h1 class="account-title">账户列表
+      <em class="total-unit text-warning float-right"> 总资产：<ani-number class="total-unit" :value="total"/> {{$unit}}</em>
     </h1>
     <q-list highlight
             sparse
@@ -17,23 +17,19 @@
                     :to="'/wallet/account/' + account.address" />
     </q-list>
 
-    <q-btn flat
-           size="lg"
-           color="secondary"
-           icon="add"
+    <q-btn class="add-account" size="lg"
+           color="primary"
            label="创建一个新账户"
            @click="showNewAccountModal = true" />
 
     <!-- 创建账号对话框 -->
-    <q-modal v-model="showNewAccountModal"
-             position="top"
+    <q-modal class="create-account-modal" v-model="showNewAccountModal"
              @hide="reset">
       <div class="q-pa-md">
         <p class="q-headline">建一个新账户</p>
-        <p>为你的账户设置密码。</p>
+        <p class="text-1">为你的账户设置密码。</p>
         <p class="text-warning">请牢记你的密码，如果遗忘密码将没有任何途径可以找回！</p>
-        <q-field icon="fa-key"
-                 helper="账户密码必须不少于8位"
+        <q-field helper="账户密码必须不少于8位"
                  v-show="showPasswordField">
           <q-input float-label="输入账户密码"
                    :autofocus="showNewAccountModal"
@@ -63,7 +59,41 @@
     <!-- 创建账号对话框 end -->
   </div>
 </template>
-
+<style lang="stylus">
+h1.account-title
+    color #333333
+    font-weight bold
+    line-height 22px
+    font-size 16px
+    padding-bottom 20px
+.total-unit
+    font-size 17px
+    font-weight bold
+    color #FFBB44 !important
+.add-account
+    font-size 14px !important
+    line-height 20px
+    width 120px
+    margin-top 10px
+    padding 0px 3px
+    border-radius 2px
+    background-color #10A0F8 !important
+div.create-account-modal .q-headline
+    color #333333 !important
+    font-size 18px
+    line-height 25px
+div.create-account-modal .text-warning
+    color #FA5A53 !important
+    font-size 15px
+    line-height 21px
+div.create-account-modal .text-1
+    color #999999
+    font-size 16px
+    line-height 22px
+div.create-account-modal .q-btn
+    background-color #10A0F8 !important
+    border-radius 2px
+</style>
 <script>
 import { required, minLength, sameAs } from 'vuelidate/lib/validators'
 

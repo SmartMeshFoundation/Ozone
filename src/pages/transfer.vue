@@ -1,62 +1,64 @@
 <template>
-  <q-page class="q-pa-lg gutter-md">
-    <div class="row gutter-md">
-      <div class="col-sm">
-        <q-field error-label="请选择转出账户"
-                 :error="$v.form.from.$error">
-          <q-select float-label="转出账户"
-                    v-model="form.from"
-                    :options="options()" />
-        </q-field>
+  <q-page class="q-pa-lg">
+    <div class="gutter-md trans-panel">
+      <div class="row gutter-md">
+        <div class="col-sm" style="margin-top: -39px">
+          <q-field error-label="请选择转出账户"
+                   :error="$v.form.from.$error">
+            <q-select float-label="转出账户"
+                      v-model="form.from"
+                      :options="options()" />
+          </q-field>
+        </div>
       </div>
-      <div class="col-sm">
-        <q-field error-label="不是合法的账户地址"
-                 :error="$v.form.to.$error">
-          <q-input v-model="form.to"
-                   float-label="转入账户"
-                   placeholder="0x0000..."
-                   @blur="$v.form.to.$touch" />
-        </q-field>
+      <div class="row gutter-md">
+        <div class="col-sm">
+          <q-field error-label="不是合法的账户地址"
+                   :error="$v.form.to.$error">
+            <q-input v-model="form.to"
+                     float-label="转入账户"
+                     placeholder="0x0000..."
+                     @blur="$v.form.to.$touch" />
+          </q-field>
+        </div>
       </div>
-
+      <div class="row gutter-md">
+        <div class="col-sm">
+          <q-field error-label="转出金额必须大于0"
+                   :error="$v.form.amount.$error">
+            <q-input float-label="转出金额"
+                     v-model="form.amount"
+                     type="number"
+                     :suffix="$unit"
+                     clearable
+                     @blur="$v.form.amount.$touch"/>
+          </q-field>
+        </div>
+      </div>
+      <div class="row gutter-md">
+        <div class="col-sm">
+          <q-input stack-label="余额"
+                   v-model="balance"
+                   disable
+                   :suffix="$unit" />
+        </div>
+      </div>
+      <div class="row gutter-md">
+        <div class="col-sm gas-fee">
+          估计交易费用：{{gasFee}}
+        </div>
+        <div class="col-sm">
+          <q-btn class="trans-send" size="lg"
+                 label="确认转账"
+                 color="primary"
+                 @click="transfer"
+                 :disable="disabled">
+          </q-btn>
+        </div>
+      </div>
     </div>
-    <div class="row gutter-md">
-      <div class="col-sm">
-        <q-field error-label="转出金额必须大于0"
-                 :error="$v.form.amount.$error">
-          <q-input float-label="转出金额"
-                   v-model="form.amount"
-                   type="number"
-                   :suffix="$unit"
-                   clearable
-                   @blur="$v.form.amount.$touch"/>
-        </q-field>
-      </div>
-      <div class="col-sm">
-        <q-input stack-label="余额"
-                 v-model="balance"
-                 disable
-                 :suffix="$unit" />
-      </div>
-    </div>
-    <div class="row gutter-md">
-      <div class="col-sm">
-        估计交易费用：{{gasFee}}
-      </div>
-      <div class="col-sm">
-        <q-btn icon="send"
-               size="lg"
-               label="确认转账"
-               color="secondary"
-               @click="transfer"
-               :disable="disabled">
-        </q-btn>
-      </div>
-    </div>
-
     <q-modal v-model="showConfirmModal"
              minimized
-             position="top"
              :content-css="{padding: '30px'}">
 
       <div class="row justify-center q-mb-md">
@@ -95,6 +97,31 @@
 
   </q-page>
 </template>
+<style lang="stylus">
+div.trans-panel
+    margin-top 36px
+    margin-left 4px
+    padding-left 12px
+    padding-right 42px
+    background-color #FFFFFF !important
+    height 497px
+.trans-panel .gas-fee
+    font-size 16px
+    color #333333
+    line-height 22px
+    position absolute
+    top 383px
+.trans-panel .trans-send
+    position absolute
+    top 409px
+    font-size 14px !important
+    line-height 20px
+    width 120px
+    height 36px
+    border-radius 2px
+    background-color #10A0F8 !important
+    right 65px
+</style>
 
 <script>
 import _ from 'lodash'

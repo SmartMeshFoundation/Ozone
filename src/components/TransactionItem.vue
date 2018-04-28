@@ -1,5 +1,5 @@
 <template>
-  <q-item>
+  <q-item class="trans-item">
     <q-item-side>
       <div class="row justify-center">
         {{date(item.timestamp)}}
@@ -8,11 +8,11 @@
     <q-item-main>
       <q-item-tile>
         <ident-icon :value="item.from.toLowerCase()" />
-        <span> {{accountName(item.from)}} </span>
+        <span class="trans-from"> {{accountName(item.from)}} </span>
         <q-icon name="send"
                 color="grey-5 q-px-md" />
         <ident-icon :value="item.to.toLowerCase()" />
-        <span> {{accountName(item.to)}} </span>
+        <span class="trans-to"> {{accountName(item.to)}} </span>
       </q-item-tile>
     </q-item-main>
     <q-item-main>
@@ -30,12 +30,32 @@
       </q-item-tile>
     </q-item-main>
     <q-item-side right>
-      <q-item-tile color="negative">
+      <q-item-tile class="trans-fee" color="negative">
         -{{toSMT(item.value)}} {{$unit}}
       </q-item-tile>
     </q-item-side>
   </q-item>
 </template>
+<style lang="stylus">
+div.trans-item
+    height 60px
+    margin-top:10px
+    font-size 15px
+    line-height 21px
+    color #333333
+div.trans-item:nth-child(2n)
+    background-color #F9FEFF !important
+div.trans-item:nth-child(2n-1)
+    background-color #FFFFFF !important
+div.trans-item .q-item-side
+    color #999999 !important
+div.trans-item .trans-fee
+    color #FA5A53 !important
+div.trans-item .trans-from
+  margin-left: 10px
+div.trans-item .trans-to
+  margin-left: 10px
+</style>
 
 <script>
 import BigNumber from 'bignumber.js'
