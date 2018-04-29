@@ -3,9 +3,9 @@
     <div class="gutter-md trans-panel">
       <div class="row gutter-md">
         <div class="col-sm" style="margin-top: -39px">
-          <q-field error-label="请选择转出账户"
+          <q-field :error-label="$t('tx.transfer.from_error')"
                    :error="$v.form.from.$error">
-            <q-select float-label="转出账户"
+            <q-select :float-label="$t('tx.transfer.from_label')"
                       v-model="form.from"
                       :options="options()" />
           </q-field>
@@ -13,10 +13,10 @@
       </div>
       <div class="row gutter-md">
         <div class="col-sm">
-          <q-field error-label="不是合法的账户地址"
+          <q-field :error-label="$t('tx.transfer.to_error')"
                    :error="$v.form.to.$error">
             <q-input v-model="form.to"
-                     float-label="转入账户"
+                     :float-label="$t('tx.transfer.to_label')"
                      placeholder="0x0000..."
                      @blur="$v.form.to.$touch" />
           </q-field>
@@ -24,9 +24,9 @@
       </div>
       <div class="row gutter-md">
         <div class="col-sm">
-          <q-field error-label="转出金额必须大于0"
+          <q-field :error-label="$t('tx.transfer.balance_error')"
                    :error="$v.form.amount.$error">
-            <q-input float-label="转出金额"
+            <q-input :float-label="$t('tx.transfer.balance_label')"
                      v-model="form.amount"
                      type="number"
                      :suffix="$unit"
@@ -37,7 +37,7 @@
       </div>
       <div class="row gutter-md">
         <div class="col-sm">
-          <q-input stack-label="余额"
+          <q-input :stack-label="$t('tx.transfer.balance')"
                    v-model="balance"
                    disable
                    :suffix="$unit" />
@@ -45,11 +45,11 @@
       </div>
       <div class="row gutter-md">
         <div class="col-sm gas-fee">
-          估计交易费用：{{gasFee}}
+          {{$t('tx.transfer.fee')}}：{{gasFee}}
         </div>
         <div class="col-sm">
           <q-btn class="trans-send" size="lg"
-                 label="确认转账"
+                 :label="$t('tx.transfer.btn')"
                  color="primary"
                  @click="transfer"
                  :disable="disabled">

@@ -13,16 +13,16 @@
                   @click.native.stop="copyAddress(account.address)" /> </q-item-tile>
       </q-item-main>
       <q-item-side right>
-        <q-item-tile class="balance-title">余额</q-item-tile>
+        <q-item-tile class="balance-title">{{ $t('account.balance') }}</q-item-tile>
         <q-item-tile class="balance-value">
           <ani-number :value="account.ether" /> </q-item-tile>
       </q-item-side>
     </q-item>
     <q-modal class="verify-modal" v-model="showVerifyModal">
       <div class="q-pa-md">
-        <p class="q-headline">警告：拷贝地址</p>
-        <p class="text-1">你同意拷贝账户地址到系统剪切板吗？</p>
-        <q-btn label="确定"
+        <p class="q-headline">{{ $t('account.copy.alert') }}</p>
+        <p class="text-1">{{ $t('account.copy.content') }}</p>
+        <q-btn :label="$t('button.ok')"
                color="primary"
                class="float-right q-my-md"
                @click="submit" />

@@ -23,10 +23,10 @@
         <q-progress :percentage="progress" />
       </q-item-tile>
       <q-item-tile :class="{hidden: !showProgress}">
-        <span> {{item.confirmCount}} / {{$settings.requiredConfirmations}} 块确认 </span>
+        <span> {{item.confirmCount}} / {{$settings.requiredConfirmations}} {{$t('tx.list.unconfirmed')}} </span>
       </q-item-tile>
       <q-item-tile :class="{hidden: !isPending}">
-        <span> 待确认 </span>
+        <span> {{$t('tx.list.unconfirmed')}} </span>
       </q-item-tile>
     </q-item-main>
     <q-item-side right>

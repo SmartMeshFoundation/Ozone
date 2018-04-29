@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1 class="account-title">账户列表
-      <em class="total-unit text-warning float-right"> 总资产：<ani-number class="total-unit" :value="total"/> {{$unit}}</em>
+    <h1 class="account-title">{{ $t('account.account_list') }}
+      <em class="total-unit text-warning float-right"> {{ $t('account.total_balance') }}：<ani-number class="total-unit" :value="total"/> {{$unit}}</em>
     </h1>
     <q-list class="account-list" highlight
             sparse
@@ -19,19 +19,19 @@
 
     <q-btn class="add-account" size="lg"
            color="primary"
-           label="创建一个新账户"
+           :label="$t('account.btn.add')"
            @click="showNewAccountModal = true" />
 
     <!-- 创建账号对话框 -->
     <q-modal class="create-account-modal" v-model="showNewAccountModal"
              @hide="reset">
       <div class="q-pa-md">
-        <p class="q-headline">建一个新账户</p>
-        <p class="text-1">为你的账户设置密码。</p>
-        <p class="text-warning">请牢记你的密码，如果遗忘密码将没有任何途径可以找回！</p>
-        <q-field helper="账户密码必须不少于8位"
+        <p class="q-headline">{{ $t('account.create.title') }}</p>
+        <p class="text-1">{{ $t('account.create.text1') }}</p>
+        <p class="text-warning">{{ $t('account.create.text2') }}</p>
+        <q-field :helper="$t('account.create.password_tip1')"
                  v-show="showPasswordField">
-          <q-input float-label="输入账户密码"
+          <q-input :float-label="$t('account.create.password_msg1')"
                    :autofocus="showNewAccountModal"
                    type="password"
                    v-model="form.password"
@@ -39,10 +39,9 @@
                    :error="$v.form.password.$error" />
         </q-field>
 
-        <q-field icon="fa-key"
-                 error-label="两次输入的密码不一致，请重新输入！"
+        <q-field :error-label="$t('account.create.password_tip2')"
                  v-show="showPasswordField == false">
-          <q-input float-label="重复输入密码"
+          <q-input :float-label="$t('account.create.password_msg2')"
                    :autofocus="!showPasswordField"
                    type="password"
                    v-model="form.repeatPassword"
@@ -50,7 +49,7 @@
                    :error="$v.form.repeatPassword.$error" />
         </q-field>
 
-        <q-btn label="确定"
+        <q-btn :label="$t('button.ok')"
                color="primary"
                class="float-right q-my-md"
                @click="submit" />
