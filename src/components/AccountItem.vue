@@ -35,6 +35,7 @@ div.account-item
     height 80px
     margin-top:10px
     background-color #FFFFFF
+    border-radius 2px
 div.account-item .q-item-link
     height 80px
 div.account-item .q-item-link:hover

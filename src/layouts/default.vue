@@ -128,13 +128,20 @@ div.q-item-sublabel
     color #999999
     font-size 14px
     line-height 20px
-div.wallet-menu
+div.ozone-menu .q-item
+    height 62px
+div.ozone-menu .q-item-main
+    position fixed
+    left 62px
+div.ozone-menu .q-item-side
+    display inline-block
+    position fixed
+    left 19px
     width 30px
     height 30px
+div.wallet-menu
     background url("../assets/wallet@2x.png") no-repeat center
 div.trans-menu
-    width 30px
-    height 30px
     background url("../assets/trans@2x.png") no-repeat center
 .modal-content
     border-radius 2px
