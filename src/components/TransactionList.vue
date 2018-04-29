@@ -23,6 +23,7 @@ h1.trans-title
     font-size 16px
     line-height 22px
     padding 13px 0px
+    border-bottom 1px solid #DEE3E7 !important
 </style>
 
 <script>

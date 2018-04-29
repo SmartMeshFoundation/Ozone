@@ -6,7 +6,7 @@
       </q-item-side>
       <q-item-main>
         <q-item-tile>
-          <strong class="account-name">{{account.name}}</strong>
+          <strong class="account-name-title">{{account.name}}</strong>
         </q-item-tile>
         <q-item-tile class="address">{{account.address}}
           <q-icon name="content_copy"
@@ -43,7 +43,7 @@ div.address
     color #999999
     font-size 14px
     padding 5px 0px
-strong.account-name
+strong.account-name-title
     font-size 16px
     line-height 22px
 div.balance-title

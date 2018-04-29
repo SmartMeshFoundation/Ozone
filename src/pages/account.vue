@@ -51,6 +51,7 @@
     font-weight bold
     color #333333 !important
     line-height 25px !important
+    border-bottom 1px solid #DEE3E7 !important
 .account-name .text-warning
     color #FFBB44 !important
     font-size 17px
