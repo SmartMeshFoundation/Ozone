@@ -66,6 +66,7 @@ h1.account-title
     line-height 22px
     font-size 16px
     padding-bottom 20px
+    border-bottom 1px solid #DEE3E7 !important
 .total-unit
     font-size 17px
     font-weight bold

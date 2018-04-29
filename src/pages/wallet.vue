@@ -8,7 +8,7 @@
 
 <style lang="stylus">
 .wallet .trans-title
-    margin-top 40px
+    margin-top 8px
 </style>
 
 <script>

@@ -22,9 +22,9 @@
       <div class="bg-white">
         <div class="row flex-center q-my-sm">
           <img alt="Ozone logo"
-               src="statics/smart_mesh.jpeg"
-               style="height: 75px;" />
-          <q-btn flat
+               src="statics/icon_smart.png"
+               class="ozone-img" />
+          <q-btn class="ozone-logo" flat
                  dense
                  disable
                  text-color="black"
@@ -54,9 +54,9 @@
                   title="peers"
                   class="q-ml-sm"> {{peerCount}} </q-chip>
         </div>
-        <div class="row q-pa-sm justify-center">
+        <!--<div class="row q-pa-sm justify-center">
           <lang-switcher />
-        </div>
+        </div>-->
       </div>
       <q-list class="ozone-menu" no-border
               link
@@ -89,6 +89,15 @@
   </q-layout>
 </template>
 <style lang="stylus">
+.ozone-img
+    margin-top 18px
+    height 50px
+    width 50px
+.ozone-logo
+    margin-top 18px
+    color #333333
+    font-size 22px
+    line-height 30px
 .toolbar-title
     position absolute
     left 27px
@@ -104,6 +113,7 @@
     background-color: #F1F3F6
 div.ozone-menu > .q-item.router-link-active
     background-color #F4F8F9
+    border-left 3px solid #10A0F8 !important
 .q-item:after
     visibility hidden
 .q-list-header

@@ -34,13 +34,11 @@
 div.account-item
     height 80px
     margin-top:10px
-div.account-item:nth-child(2n)
-    background-color #F9FEFF
-div.account-item:nth-child(2n-1)
     background-color #FFFFFF
-div.account-item .q-item-link{
+div.account-item .q-item-link
     height 80px
-}
+div.account-item .q-item-link:hover
+    background: #F9FEFF !important
 div.address
     color #999999
     font-size 14px

@@ -27,6 +27,21 @@
 
     <transaction-list :items="txList" />
 
+    <q-modal class="modify-modal" v-model="showModifyModal">
+      <div class="q-pa-md">
+        <p class="q-headline">修改账户名称</p>
+        <p class="modify-account-name"><q-input v-model="modifyAccountName"/></p>
+        <q-btn label="取消"
+               color="primary"
+               class="q-my-md cancel-btn"
+               @click="cancel" />
+        <q-btn label="确定"
+               color="primary"
+               class="q-my-md sub-btn"
+               @click="submit" />
+      </div>
+    </q-modal>
+
   </q-page>
 </template>
 
@@ -66,6 +81,29 @@
     border-radius 2px
 .account-item .trans-title
     margin-top 180px
+div.modify-modal .modal-content
+  width 448px
+  height 214px
+div.modify-modal .q-headline
+  font-size 18px
+  color #333333
+  line-height 25px
+  margin-top 14px
+  margin-left 8px
+div.modify-modal .modify-account-name
+  margin-top 30px !important
+div.modify-modal .q-btn
+  position absolute
+  border-radius 2px
+  width 70px
+  height 36px
+  background-color #10A0F8 !important
+div.modify-modal .cancel-btn
+  bottom 4px
+  right 105px !important
+div.modify-modal .sub-btn
+  bottom 4px
+  right 26px !important
 </style>
 
 <script>
@@ -78,6 +116,8 @@ export default {
   name: 'PageAccount',
   data () {
     return {
+      showModifyModal: false,
+      modifyAccountName: '',
       trans: []
     }
   },
@@ -97,54 +137,27 @@ export default {
   methods: {
     changeName () {
       const account = this.account
-      this.$q
-        .dialog({
-          title: '修改账户名称',
-          // message: 'You are about to run out of disk space.',
-
-          // optional
-          color: 'primary',
-
-          // optional; we want an "OK" button
-          ok: this.$t('button.ok'), // takes i18n value, or String for "OK" button label
-
-          // optional; we want a "Cancel" button
-          cancel: this.$t('button.cancel'), // takes i18n value, or String for "Cancel" button label
-
-          // optional; prevent user dismissal when not clicking on a Dialog button
-          preventClose: true,
-
-          noBackdropDismiss: false, // gets set to "true" automatically if preventClose is "true"
-          noEscDismiss: false, // gets set to "true" automatically if preventClose is "true"
-
-          // optional; stacks button vertically instead of horizontally (default)
-
-          // optional; a position of the Dialog (top, bottom, left, right)
-          position: 'top',
-
-          // optional; show an input box (make Dialog similar to a JS prompt)
-          prompt: {
-            model: account.name,
-            type: 'text' // optional
-          }
-        })
-        .then(input => {
-          console.log('You typed: ', input)
-          if (input.length > 0 && input.trim() !== this.account.name) {
-            this.$store.commit('account/updateAccountName', {
-              address: this.account.address,
-              name: input
-            })
-          }
-        })
-        .catch(error => {
-          console.log(error)
-          console.log('You canceled!')
-        })
+      this.modifyAccountName = account.name
+      this.showModifyModal = true
     },
     backup (address) {
       let keystore = path.join(this.$settings.chainDataPath, 'keystore')
       shell.showItemInFolder(keystore)
+    },
+    cancel () {
+      this.showModifyModal = false
+      this.modifyAccountName = ''
+    },
+    submit () {
+      let input = this.modifyAccountName
+      console.log('You typed: ', input)
+      if (input.length > 0 && input.trim() !== this.account.name) {
+        this.$store.commit('account/updateAccountName', {
+          address: this.account.address,
+          name: input
+        })
+        this.showModifyModal = false
+      }
     }
   }
 }
