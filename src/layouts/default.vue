@@ -84,7 +84,7 @@
     </q-layout-drawer>
 
     <q-page-container>
-      <router-view @updateToolbar="updateToolbar" />
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
