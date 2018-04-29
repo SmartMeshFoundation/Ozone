@@ -107,7 +107,7 @@ export default {
     submit () {
       copy(this.copy_Address).then(() => {
         this.showVerifyModal = false
-        this.$q.notify({ message: '拷贝地址成功！', color: 'primary' })
+        this.$q.notify({ message: this.$t('account.copy.success'), color: 'primary' })
       })
     }
   }

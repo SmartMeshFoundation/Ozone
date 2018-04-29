@@ -62,22 +62,22 @@
              :content-css="{padding: '30px'}">
 
       <div class="row justify-center q-mb-md">
-        <div class="q-display-1">确认转账</div>
+        <div class="q-display-1">{{$t('tx.transfer.confirm.title')}}</div>
       </div>
       <div class="row justify-center"><ident-icon :value="form.from"/></div>
       <div class="row q-pa-md">{{form.from}}</div>
       <div class="row justify-center"><q-icon name="arrow_downward" /></div>
       <div class="row q-pa-md">{{form.to}}</div>
       <div class="row q-pa-md">
-        <div class="col">转出金额：</div>
+        <div class="col">{{$t('tx.transfer.confirm.transfer_amount')}}：</div>
         <div>{{form.amount}} {{$unit}}</div>
       </div>
       <div class="row q-pa-md">
-        <div class="col">手续费：</div>
+        <div class="col">{{$t('tx.transfer.confirm.fee')}}：</div>
         <div>{{gasFee}} {{$unit}}</div>
       </div>
       <div class="row q-pa-md">
-        <div class="col">总金额：</div>
+        <div class="col">{{$t('tx.transfer.confirm.total')}}：</div>
         <div class="text-negative"><big>{{total}}</big> {{$unit}}</div>
       </div>
       <div class="row q-pa-md gutter-md justify-end">
@@ -85,12 +85,12 @@
 
           <q-btn color="tertiary"
                  @click="showConfirmModal = false; disabled = false"
-                 label="取消" />
+                 :label="$t('button.cancel')" />
         </div>
         <div>
           <q-btn color="secondary"
                  @click="confirm"
-                 label="确认" />
+                 :label="$t('button.ok')" />
         </div>
       </div>
     </q-modal>
@@ -246,7 +246,7 @@ export default {
       }
       this.$q
         .dialog({
-          title: '请输入账户密码',
+          title: this.$t('tx.transfer.confirm.enter_pwd'),
           preventClose: false,
           position: 'top',
           prompt: {
@@ -272,7 +272,7 @@ export default {
       console.log('send transaction reply: ', reply)
       this.$q.loading.hide()
       if (reply.error && reply.error === 'invalid-password') {
-        $vm.$q.notify('密码错误！')
+        $vm.$q.notify(this.$t('tx.transfer.confirm.wrong_pwd'))
         $vm.disabled = false
       } else {
         $vm.$router.push('/wallet')

@@ -33,7 +33,8 @@ export default {
     },
     copy: {
       alert: 'alert：copy address',
-      content: 'Do you agree to copy the account address to the system clipboard？'
+      content: 'Do you agree to copy the account address to the system clipboard？',
+      success: 'copy address success!'
     },
     create: {
       title: 'create a new address',
@@ -62,8 +63,16 @@ export default {
       balance_error: 'The transfer amount must be greater than 0',
       balance_label: 'transfer amount',
       balance: 'balance',
-      fee: 'estimated transaction fee',
-      btn: 'confirm transfer'
+      fee: 'estimated service charge',
+      btn: 'confirm',
+      confirm: {
+        title: 'transfer confirm',
+        transfer_amount: 'transfer amount',
+        fee: 'service charge',
+        total: 'total amount',
+        enter_pwd: 'enter password',
+        wrong_pwd: 'wrong password!'
+      }
     }
   }
 }

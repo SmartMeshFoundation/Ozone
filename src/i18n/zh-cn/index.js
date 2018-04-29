@@ -33,7 +33,8 @@ export default {
     },
     copy: {
       alert: '警告：拷贝地址',
-      content: '你同意拷贝账户地址到系统剪切板吗？'
+      content: '你同意拷贝账户地址到系统剪切板吗？',
+      success: '拷贝地址成功！'
     },
     create: {
       title: '建一个新账户',
@@ -63,7 +64,15 @@ export default {
       balance_label: '转出金额',
       balance: '余额',
       fee: '估计交易费用',
-      btn: '确认转账'
+      btn: '确认转账',
+      confirm: {
+        title: '确认转账',
+        transfer_amount: '转出金额',
+        fee: '手续费',
+        total: '总金额',
+        enter_pwd: '请出入账户密码',
+        wrong_pwd: '密码错误！'
+      }
     }
   }
 }

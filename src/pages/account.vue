@@ -31,11 +31,11 @@
       <div class="q-pa-md">
         <p class="q-headline">{{ $t('account.mondify_name') }}</p>
         <p class="modify-account-name"><q-input v-model="modifyAccountName"/></p>
-        <q-btn label="取消"
+        <q-btn :label="$t('button.cancel')"
                color="primary"
                class="q-my-md cancel-btn"
                @click="cancel" />
-        <q-btn label="确定"
+        <q-btn :label="$t('button.ok')"
                color="primary"
                class="q-my-md sub-btn"
                @click="submit" />
