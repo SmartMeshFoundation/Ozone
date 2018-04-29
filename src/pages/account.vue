@@ -29,7 +29,7 @@
 
     <q-modal class="modify-modal" v-model="showModifyModal">
       <div class="q-pa-md">
-        <p class="q-headline">修改账户名称</p>
+        <p class="q-headline">{{ $t('account.mondify_name') }}</p>
         <p class="modify-account-name"><q-input v-model="modifyAccountName"/></p>
         <q-btn label="取消"
                color="primary"

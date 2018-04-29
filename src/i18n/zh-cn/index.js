@@ -25,6 +25,7 @@ export default {
     balance: '账户余额',
     account_list: '账户列表',
     total_balance: '总资产',
+    mondify_name: '修改账户名称',
     btn: {
       transfer: '转账',
       backupAccount: '备份账户',

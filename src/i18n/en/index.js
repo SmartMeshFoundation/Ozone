@@ -25,6 +25,7 @@ export default {
     balance: 'Balance',
     account_list: 'Account List',
     total_balance: 'Total Balance',
+    mondify_name: 'modify account name',
     btn: {
       transfer: 'transfer',
       backupAccount: 'backup',
