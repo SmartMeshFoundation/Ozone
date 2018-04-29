@@ -3,7 +3,7 @@
     <h1 class="account-title">账户列表
       <em class="total-unit text-warning float-right"> 总资产：<ani-number class="total-unit" :value="total"/> {{$unit}}</em>
     </h1>
-    <q-list highlight
+    <q-list class="account-list" highlight
             sparse
             inset-separator
             no-border>
@@ -80,6 +80,8 @@ h1.account-title
     padding 0px 3px
     border-radius 2px
     background-color #10A0F8 !important
+div.account-list
+    margin-top -15px
 div.create-account-modal .q-headline
     color #333333 !important
     font-size 18px
