@@ -49,7 +49,7 @@ export default {
   tx: {
     list: {
       caption: 'Recent Transaction',
-      unconfirmed: 'unconfirmed',
+      unconfirmed: 'confirming',
       block_confirm: 'blocks confirmed'
     },
     text: {
