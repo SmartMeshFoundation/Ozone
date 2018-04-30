@@ -22,7 +22,14 @@ export default {
   },
   computed: {
     txList () {
-      return this.$store.state.transaction.list
+      let accounts = this.$store.state.account.list.map(account => {
+        return account.address.toLowerCase()
+      })
+      return this.$store.state.transaction.list.filter((item) => {
+        let from = item.from.toLowerCase()
+        let to = item.to.toLowerCase()
+        return accounts.indexOf(from) !== -1 || accounts.indexOf(to) !== -1
+      })
     }
   },
   created () {
