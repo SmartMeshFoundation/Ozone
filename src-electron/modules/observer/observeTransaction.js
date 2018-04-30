@@ -152,6 +152,6 @@ class ObserveTransaction {
 // flush transaction list of UI
 const syncTransaction = _.debounce(() => {
   global.stateManager.emit('sync', 'transaction')
-}, 1000)
+}, 2000)
 
 export default new ObserveTransaction()
