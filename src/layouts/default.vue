@@ -143,15 +143,6 @@ div.wallet-menu
     background url("../assets/wallet@2x.png") no-repeat center
 div.trans-menu
     background url("../assets/trans@2x.png") no-repeat center
-.modal-content
-    border-radius 2px
-.q-alert-content
-    font-size 16px
-    color: #FFFFFF
-    background-color #10A0F8
-    border-radius 2px
-    width 141px
-    height 44px
 </style>
 <script>
 let timer

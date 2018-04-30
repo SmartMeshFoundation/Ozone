@@ -39,15 +39,16 @@
 <style lang="stylus">
 div.trans-item
     height 60px
-    margin-top:-20px
+    margin-top:10px
     font-size 15px
     line-height 21px
     color #333333
     border-radius 2px !important
-div.trans-item:nth-child(2n)
-    background-color #F9FEFF !important
-div.trans-item:nth-child(2n-1)
     background-color #FFFFFF !important
+div.trans-item:nth-child(1)
+    margin-top:-20px
+div.trans-item:hover
+    background: #F9FEFF !important
 div.trans-item .q-item-side
     color #999999 !important
 div.trans-item .trans-fee

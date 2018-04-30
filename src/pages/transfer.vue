@@ -57,7 +57,7 @@
         </div>
       </div>
     </div>
-    <q-modal v-model="showConfirmModal"
+    <q-modal class="transfer-confirm" v-model="showConfirmModal"
              minimized
              :content-css="{padding: '30px'}">
 
@@ -88,10 +88,25 @@
                  :label="$t('button.cancel')" />
         </div>
         <div>
-          <q-btn color="secondary"
+          <q-btn color="primary"
                  @click="confirm"
                  :label="$t('button.ok')" />
         </div>
+      </div>
+    </q-modal>
+
+    <q-modal class="password-modal" v-model="showPasswordModal">
+      <div class="q-pa-md">
+        <p class="q-headline">{{ $t('tx.transfer.confirm.enter_pwd') }}</p>
+        <p class="modify-account-name"><q-input type="password" v-model="password"/></p>
+        <q-btn :label="$t('button.cancel')"
+               color="primary"
+               class="q-my-md cancel-btn"
+               @click="cancel" />
+        <q-btn :label="$t('button.ok')"
+               color="primary"
+               class="q-my-md sub-btn"
+               @click="submit" />
       </div>
     </q-modal>
 
@@ -118,9 +133,33 @@ div.trans-panel
     line-height 20px
     width 120px
     height 36px
-    border-radius 2px
     background-color #10A0F8 !important
     right 65px
+div.transfer-confirm .q-btn
+    background-color #10A0F8 !important
+div.password-modal .modal-content
+  width 448px
+  height 214px
+div.password-modal .q-headline
+  font-size 18px
+  color #333333
+  line-height 25px
+  margin-top 14px
+  margin-left 8px
+div.password-modal .modify-account-name
+  margin-top 30px !important
+div.password-modal .q-btn
+  position absolute
+  border-radius 2px
+  width 70px
+  height 36px
+  background-color #10A0F8 !important
+div.password-modal .cancel-btn
+  bottom 4px
+  right 105px !important
+div.password-modal .sub-btn
+  bottom 4px
+  right 26px !important
 </style>
 
 <script>
@@ -140,11 +179,13 @@ export default {
   data () {
     return {
       showConfirmModal: false,
+      showPasswordModal: false,
       form: {
         from: this.$route.params.address || '',
         to: '',
         amount: ''
       },
+      password: '',
       // balance: 0,
       gasFee: 0,
       total: 0,
@@ -238,29 +279,23 @@ export default {
     },
     confirm () {
       this.showConfirmModal = false
-
+      this.showPasswordModal = true
+    },
+    cancel () {
+      this.showPasswordModal = false
+      this.password = ''
+    },
+    submit () {
       let tx = {
         from: this.form.from,
         to: this.form.to,
         value: web3.utils.toWei(this.form.amount.toString())
       }
-      this.$q
-        .dialog({
-          title: this.$t('tx.transfer.confirm.enter_pwd'),
-          preventClose: false,
-          position: 'top',
-          prompt: {
-            type: 'password'
-          }
-        })
-        .then(password => {
-          this.$q.loading.show({ delay: 400 })
-          ipc.send(Types.SEND_TRANSACTION, { tx, password })
-        })
-        .catch(() => {
-          this.disabled = false
-          this.$q.loading.hide()
-        })
+      let password = this.password
+      this.$q.loading.show({ delay: 400 })
+      ipc.send(Types.SEND_TRANSACTION, { tx, password })
+      this.showPasswordModal = false
+      this.password = ''
     }
   },
 
