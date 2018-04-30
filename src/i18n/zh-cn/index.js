@@ -70,7 +70,7 @@ export default {
         transfer_amount: '转出金额',
         fee: '手续费',
         total: '总金额',
-        enter_pwd: '请出入账户密码',
+        enter_pwd: '请输入账户密码',
         wrong_pwd: '密码错误！'
       }
     }
