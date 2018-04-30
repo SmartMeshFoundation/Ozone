@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-lg">
+  <q-page class="q-pa-lg trans-main">
     <div class="gutter-md trans-panel">
       <div class="row gutter-md">
         <div class="col-sm" style="margin-top: -39px">
@@ -114,10 +114,10 @@
 </template>
 <style lang="stylus">
 div.trans-panel
-    margin-top 36px
+    position relative
+    top 28px
     margin-left 4px
-    padding-left 12px
-    padding-right 42px
+    padding 39px 42px 0px 12px
     background-color #FFFFFF !important
     height 497px
 .trans-panel .gas-fee
