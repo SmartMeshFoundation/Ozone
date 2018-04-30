@@ -334,7 +334,7 @@ class SpectrumNode extends EventEmitter {
 
         return global.web3.eth.net.isListening().catch(retry)
       },
-      { retries: 3 }
+      { retries: 10 }
     )
   }
 

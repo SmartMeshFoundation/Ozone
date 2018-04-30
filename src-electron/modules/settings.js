@@ -6,13 +6,14 @@ import fs from 'fs-extra'
 import packageJson from '../../package.json'
 
 const _defaults = {
-  network: 'test',
+  network: 'main',
   syncmode: 'fast',
   nodeType: 'geth',
   ipcFile: 'smc.ipc',
   rpcPort: 18545,
   wsPort: 18546,
-  requiredConfirmations: 12
+  requiredConfirmations: 12,
+  loglevel: 'info'
 }
 
 class Settings {
@@ -21,6 +22,7 @@ class Settings {
   }
 
   init () {
+    logger.setup({loglevel: this.loglevel})
     this._log = logger.create('Settings')
   }
 
@@ -130,6 +132,10 @@ class Settings {
   //   // return `ws://localhost:${wsport}`
   //   return path.join(this.chainDataPath, 'geth.ipc')
   // }
+
+  get loglevel () {
+    return _defaults.loglevel
+  }
 
   loadUserData (path2) {
     const fullPath = this.constructUserDataPath(path2)

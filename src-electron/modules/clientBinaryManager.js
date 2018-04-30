@@ -72,6 +72,8 @@ class Manager extends EventEmitter {
       .then(latestConfig => {
         if (!latestConfig) return
 
+        log.info('latestConfig', latestConfig)
+
         let localConfig
         let skipedVersion
         const nodeVersion = latestConfig.version
@@ -111,6 +113,7 @@ class Manager extends EventEmitter {
             .toString()
         } catch (err) {
           log.info('No "skippedNodeVersion.json" found.')
+          skipedVersion = ''
         }
 
         // prepare node info
@@ -132,6 +135,11 @@ class Manager extends EventEmitter {
           algorithm
         }
 
+        log.debug('latestConfig: \n', latestConfig)
+        log.debug('localConfig: \n', localConfig)
+        log.debug('JSON.stringify(localConfig) !== JSON.stringify(latestConfig):', JSON.stringify(localConfig) !== JSON.stringify(latestConfig))
+        log.debug('nodeVersion !== skipedVersion:', nodeVersion !== skipedVersion)
+
         // if new config version available then ask user if they wish to update
         if (
           latestConfig &&
@@ -143,22 +151,24 @@ class Manager extends EventEmitter {
               'New client binaries config found, asking user if they wish to update...'
             )
 
-            let bwin = global.getByType('main')
-            let num = dialog.showMessageBox(bwin, {
-              type: 'info',
-              message: '发现客户端的新版本，是否升级？',
-              buttons: ['CANCEL', 'OK']
-            })
-            if (num === 0) {
-              fs.writeFileSync(
-                path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
-                nodeVersion
-              )
-              resolve(localConfig)
-            } else {
-              this._writeLocalConfig(latestConfig)
-              resolve(latestConfig)
-            }
+            // let bwin = global.windows.getByType('main')
+            // let num = dialog.showMessageBox(bwin, {
+            //   type: 'info',
+            //   message: '发现客户端的新版本，是否升级？',
+            //   buttons: ['CANCEL', 'OK']
+            // })
+            // if (num === 0) {
+            // fs.writeFileSync(
+            //   path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
+            //   nodeVersion
+            // )
+            // resolve(localConfig)
+            // } else {
+            //   this._writeLocalConfig(latestConfig)
+            //   resolve(latestConfig)
+            // }
+            this._writeLocalConfig(latestConfig)
+            resolve(latestConfig)
           })
         }
 

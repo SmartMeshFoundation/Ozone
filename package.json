@@ -1,6 +1,6 @@
 {
   "name": "ozone",
-  "version": "0.0.1-beta",
+  "version": "0.1.0-release",
   "description": "Ozone powered by SmartMesh.io",
   "productName": "Ozone",
   "cordovaId": "io.smartmesh.ozone",
