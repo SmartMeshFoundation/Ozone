@@ -9,6 +9,7 @@ const _defaults = {
   network: 'test',
   syncmode: 'fast',
   nodeType: 'geth',
+  ipcFile: 'smc.ipc',
   rpcPort: 18545,
   wsPort: 18546,
   requiredConfirmations: 12
@@ -122,7 +123,7 @@ class Settings {
   }
 
   get ipcConnection () {
-    return path.join(this.chainDataPath, 'smc.ipc')
+    return path.join(this.chainDataPath, _defaults.ipcFile)
   }
 
   // get web3Provider () {
