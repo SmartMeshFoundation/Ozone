@@ -1,13 +1,13 @@
 <template>
   <div>
-    <q-modal v-model="showSyncModal"
+    <q-modal v-model="showSyncing"
             no-esc-dismiss
             no-backdrop-dismiss
             minimized
             :content-css="{padding: '20px'}">
 
       <div class="row justify-center q-mb-md">
-        <div class="q-title">正在等待区块数据同步完成 ...</div>
+        <div class="q-title">{{ $t('splash.syncing.title') }}</div>
       </div>
       <div class="row justify-center">
         <q-progress indeterminate
@@ -19,10 +19,27 @@
         <div>
           <q-btn color="secondary"
                 @click="skip"
-                label="忽略"
+                :label="$t('button.skip')"
                 flat />
         </div>
       </div>
+    </q-modal>
+
+    <q-modal v-model="showDownloading"
+            no-esc-dismiss
+            no-backdrop-dismiss
+            minimized
+            :content-css="{padding: '20px'}">
+
+      <div class="row justify-center q-mb-md">
+        <div class="q-title">{{ $t('splash.downloading.title') }}</div>
+      </div>
+      <div class="row justify-center">
+        <q-progress indeterminate
+                    animate
+                    color="positive" />
+      </div>
+
     </q-modal>
   </div>
 </template>
@@ -46,7 +63,8 @@ let loadingOption = {
 export default {
   data () {
     return {
-      showSyncModal: false
+      showSyncing: false,
+      showDownloading: false
     }
   },
   methods: {
@@ -55,7 +73,7 @@ export default {
     },
     skip () {
       console.log('skip sync')
-      this.showSyncModal = false
+      this.showSyncing = false
       this.$q.loading.show(loadingOption)
       ipc.send(Types.NODE_SYNC_SKIP)
       // this.goto('/dashboard')
@@ -76,14 +94,17 @@ export default {
     ipc.on(Types.UI_ACTION_CLIENTBINARYSTATUS, (event, status, data) => {
       if (status === 'downloading') {
         console.log('downloading client')
-        this.show({ message: 'Downloading client...' })
+        this.$q.loading.hide()
+        this.showSyncing = false
+        this.showDownloading = true
       }
     })
 
     ipc.on(Types.NODE_SYNC_STATUS, (event, status, result) => {
-      if (!this.showSyncModal) {
+      if (!this.showSyncing) {
         this.$q.loading.hide()
-        this.showSyncModal = true
+        this.showDownloading = false
+        this.showSyncing = true
       }
     })
   },
