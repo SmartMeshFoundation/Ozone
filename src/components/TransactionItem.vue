@@ -1,5 +1,5 @@
 <template>
-  <q-item>
+  <q-item class="trans-item">
     <q-item-side>
       <div class="row justify-center">
         {{date(item.timestamp)}}
@@ -8,11 +8,11 @@
     <q-item-main>
       <q-item-tile>
         <ident-icon :value="item.from.toLowerCase()" />
-        <span> {{accountName(item.from)}} </span>
+        <span :title="item.from" class="trans-from"> {{accountName(item.from)}} </span>
         <q-icon name="send"
                 color="grey-5 q-px-md" />
         <ident-icon :value="item.to.toLowerCase()" />
-        <span> {{accountName(item.to)}} </span>
+        <span :title="item.to" class="trans-to"> {{accountName(item.to)}} </span>
       </q-item-tile>
     </q-item-main>
     <q-item-main>
@@ -23,19 +23,41 @@
         <q-progress :percentage="progress" />
       </q-item-tile>
       <q-item-tile :class="{hidden: !showProgress}">
-        <span> {{item.confirmCount}} / {{$settings.requiredConfirmations}} 块确认 </span>
+        <span> {{item.confirmCount}} / {{$settings.requiredConfirmations}} {{$t('tx.list.unconfirmed')}} </span>
       </q-item-tile>
       <q-item-tile :class="{hidden: !isPending}">
-        <span> 待确认 </span>
+        <span> {{$t('tx.list.unconfirmed')}} </span>
       </q-item-tile>
     </q-item-main>
     <q-item-side right>
-      <q-item-tile color="negative">
+      <q-item-tile class="trans-fee" color="negative">
         -{{toSMT(item.value)}} {{$unit}}
       </q-item-tile>
     </q-item-side>
   </q-item>
 </template>
+<style lang="stylus">
+div.trans-item
+    height 60px
+    margin-top:10px
+    font-size 15px
+    line-height 21px
+    color #333333
+    border-radius 2px !important
+    background-color #FFFFFF !important
+div.trans-item:nth-child(1)
+    margin-top:-20px
+div.trans-item:hover
+    background: #F9FEFF !important
+div.trans-item .q-item-side
+    color #999999 !important
+div.trans-item .trans-fee
+    color #FA5A53 !important
+div.trans-item .trans-from
+    margin-left: 10px
+div.trans-item .trans-to
+    margin-left 10px
+</style>
 
 <script>
 import BigNumber from 'bignumber.js'
@@ -75,7 +97,11 @@ export default {
       return web3.utils.fromWei(new BigNumber(value).toFixed())
     },
     accountName (address) {
-      return this.$store.getters['account/name'](address)
+      let accountName = this.$store.getters['account/name'](address)
+      if (accountName.length > 10) {
+        return accountName.substr(0, 10) + '...'
+      }
+      return accountName
     }
   }
 }

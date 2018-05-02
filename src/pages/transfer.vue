@@ -1,81 +1,83 @@
 <template>
-  <q-page class="q-pa-lg gutter-md">
-    <div class="row gutter-md">
-      <div class="col-sm">
-        <q-field error-label="请选择转出账户"
-                 :error="$v.form.from.$error">
-          <q-select float-label="转出账户"
-                    v-model="form.from"
-                    :options="options()" />
-        </q-field>
+  <q-page class="q-pa-lg trans-main">
+    <div class="gutter-md trans-panel">
+      <div class="row gutter-md">
+        <div class="col-sm" style="margin-top: -39px">
+          <q-field :error-label="$t('tx.transfer.from_error')"
+                   :error="$v.form.from.$error">
+            <q-select :float-label="$t('tx.transfer.from_label')"
+                      v-model="form.from"
+                      :options="options()" />
+          </q-field>
+        </div>
       </div>
-      <div class="col-sm">
-        <q-field error-label="不是合法的账户地址"
-                 :error="$v.form.to.$error">
-          <q-input v-model="form.to"
-                   float-label="转入账户"
-                   placeholder="0x0000..."
-                   @blur="$v.form.to.$touch" />
-        </q-field>
+      <div class="row gutter-md">
+        <div class="col-sm">
+          <q-field :error-label="$t('tx.transfer.to_error')"
+                   :error="$v.form.to.$error">
+            <q-input v-model="form.to"
+                     :float-label="$t('tx.transfer.to_label')"
+                     placeholder="0x0000..."
+                     @blur="$v.form.to.$touch" />
+          </q-field>
+        </div>
       </div>
-
+      <div class="row gutter-md">
+        <div class="col-sm">
+          <q-field :error-label="$t('tx.transfer.balance_error')"
+                   :error="$v.form.amount.$error">
+            <q-input :float-label="$t('tx.transfer.balance_label')"
+                     v-model="form.amount"
+                     type="number"
+                     :suffix="$unit"
+                     clearable
+                     @blur="$v.form.amount.$touch"/>
+          </q-field>
+        </div>
+      </div>
+      <div class="row gutter-md">
+        <div class="col-sm">
+          <q-input :stack-label="$t('tx.transfer.balance')"
+                   v-model="balance"
+                   disable
+                   :suffix="$unit" />
+        </div>
+      </div>
+      <div class="row gutter-md">
+        <div class="col-sm gas-fee">
+          {{$t('tx.transfer.fee')}}：{{gasFee}}
+        </div>
+        <div class="col-sm">
+          <q-btn class="trans-send" size="lg"
+                 :label="$t('tx.transfer.btn')"
+                 color="primary"
+                 @click="transfer"
+                 :disable="disabled">
+          </q-btn>
+        </div>
+      </div>
     </div>
-    <div class="row gutter-md">
-      <div class="col-sm">
-        <q-field error-label="转出金额必须大于0"
-                 :error="$v.form.amount.$error">
-          <q-input float-label="转出金额"
-                   v-model="form.amount"
-                   type="number"
-                   :suffix="$unit"
-                   clearable
-                   @blur="$v.form.amount.$touch"/>
-        </q-field>
-      </div>
-      <div class="col-sm">
-        <q-input stack-label="余额"
-                 v-model="balance"
-                 disable
-                 :suffix="$unit" />
-      </div>
-    </div>
-    <div class="row gutter-md">
-      <div class="col-sm">
-        估计交易费用：{{gasFee}}
-      </div>
-      <div class="col-sm">
-        <q-btn icon="send"
-               size="lg"
-               label="确认转账"
-               color="secondary"
-               @click="transfer"
-               :disable="disabled">
-        </q-btn>
-      </div>
-    </div>
-
-    <q-modal v-model="showConfirmModal"
+    <q-modal class="transfer-confirm" v-model="showConfirmModal"
              minimized
-             position="top"
              :content-css="{padding: '30px'}">
 
       <div class="row justify-center q-mb-md">
-        <div class="q-display-1">确认转账</div>
+        <div class="q-display-1">{{$t('tx.transfer.confirm.title')}}</div>
       </div>
       <div class="row justify-center"><ident-icon :value="form.from"/></div>
       <div class="row q-pa-md">{{form.from}}</div>
       <div class="row justify-center"><q-icon name="arrow_downward" /></div>
       <div class="row q-pa-md">{{form.to}}</div>
       <div class="row q-pa-md">
-        <div class="col">转出金额：</div>
+        <div class="col">{{$t('tx.transfer.confirm.transfer_amount')}}：</div>
         <div>{{form.amount}} {{$unit}}</div>
       </div>
       <div class="row q-pa-md">
-        <div class="col">手续费：</div>
+        <div class="col">{{$t('tx.transfer.confirm.fee')}}：</div>
         <div>{{gasFee}} {{$unit}}</div>
       </div>
       <div class="row q-pa-md">
-        <div class="col">总金额：</div>
+        <div class="col">{{$t('tx.transfer.confirm.total')}}：</div>
         <div class="text-negative"><big>{{total}}</big> {{$unit}}</div>
       </div>
       <div class="row q-pa-md gutter-md justify-end">
@@ -83,18 +85,82 @@
 
           <q-btn color="tertiary"
                  @click="showConfirmModal = false; disabled = false"
-                 label="取消" />
+                 :label="$t('button.cancel')" />
         </div>
         <div>
-          <q-btn color="secondary"
+          <q-btn color="primary"
                  @click="confirm"
-                 label="确认" />
+                 :label="$t('button.ok')" />
         </div>
+      </div>
+    </q-modal>
+
+    <q-modal class="password-modal" v-model="showPasswordModal">
+      <div class="q-pa-md">
+        <p class="q-headline">{{ $t('tx.transfer.confirm.enter_pwd') }}</p>
+        <p class="modify-account-name"><q-input type="password" v-model="password"/></p>
+        <q-btn :label="$t('button.cancel')"
+               color="primary"
+               class="q-my-md cancel-btn"
+               @click="cancel" />
+        <q-btn :label="$t('button.ok')"
+               color="primary"
+               class="q-my-md sub-btn"
+               @click="submit" />
       </div>
     </q-modal>
 
   </q-page>
 </template>
+<style lang="stylus">
+div.trans-panel
+    position relative
+    top 28px
+    margin-left 4px
+    padding 39px 42px 0px 12px
+    background-color #FFFFFF !important
+    height 497px
+.trans-panel .gas-fee
+    font-size 16px
+    color #333333
+    line-height 22px
+    position absolute
+    top 383px
+.trans-panel .trans-send
+    position absolute
+    top 409px
+    font-size 14px !important
+    line-height 20px
+    width 120px
+    height 36px
+    background-color #10A0F8 !important
+    right 65px
+div.transfer-confirm .q-btn
+    background-color #10A0F8 !important
+div.password-modal .modal-content
+  width 448px
+  height 214px
+div.password-modal .q-headline
+  font-size 18px
+  color #333333
+  line-height 25px
+  margin-top 14px
+  margin-left 8px
+div.password-modal .modify-account-name
+  margin-top 30px !important
+div.password-modal .q-btn
+  position absolute
+  border-radius 2px
+  width 70px
+  height 36px
+  background-color #10A0F8 !important
+div.password-modal .cancel-btn
+  bottom 4px
+  right 105px !important
+div.password-modal .sub-btn
+  bottom 4px
+  right 26px !important
+</style>
 
 <script>
 import _ from 'lodash'
@@ -113,11 +179,13 @@ export default {
   data () {
     return {
       showConfirmModal: false,
+      showPasswordModal: false,
       form: {
         from: this.$route.params.address || '',
         to: '',
         amount: ''
       },
+      password: '',
       // balance: 0,
       gasFee: 0,
       total: 0,
@@ -211,29 +279,23 @@ export default {
     },
     confirm () {
       this.showConfirmModal = false
-
+      this.showPasswordModal = true
+    },
+    cancel () {
+      this.showPasswordModal = false
+      this.password = ''
+    },
+    submit () {
       let tx = {
         from: this.form.from,
         to: this.form.to,
         value: web3.utils.toWei(this.form.amount.toString())
       }
-      this.$q
-        .dialog({
-          title: '请输入账户密码',
-          preventClose: false,
-          position: 'top',
-          prompt: {
-            type: 'password'
-          }
-        })
-        .then(password => {
-          this.$q.loading.show({ delay: 400 })
-          ipc.send(Types.SEND_TRANSACTION, { tx, password })
-        })
-        .catch(() => {
-          this.disabled = false
-          this.$q.loading.hide()
-        })
+      let password = this.password
+      this.$q.loading.show({ delay: 400 })
+      ipc.send(Types.SEND_TRANSACTION, { tx, password })
+      this.showPasswordModal = false
+      this.password = ''
     }
   },
 
@@ -245,7 +307,7 @@ export default {
       console.log('send transaction reply: ', reply)
       this.$q.loading.hide()
       if (reply.error && reply.error === 'invalid-password') {
-        $vm.$q.notify('密码错误！')
+        $vm.$q.notify(this.$t('tx.transfer.confirm.wrong_pwd'))
         $vm.disabled = false
       } else {
         $vm.$router.push('/wallet')

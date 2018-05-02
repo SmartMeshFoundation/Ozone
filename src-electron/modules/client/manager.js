@@ -14,15 +14,15 @@ function copyFile (src, dst) {
   return new Promise((resolve, reject) => {
     var rd = fs.createReadStream(src)
 
-    rd.on('error', (err) => {
+    rd.on('error', err => {
       reject(err)
     })
 
     var wr = fs.createWriteStream(dst)
-    wr.on('error', (err) => {
+    wr.on('error', err => {
       reject(err)
     })
-    wr.on('close', (ex) => {
+    wr.on('close', ex => {
       resolve()
     })
 
@@ -36,7 +36,7 @@ function checksum (filePath, algorithm) {
 
     const stream = fs.ReadStream(filePath)
 
-    stream.on('data', (d) => checksum.update(d))
+    stream.on('data', d => checksum.update(d))
 
     stream.on('end', () => {
       resolve(checksum.digest('hex'))
@@ -47,10 +47,10 @@ function checksum (filePath, algorithm) {
 }
 
 const DUMMY_LOGGER = {
-  debug: function () { },
-  info: function () { },
-  warn: function () { },
-  error: function () { }
+  debug: function () {},
+  info: function () {},
+  warn: function () {},
+  error: function () {}
 }
 
 import DefaultConfig from './config.json'
@@ -84,9 +84,10 @@ class Manager {
     this._logger = {}
 
     for (let key in DUMMY_LOGGER) {
-      this._logger[key] = (val && typeof val[key] === 'function')
-        ? val[key].bind(val)
-        : DUMMY_LOGGER[key]
+      this._logger[key] =
+        val && typeof val[key] === 'function'
+          ? val[key].bind(val)
+          : DUMMY_LOGGER[key]
     }
   }
 
@@ -165,11 +166,14 @@ class Manager {
    * @return {Promise}
    */
   download (clientId, options) {
-    options = Object.assign({
-      downloadFolder: null,
-      unpackHandler: null,
-      urlRegex: null
-    }, options)
+    options = Object.assign(
+      {
+        downloadFolder: null,
+        unpackHandler: null,
+        urlRegex: null
+      },
+      options
+    )
 
     this._logger.info(`Download binary for ${clientId} ...`)
 
@@ -182,7 +186,9 @@ class Manager {
       .then(() => {
         // not for this machine?
         if (!client) {
-          throw new Error(`${clientId} missing configuration for this platform.`)
+          throw new Error(
+            `${clientId} missing configuration for this platform.`
+          )
         }
 
         if (!_.get(downloadCfg, 'url') || !_.get(downloadCfg, 'type')) {
@@ -210,13 +216,20 @@ class Manager {
           client.id
         )
 
-        this._logger.debug(`Ensure download folder ${downloadFolder} exists ...`)
+        this._logger.debug(
+          `Ensure download folder ${downloadFolder} exists ...`
+        )
 
         mkdirp.sync(downloadFolder)
 
-        const downloadFile = path.join(downloadFolder, `archive.${downloadCfg.type}`)
+        const downloadFile = path.join(
+          downloadFolder,
+          `archive.${downloadCfg.type}`
+        )
 
-        this._logger.info(`Downloading package from ${downloadCfg.url} to ${downloadFile} ...`)
+        this._logger.info(
+          `Downloading package from ${downloadCfg.url} to ${downloadFile} ...`
+        )
 
         const writeStream = fs.createWriteStream(downloadFile)
 
@@ -230,10 +243,14 @@ class Manager {
 
         // stream.on('progress', (info) => );
 
-        stream.on('error', (err) => {
+        stream.on('error', err => {
           this._logger.error(err)
 
-          _reject(new Error(`Error downloading package for ${clientId}: ${err.message}`))
+          _reject(
+            new Error(
+              `Error downloading package for ${clientId}: ${err.message}`
+            )
+          )
         })
 
         stream.on('end', () => {
@@ -248,43 +265,46 @@ class Manager {
               downloadFile: downloadFile
             })
           } catch (err) {
-            _reject(new Error(`Error downloading package for ${clientId}: ${err.message}`))
+            _reject(
+              new Error(
+                `Error downloading package for ${clientId}: ${err.message}`
+              )
+            )
           }
         })
 
         return promise
       })
-      .then((dInfo) => {
+      .then(dInfo => {
         const downloadFolder = dInfo.downloadFolder,
           downloadFile = dInfo.downloadFile
 
         // test checksum
         let value, algorithm, expectedHash
 
-        if (value = _.get(downloadCfg, 'md5')) {
+        if ((value = _.get(downloadCfg, 'md5'))) {
           expectedHash = value
           algorithm = 'md5'
-        } else if (value = _.get(downloadCfg, 'sha256')) {
+        } else if ((value = _.get(downloadCfg, 'sha256'))) {
           expectedHash = value
           algorithm = 'sha256'
         }
 
         if (algorithm) {
-          return checksum(dInfo.downloadFile, algorithm)
-            .then((hash) => {
-              this._logger.info(algorithm)
-              this._logger.info(hash)
-              this._logger.info(expectedHash)
-              if (expectedHash !== hash) {
-                throw new Error(`Hash mismatch: ${expectedHash}`)
-              }
-              return dInfo
-            })
+          return checksum(dInfo.downloadFile, algorithm).then(hash => {
+            this._logger.info(algorithm)
+            this._logger.info(hash)
+            this._logger.info(expectedHash)
+            if (expectedHash !== hash) {
+              throw new Error(`Hash mismatch: ${expectedHash}`)
+            }
+            return dInfo
+          })
         } else {
           return dInfo
         }
       })
-      .then((dInfo) => {
+      .then(dInfo => {
         const downloadFolder = dInfo.downloadFolder,
           downloadFile = dInfo.downloadFile
 
@@ -309,9 +329,11 @@ class Manager {
 
               promise = new Promise((resolve, reject) => {
                 try {
-                  fs.createReadStream(downloadFile)
+                  fs
+                    .createReadStream(downloadFile)
                     .pipe(
-                      unzip.Extract({ path: unpackFolder })
+                      unzip
+                        .Extract({ path: unpackFolder })
                         .on('close', resolve)
                         .on('error', reject)
                     )
@@ -324,35 +346,43 @@ class Manager {
             case 'tar':
               this._logger.debug(`Using tar ...`)
 
-              promise = this._spawn('tar', ['-xf', downloadFile, '-C', unpackFolder])
+              promise = this._spawn('tar', [
+                '-xf',
+                downloadFile,
+                '-C',
+                unpackFolder
+              ])
               break
             default:
               throw new Error(`Unsupported archive type: ${downloadCfg.type}`)
           }
         }
 
-        return promise.then(() => {
-          this._logger.debug(`Unzipped ${downloadFile} to ${unpackFolder}`)
+        return promise
+          .then(() => {
+            this._logger.debug(`Unzipped ${downloadFile} to ${unpackFolder}`)
 
-          const linkPath = path.join(unpackFolder, activeCli.bin)
+            const linkPath = path.join(unpackFolder, activeCli.bin)
 
-          // need to rename binary?
-          if (downloadCfg.bin) {
-            let realPath = path.join(unpackFolder, downloadCfg.bin)
+            // need to rename binary?
+            if (downloadCfg.bin) {
+              let realPath = path.join(unpackFolder, downloadCfg.bin)
 
-            try {
-              fs.accessSync(linkPath, fs.R_OK)
-              fs.unlinkSync(linkPath)
-            } catch (e) {
-              if (e.code !== 'ENOENT') { this._logger.warn(e) }
+              try {
+                fs.accessSync(linkPath, fs.R_OK)
+                fs.unlinkSync(linkPath)
+              } catch (e) {
+                if (e.code !== 'ENOENT') {
+                  this._logger.warn(e)
+                }
+              }
+
+              return copyFile(realPath, linkPath).then(() => linkPath)
+            } else {
+              return Promise.resolve(linkPath)
             }
-
-            return copyFile(realPath, linkPath).then(() => linkPath)
-          } else {
-            return Promise.resolve(linkPath)
-          }
-        })
-          .then((binPath) => {
+          })
+          .then(binPath => {
             // make binary executable
             try {
               fs.chmodSync(binPath, '755')
@@ -367,15 +397,14 @@ class Manager {
             }
           })
       })
-      .then((info) => {
+      .then(info => {
         return this._verifyClientStatus(client, {
           folders: [info.unpackFolder]
-        })
-          .then(() => {
-            info.client = client
+        }).then(() => {
+          info.client = client
 
-            return info
-          })
+          return info
+        })
       })
   }
 
@@ -413,24 +442,25 @@ class Manager {
   _scan (options) {
     this._clients = {}
 
-    return this._calculatePossibleClients()
-      .then((clients) => {
-        this._clients = clients
+    return this._calculatePossibleClients().then(clients => {
+      this._clients = clients
 
-        const count = Object.keys(this._clients).length
+      const count = Object.keys(this._clients).length
 
-        this._logger.info(`${count} possible clients.`)
+      this._logger.info(`${count} possible clients.`)
 
-        if (_.isEmpty(this._clients)) {
-          return
-        }
+      if (_.isEmpty(this._clients)) {
+        return
+      }
 
-        this._logger.info(`Verifying status of all ${count} possible clients...`)
+      this._logger.info(`Verifying status of all ${count} possible clients...`)
 
-        return Promise.all(_.values(this._clients).map(
-          (client) => this._verifyClientStatus(client, options)
-        ))
-      })
+      return Promise.all(
+        _.values(this._clients).map(client =>
+          this._verifyClientStatus(client, options)
+        )
+      )
+    })
   }
 
   /**
@@ -438,27 +468,25 @@ class Manager {
    * @return {Promise}
    */
   _calculatePossibleClients () {
-    return Promise.resolve()
-      .then(() => {
-        // get possible clients
-        this._logger.info('Calculating possible clients...')
+    return Promise.resolve().then(() => {
+      // get possible clients
+      this._logger.info('Calculating possible clients...')
 
-        const possibleClients = {}
+      const possibleClients = {}
 
-        for (let clientName in _.get(this._config, 'clients', {})) {
-          let client = this._config.clients[clientName]
+      for (let clientName in _.get(this._config, 'clients', {})) {
+        let client = this._config.clients[clientName]
 
-          if (_.get(client, `platforms.${this._os}`)) {
-            possibleClients[clientName] =
-              Object.assign({}, client, {
-                id: clientName,
-                activeCli: client.platforms[this._os]
-              })
-          }
+        if (_.get(client, `platforms.${this._os}`)) {
+          possibleClients[clientName] = Object.assign({}, client, {
+            id: clientName,
+            activeCli: client.platforms[this._os]
+          })
         }
+      }
 
-        return possibleClients
-      })
+      return possibleClients
+    })
   }
 
   /**
@@ -470,9 +498,12 @@ class Manager {
    * @return {Promise}
    */
   _verifyClientStatus (client, options) {
-    options = Object.assign({
-      folders: []
-    }, options)
+    options = Object.assign(
+      {
+        folders: []
+      },
+      options
+    )
 
     this._logger.info(`Verify ${client.id} status ...`)
 
@@ -491,15 +522,19 @@ class Manager {
         .then(() => {
           // now let's search additional folders
           if (_.get(options, 'folders.length')) {
-            options.folders.forEach((folder) => {
-              this._logger.debug(`Checking for ${client.id} binary in ${folder} ...`)
+            options.folders.forEach(folder => {
+              this._logger.debug(
+                `Checking for ${client.id} binary in ${folder} ...`
+              )
 
               const fullPath = path.join(folder, binName)
 
               try {
                 fs.accessSync(fullPath, fs.F_OK | fs.X_OK)
 
-                this._logger.debug(`Got optional folder binary for ${client.id}: ${fullPath}`)
+                this._logger.debug(
+                  `Got optional folder binary for ${client.id}: ${fullPath}`
+                )
 
                 binPaths.push(fullPath)
               } catch (err) {
@@ -513,8 +548,10 @@ class Manager {
             throw new Error(`No binaries found for ${client.id}`)
           }
         })
-        .catch((err) => {
-          this._logger.error(`Unable to resolve ${client.id} executable: ${binName}`)
+        .catch(err => {
+          this._logger.error(
+            `Unable to resolve ${client.id} executable: ${binName}`
+          )
 
           client.state.available = false
           client.state.failReason = 'notFound'
@@ -523,30 +560,33 @@ class Manager {
         })
         .then(() => {
           // sanity check each available binary until a good one is found
-          return Promise.all(binPaths.map((binPath) => {
-            this._logger.debug(`Running ${client.id} sanity check for binary: ${binPath} ...`)
+          return Promise.all(
+            binPaths.map(binPath => {
+              this._logger.debug(
+                `Running ${client.id} sanity check for binary: ${binPath} ...`
+              )
 
-            return this._runSanityCheck(client, binPath)
-              .catch((err) => {
-                this._logger.debug(`Sanity check failed for: ${binPath}`)
-              })
-          }))
-            .then(() => {
-              // if one succeeded then we're good
-              if (client.activeCli.fullPath) {
-                return
-              }
-
-              client.state.available = false
-              client.state.failReason = 'sanityCheckFail'
-
-              throw new Error('All sanity checks failed')
+              return this._runSanityCheck(client, binPath)
+                .catch(() => {
+                  this._logger.debug(`Sanity check failed for: ${binPath}`)
+                })
             })
+          ).then(() => {
+            // if one succeeded then we're good
+            if (client.activeCli.fullPath) {
+              return
+            }
+
+            client.state.available = false
+            client.state.failReason = 'sanityCheckFail'
+
+            throw new Error('All sanity checks failed')
+          })
         })
         .then(() => {
           client.state.available = true
         })
-        .catch((err) => {
+        .catch(() => {
           this._logger.debug(`${client.id} deemed unavailable`)
 
           client.state.available = false
@@ -567,12 +607,38 @@ class Manager {
 
     this._logger.info(`Checking for ${client.id} sanity check ...`)
 
+    const sanityCheck = _.get(client, 'activeCli.commands.sanity')
+
     return Promise.resolve()
       .then(() => {
+        if (!sanityCheck) {
+          throw new Error(`No ${client.id} sanity check found.`)
+        }
+      })
+      .then(() => {
+        this._logger.info(`Checking sanity for ${client.id} ...`)
+
+        return this._spawn(binPath, sanityCheck.args)
+      })
+      .then(output => {
+        const haystack = output.stdout + output.stderr
+
+        this._logger.debug(`Sanity check output: ${haystack}`)
+
+        const needles = sanityCheck.output || []
+
+        for (let needle of needles) {
+          if (haystack.indexOf(needle) < 0) {
+            throw new Error(`Unable to find "${needle}" in ${client.id} output`)
+          }
+        }
+
+        this._logger.debug(`Sanity check passed for ${binPath}`)
+
         // set it!
         client.activeCli.fullPath = binPath
       })
-      .catch((err) => {
+      .catch(err => {
         this._logger.error(`Sanity check failed for ${client.id}`, err)
 
         throw err

@@ -6,9 +6,10 @@ import fs from 'fs-extra'
 import packageJson from '../../package.json'
 
 const _defaults = {
-  network: 'test',
+  network: process.env.PROD ? 'main' : 'test',
   syncmode: 'fast',
   nodeType: 'geth',
+  ipcFile: 'smc.ipc',
   rpcPort: 18545,
   wsPort: 18546,
   requiredConfirmations: 12
@@ -20,6 +21,7 @@ class Settings {
   }
 
   init () {
+    logger.setup({loglevel: this.loglevel})
     this._log = logger.create('Settings')
   }
 
@@ -122,13 +124,8 @@ class Settings {
   }
 
   get ipcConnection () {
-    return path.join(this.chainDataPath, 'smc.ipc')
+    return path.join(this.chainDataPath, _defaults.ipcFile)
   }
-
-  // get web3Provider () {
-  //   // return `ws://localhost:${wsport}`
-  //   return path.join(this.chainDataPath, 'geth.ipc')
-  // }
 
   loadUserData (path2) {
     const fullPath = this.constructUserDataPath(path2)

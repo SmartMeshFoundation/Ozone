@@ -1,12 +1,7 @@
-import _ from 'lodash'
 import log4js from 'log4js'
 import path from 'path'
 import { app } from 'electron'
-
-// Global log4js options
-const defaultOptions = {
-  loglevel: 'debug'
-}
+import _ from 'lodash'
 
 const LoggerFactory = {}
 
@@ -17,36 +12,23 @@ const LoggerFactory = {}
  * @param  {String} [options.logfile] File to write logs to (default: no file logging).
  */
 LoggerFactory.setup = options => {
-  options = _.extend(
-    {
-      logfile: null,
-      loglevel: null
-    },
-    options
-  )
-
-  // logging
   const log4jsOptions = {
     appenders: {
       console: { type: 'console' },
       file: {
         type: 'file',
-        filename: path.resolve(app.getPath('userData'), 'app.log')
+        filename: path.resolve(app.getPath('userData'), 'ozone.log')
       }
     },
     categories: {
-      default: { appenders: ['console', 'file'], level: 'debug' }
+      default: {
+        appenders: ['console', 'file'],
+        level: process.env.PROD ? 'info' : 'debug'
+      }
     }
   }
 
-  if (options.logfile) {
-    log4jsOptions.appenders.push({
-      type: 'file',
-      filename: options.logfile
-    })
-  }
-
-  log4js.configure(log4jsOptions)
+  log4js.configure(_.extend(log4jsOptions, options))
 }
 
 LoggerFactory.create = category => {
@@ -60,6 +42,6 @@ LoggerFactory.create = category => {
   return logger
 }
 
-LoggerFactory.setup(defaultOptions)
+LoggerFactory.setup({})
 
 export default LoggerFactory

@@ -1,15 +1,13 @@
 <template>
   <q-layout view="LHh Lpr LFf">
     <q-layout-header style="-webkit-app-region: drag">
-      <q-toolbar color="primary"
-                 :glossy="$q.theme === 'mat'"
+      <q-toolbar :glossy="$q.theme === 'mat'"
                  :inverted="$q.theme === 'ios'">
         <q-toolbar-title>
-          <q-icon :name="toolbarIcon" />
-          <span>{{ toolbarTitle }}</span>
+          <span class="toolbar-title">{{ toolbarTitle }}</span>
           <!-- <div slot="subtitle">Impossible made possible</div> -->
         </q-toolbar-title>
-        <q-btn flat
+        <q-btn class="toolbar-btn" flat
                dense
                round
                @click="leftDrawerOpen = !leftDrawerOpen"
@@ -24,9 +22,9 @@
       <div class="bg-white">
         <div class="row flex-center q-my-sm">
           <img alt="Ozone logo"
-               src="statics/smart_mesh.jpeg"
-               style="height: 75px;" />
-          <q-btn flat
+               src="statics/icon_smart.png"
+               class="ozone-img" />
+          <q-btn class="ozone-logo" flat
                  dense
                  disable
                  text-color="black"
@@ -55,25 +53,24 @@
                   icon="router"
                   title="peers"
                   class="q-ml-sm"> {{peerCount}} </q-chip>
-          <!-- <div>
-            <lang-switcher />
-          </div> -->
         </div>
+        <!-- <div class="row q-pa-sm justify-center">
+          <lang-switcher />
+        </div> -->
       </div>
-      <q-list no-border
+      <q-list class="ozone-menu" no-border
               link
-              inset-delimiter
-              separator>
+              inset-delimiter>
         <q-list-header>{{ $t('nav.header.account') }}</q-list-header>
         <q-item to="/wallet"
                 @click.native="updateToolbar($t('nav.wallet.label'), 'fa-credit-card')">
-          <q-item-side icon="fa-credit-card" />
+          <q-item-side class="wallet-menu" />
           <q-item-main :label="$t('nav.wallet.label')"
                        :sublabel="$t('nav.wallet.sublabel')" />
         </q-item>
         <q-item to="/transfer/"
                 @click.native="updateToolbar($t('nav.transfer.label'), 'fa-exchange-alt')">
-          <q-item-side icon="fa-exchange-alt" />
+          <q-item-side class="trans-menu" />
           <q-item-main :label="$t('nav.transfer.label')"
                        :sublabel="$t('nav.transfer.sublabel')" />
         </q-item>
@@ -87,11 +84,66 @@
     </q-layout-drawer>
 
     <q-page-container>
-      <router-view @updateToolbar="updateToolbar" />
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
-
+<style lang="stylus">
+.ozone-img
+    margin-top 18px
+    height 50px
+    width 50px
+.ozone-logo
+    margin-top 18px
+    color #333333
+    font-size 22px
+    line-height 30px
+.toolbar-title
+    position absolute
+    left 27px
+    line-height 22px
+    top 14px
+    font-size 16px
+    color #788083 !important
+.toolbar-btn
+    color: #cccccc
+.q-layout-drawer
+    width: 298px
+.q-layout-page
+    background-color: #F1F3F6
+div.ozone-menu > .q-item.router-link-active
+    background-color #F4F8F9
+    border-left 3px solid #10A0F8 !important
+.q-item:after
+    visibility hidden
+.q-list-header
+    color #868686
+    font-size 14px
+    line-height 20px
+div.q-item-label
+    color #333333
+    font-size 15px
+    line-height 21px
+div.q-item-sublabel
+    color #999999
+    font-size 14px
+    line-height 20px
+div.ozone-menu .q-item
+    height 62px
+div.ozone-menu .q-item-main
+    position fixed
+    left 62px
+div.ozone-menu .q-item-side
+    display inline-block
+    position fixed
+    left 19px
+    width 30px
+    height 30px
+div.wallet-menu
+    background url("../assets/wallet@2x.png") no-repeat center
+div.trans-menu
+    background url("../assets/trans@2x.png") no-repeat center
+</style>
 <script>
 let timer
 const web3 = window.web3

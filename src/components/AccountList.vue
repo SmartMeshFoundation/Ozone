@@ -1,15 +1,15 @@
 <template>
   <div>
-    <h1>账户列表
-      <em class="text-warning float-right"> 总资产：<ani-number :value="total"/> {{$unit}}</em>
+    <h1 class="account-title">{{ $t('account.account_list') }}
+      <em class="total-unit text-warning float-right"> {{ $t('account.total_balance') }}：<ani-number class="total-unit" :value="total"/> {{$unit}}</em>
     </h1>
-    <q-list highlight
+    <q-list class="account-list" highlight
             sparse
             inset-separator
             no-border>
-      <q-list-header v-if="accounts.length == 0">现在开始，点击下面的
+      <!--<q-list-header v-if="accounts.length == 0">现在开始，点击下面的
         <q-icon round
-                name="add" />按钮，添加一个账户吧！</q-list-header>
+                name="add" />按钮，添加一个账户吧！</q-list-header>-->
 
       <account-item v-for="account of accounts"
                     :account="account"
@@ -17,25 +17,21 @@
                     :to="'/wallet/account/' + account.address" />
     </q-list>
 
-    <q-btn flat
-           size="lg"
-           color="secondary"
-           icon="add"
-           label="创建一个新账户"
+    <q-btn class="add-account" size="lg"
+           color="primary"
+           :label="$t('account.btn.add')"
            @click="showNewAccountModal = true" />
 
     <!-- 创建账号对话框 -->
-    <q-modal v-model="showNewAccountModal"
-             position="top"
+    <q-modal class="create-account-modal" v-model="showNewAccountModal"
              @hide="reset">
       <div class="q-pa-md">
-        <p class="q-headline">建一个新账户</p>
-        <p>为你的账户设置密码。</p>
-        <p class="text-warning">请牢记你的密码，如果遗忘密码将没有任何途径可以找回！</p>
-        <q-field icon="fa-key"
-                 helper="账户密码必须不少于8位"
+        <p class="q-headline">{{ $t('account.create.title') }}</p>
+        <p class="text-1">{{ $t('account.create.text1') }}</p>
+        <p class="text-warning">{{ $t('account.create.text2') }}</p>
+        <q-field :helper="$t('account.create.password_tip1')"
                  v-show="showPasswordField">
-          <q-input float-label="输入账户密码"
+          <q-input :float-label="$t('account.create.password_msg1')"
                    :autofocus="showNewAccountModal"
                    type="password"
                    v-model="form.password"
@@ -43,10 +39,9 @@
                    :error="$v.form.password.$error" />
         </q-field>
 
-        <q-field icon="fa-key"
-                 error-label="两次输入的密码不一致，请重新输入！"
+        <q-field :error-label="$t('account.create.password_tip2')"
                  v-show="showPasswordField == false">
-          <q-input float-label="重复输入密码"
+          <q-input :float-label="$t('account.create.password_msg2')"
                    :autofocus="!showPasswordField"
                    type="password"
                    v-model="form.repeatPassword"
@@ -54,7 +49,7 @@
                    :error="$v.form.repeatPassword.$error" />
         </q-field>
 
-        <q-btn label="确定"
+        <q-btn :label="$t('button.ok')"
                color="primary"
                class="float-right q-my-md"
                @click="submit" />
@@ -63,7 +58,45 @@
     <!-- 创建账号对话框 end -->
   </div>
 </template>
-
+<style lang="stylus">
+h1.account-title
+    color #333333
+    font-weight bold
+    line-height 22px
+    font-size 16px
+    padding-bottom 20px
+    border-bottom 1px solid #DEE3E7 !important
+    margin-top -15px
+.total-unit
+    font-size 17px
+    font-weight bold
+    color #FFBB44 !important
+.add-account
+    font-size 14px !important
+    line-height 20px
+    width 120px
+    margin-top 10px
+    padding 0px 3px
+    border-radius 2px
+    background-color #10A0F8 !important
+div.account-list
+    margin-top -15px
+div.create-account-modal .q-headline
+    color #333333 !important
+    font-size 18px
+    line-height 25px
+div.create-account-modal .text-warning
+    color #FA5A53 !important
+    font-size 15px
+    line-height 21px
+div.create-account-modal .text-1
+    color #999999
+    font-size 16px
+    line-height 22px
+div.create-account-modal .q-btn
+    background-color #10A0F8 !important
+    border-radius 2px
+</style>
 <script>
 import { required, minLength, sameAs } from 'vuelidate/lib/validators'
 
