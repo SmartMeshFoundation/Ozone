@@ -137,7 +137,7 @@ export default {
           this.showPasswordField = false
         }
         return
-      } else if (this.showPasswordField) {
+      } else if (!this.showPasswordField) {
         this.$v.form.repeatPassword.$touch()
         if (this.$v.form.repeatPassword.$error) {
           return
