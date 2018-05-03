@@ -1,7 +1,8 @@
 export default {
   button: {
     ok: '确定',
-    cancel: '取消'
+    cancel: '取消',
+    skip: '忽略'
   },
   nav: {
     header: {
@@ -73,6 +74,14 @@ export default {
         enter_pwd: '请输入账户密码',
         wrong_pwd: '密码错误！'
       }
+    }
+  },
+  splash: {
+    downloading: {
+      title: '应用程序初始化 ...'
+    },
+    syncing: {
+      title: '正在同步区块数据 ...'
     }
   }
 }

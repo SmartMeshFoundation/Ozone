@@ -14,26 +14,42 @@ class ObservePendingTransaction {
     this.transactions = global.db.transactions
 
     this.subscription = this.web3.eth
-      .subscribe('pendingTransactions')
-      .on('data', txHash => {
-        log.info('Incoming pending transactionHash: ', txHash)
-        this.web3.eth.getTransaction(txHash)
-          .then(tx => {
-            if (tx) {
-              log.debug('Incoming pending transaction: ', tx)
-              let transaction = {
-                _id: txHash,
-                confirmed: false,
-                confirmCount: 0,
-                timestamp: moment().unix()
-              }
+      .subscribe('pendingTransactions', (error, result) => {
+        if (!error) log.info(result)
+      })
+      .on('data', tx => {
+        if (tx) {
+          log.info('Incoming pending transactionHash: ', _.pick(tx, ['hash', 'blockNumber']))
+          this._checkOwnedTransaction(tx)
+        }
+      })
+  }
 
-              tx = _.assign(transaction, tx)
-              this.transactions.insert(tx)
-
-              global.stateManager.emit('sync', 'transaction')
-            }
+  _checkOwnedTransaction (tx) {
+    this.web3.eth.getAccounts()
+      .then(accounts => {
+        if (accounts && accounts.length > 0) {
+          let owned = accounts.filter(address => {
+            address = address.toLowerCase()
+            return address === tx.from || address === tx.to
           })
+          if (owned && owned.length > 0) {
+            let transaction = {
+              _id: tx.hash,
+              confirmed: false,
+              confirmCount: 0,
+              timestamp: moment().unix()
+            }
+
+            transaction = _.assign(transaction, tx)
+            this.transactions.insert(transaction)
+
+            syncTransaction()
+          }
+        }
+      })
+      .catch(err => {
+        log.error(err)
       })
   }
 
@@ -50,5 +66,10 @@ class ObservePendingTransaction {
     }
   }
 }
+
+// notify UI changed
+const syncTransaction = _.debounce(() => {
+  global.stateManager.emit('sync', 'transaction')
+}, 1000)
 
 export default new ObservePendingTransaction()

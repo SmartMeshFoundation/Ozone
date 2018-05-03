@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, Menu, dialog, BrowserWindow } from 'electron'
+import { app, Menu } from 'electron'
 import path from 'path'
 import Q from 'bluebird'
 import Web3 from 'web3'

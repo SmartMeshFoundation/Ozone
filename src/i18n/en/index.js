@@ -1,7 +1,8 @@
 export default {
   button: {
     ok: 'OK',
-    cancel: 'CANCEL'
+    cancel: 'CANCEL',
+    skip: 'SKIP'
   },
   nav: {
     header: {
@@ -33,14 +34,17 @@ export default {
     },
     copy: {
       alert: 'alert：copy address',
-      content: 'Do you agree to copy the account address to the system clipboard？',
+      content:
+        'Do you agree to copy the account address to the system clipboard？',
       success: 'copy address success!'
     },
     create: {
       title: 'create a new address',
       text1: 'set a password for your account.',
-      text2: 'Please remember your password. If you forget the password, there will be no way to retrieve it.',
-      password_tip1: 'The password of account must not be less than 8 characters',
+      text2:
+        'Please remember your password. If you forget the password, there will be no way to retrieve it.',
+      password_tip1:
+        'The password of account must not be less than 8 characters',
       password_msg1: 'enter password',
       password_tip2: 'Entered passwords differ, please try again.',
       password_msg2: 'confirm password'
@@ -73,6 +77,14 @@ export default {
         enter_pwd: 'enter password',
         wrong_pwd: 'wrong password!'
       }
+    }
+  },
+  splash: {
+    downloading: {
+      title: 'Ozone is initializing ...'
+    },
+    syncing: {
+      title: 'Ozone is syncing chaindata ...'
     }
   }
 }
