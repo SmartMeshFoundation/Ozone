@@ -1,6 +1,7 @@
-// import transaction from './transaction'
+import compiler from './compiler'
 
 const channels = [
+  compiler
 ]
 
 class IpcManager {

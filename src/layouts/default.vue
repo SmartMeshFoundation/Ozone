@@ -75,7 +75,8 @@
                        :sublabel="$t('nav.transfer.sublabel')" />
         </q-item>
         <q-list-header>{{ $t('nav.header.contract') }}</q-list-header>
-        <q-item to="/contract/deploy">
+        <q-item to="/contract/deploy"
+          @click.native="updateToolbar($t('nav.deploy_contract.label'))">
           <q-item-side icon="code" />
           <q-item-main :label="$t('nav.deploy_contract.label')"
                        :sublabel="$t('nav.deploy_contract.sublabel')" />
