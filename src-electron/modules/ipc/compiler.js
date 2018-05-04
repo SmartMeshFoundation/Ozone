@@ -9,18 +9,17 @@ class ContractCompiler {
   bind () {
     ipc.on(Types.UI_ACTION_COMPILE_SYNC, (event, source) => {
       let output = solc.compile(source, 1)
+      let rtn = {}
       for (var contractName in output.contracts) {
         // code and ABI that are needed by web3
-        log.debug(
-          contractName + ': ' + output.contracts[contractName].bytecode
+        log.debug('contracts.', contractName, ': ' + output.contracts[contractName].bytecode
         )
-        log.debug(
-          contractName +
-            ': ' +
-            JSON.parse(output.contracts[contractName].interface)
+        log.debug('contracts.', contractName, ': ' + JSON.parse(output.contracts[contractName].interface)
         )
       }
-      event.returnValue = output
+      rtn.contracts = output.contracts
+      rtn.errors = output.errors
+      event.returnValue = rtn
     })
   }
 }

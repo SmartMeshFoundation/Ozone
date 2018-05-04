@@ -14,24 +14,33 @@ class ObservePendingTransaction {
     this.transactions = global.db.transactions
 
     this.subscription = this.web3.eth
-      .subscribe('pendingTransactions', (error, result) => {
-        if (!error) log.info(result)
-      })
-      .on('data', tx => {
-        if (tx) {
-          log.info('Incoming pending transactionHash: ', _.pick(tx, ['hash', 'blockNumber']))
-          this._checkOwnedTransaction(tx)
-        }
+      .subscribe('pendingTransactions')
+      .on('data', txHash => {
+        this.web3.eth.getTransaction(txHash)
+          .then(tx => {
+            log.debug('Incoming pending transaction:\n', tx)
+            this._checkOwnedPendingTransaction(tx)
+          })
       })
   }
 
-  _checkOwnedTransaction (tx) {
-    this.web3.eth.getAccounts()
+  _checkOwnedPendingTransaction (tx) {
+    Promise.resolve()
+      .then(() => {
+        if (global.accounts) {
+          return global.accounts
+        } else {
+          return this.web3.eth.getAccounts()
+        }
+      })
       .then(accounts => {
+        log.debug('Current accounts: ', accounts)
         if (accounts && accounts.length > 0) {
+          let from = tx.from.toLowerCase()
+          let to = tx.to.toLowerCase()
           let owned = accounts.filter(address => {
             address = address.toLowerCase()
-            return address === tx.from || address === tx.to
+            return address === from || address === to
           })
           if (owned && owned.length > 0) {
             let transaction = {
@@ -43,6 +52,8 @@ class ObservePendingTransaction {
 
             transaction = _.assign(transaction, tx)
             this.transactions.insert(transaction)
+
+            log.debug('Insert pending tx to db: ', tx.hash)
 
             syncTransaction()
           }

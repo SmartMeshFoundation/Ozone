@@ -43,15 +43,25 @@
                  :class="{hidden: !advanced}"
                  placeholder="在这里粘贴智能合约的 字节码" />
       </div>
+      <div>
+        <q-field error-label="请选择发布需要发布的合约"
+                 :error="$v.form.contract.$error">
+          <q-select float-label="合约名称"
+                    v-model="form.contract"
+                    :options="contractNames" />
+        </q-field>
+      </div>
 
+      <!-- error messages -->
       <div class="q-mt-md">
         <q-alert v-for="(item, index) in messages"
                  :key="'msg-'+index"
-                 :type="errorType(item)"
+                 :type="messageType(item)"
                  class="q-mb-sm">
           {{item}}
         </q-alert>
       </div>
+      <!-- error messages -->
 
     </div>
   </q-page>
@@ -76,8 +86,10 @@ export default {
         amount: '',
         source: '',
         abi: '',
-        bytecode: ''
+        bytecode: '',
+        contract: ''
       },
+      contracts: {},
       messages: [],
       hasError: false,
       advanced: false,
@@ -86,20 +98,29 @@ export default {
   },
   methods: {
     compile: _.debounce(function (source) {
-      let output = ipc.sendSync(Types.UI_ACTION_COMPILE_SYNC, source)
-      console.log('output: ', output)
+      Promise.resolve()
+        .then(() => {
+          let output = ipc.sendSync(Types.UI_ACTION_COMPILE_SYNC, source)
+          console.log('output: ', output)
 
-      this.messages.splice(0, this.messages.length)
-      let errorFlag = false
-      if (output.errors && output.errors.length > 0) {
-        output.errors.forEach(error => {
-          if (error.indexOf('Error') >= 0) errorFlag = true
-          this.messages.push(error)
+          let errorFlag = false
+          if (output.errors && output.errors.length > 0) {
+            output.errors.forEach(error => {
+              if (error.indexOf('Error') >= 0) {
+                errorFlag = true
+                this.messages.push(error)
+              }
+            })
+          }
+          this.hasError = errorFlag
+
+          if (!this.hasError) {
+            this.contracts = output.contracts
+          }
         })
-      }
-      this.hasError = errorFlag
     }, 600),
-    errorType (msg) {
+
+    messageType (msg) {
       if (msg.indexOf('Warn') >= 0) {
         return 'warning'
       } else if (msg.indexOf('Error') >= 0) {
@@ -121,10 +142,24 @@ export default {
         }
       })
       return options
+    },
+    contractNames () {
+      let names = _.keys(this.contracts)
+      let options = []
+      if (names.length > 0) {
+        options = names.map(name => {
+          return {label: name, value: name}
+        })
+      }
+      return options
     }
+
   },
   watch: {
     'form.source' (newVal, oldVal) {
+      this.messages.splice(0, this.messages.length)
+      this.hasError = false
+
       if (newVal && newVal.trim().length > 0) {
         this.compile(newVal)
       }
@@ -132,7 +167,8 @@ export default {
   },
   validations: {
     form: {
-      from: { required }
+      from: { required },
+      contract: { required }
     }
   },
   created () {

@@ -108,7 +108,7 @@ function onReady () {
   let mwin = mainWin.window
   mwin.once('ready-to-show', () => {
     mainWin.show()
-    mwin.webContents.on('did-finish-load', kickStart)
+    // mwin.webContents.on('did-finish-load', kickStart)
   })
 
   /** for context menus */
@@ -140,6 +140,8 @@ function onReady () {
   /** for context menus */
 
   mainWin.load(process.env.APP_URL)
+
+  kickStart()
 }
 
 function kickStart () {
