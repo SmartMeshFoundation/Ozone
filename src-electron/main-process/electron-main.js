@@ -108,7 +108,8 @@ function onReady () {
   let mwin = mainWin.window
   mwin.once('ready-to-show', () => {
     mainWin.show()
-    mwin.webContents.on('did-finish-load', kickStart)
+    kickStart()
+    // mwin.webContents.on('did-finish-load', kickStart)
   })
 
   /** for context menus */
