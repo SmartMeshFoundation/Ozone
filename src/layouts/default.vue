@@ -54,9 +54,9 @@
                   title="peers"
                   class="q-ml-sm"> {{peerCount}} </q-chip>
         </div>
-        <!-- <div class="row q-pa-sm justify-center">
+        <!--<div class="row q-pa-sm justify-center">
           <lang-switcher />
-        </div> -->
+        </div>-->
       </div>
       <q-list class="ozone-menu" no-border
               link
@@ -84,7 +84,7 @@
     </q-layout-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view @updateToolbar="updateToolbar"/>
     </q-page-container>
   </q-layout>
 </template>

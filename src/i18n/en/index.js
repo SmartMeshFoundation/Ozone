@@ -69,6 +69,12 @@ export default {
       balance: 'balance',
       fee: 'estimated service charge',
       btn: 'confirm',
+      insufficient_funds: 'Insufficient funds',
+      transaction_detail: 'Transaction Details',
+      block_number: 'blockNumber',
+      from: 'from',
+      to: 'to',
+      transaction_hash: 'transactionHash',
       confirm: {
         title: 'transfer confirm',
         transfer_amount: 'transfer amount',

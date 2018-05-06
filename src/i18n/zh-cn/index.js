@@ -66,6 +66,12 @@ export default {
       balance: '余额',
       fee: '估计交易费用',
       btn: '确认转账',
+      insufficient_funds: '余额不足',
+      transaction_detail: '交易详情',
+      transaction_hash: '交易hash',
+      block_number: '区块高度',
+      from: '转出',
+      to: '转入',
       confirm: {
         title: '确认转账',
         transfer_amount: '转出金额',

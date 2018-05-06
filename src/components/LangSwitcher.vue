@@ -18,6 +18,8 @@ export default {
   watch: {
     lang (lang) {
       // 切换vue-i18n的语言
+      console.log(this.$i18n)
+      console.log(this.$moment)
       if (lang === 'zh-hans') {
         this.$i18n.locale = 'zh'
         // moment 组件国际化

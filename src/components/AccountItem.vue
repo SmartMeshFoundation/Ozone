@@ -10,7 +10,7 @@
         </q-item-tile>
         <q-item-tile class="address">{{account.address}}
           <q-icon name="content_copy"
-                  @click.native.stop="copyAddress(account.address)" /> </q-item-tile>
+                  @click.native.stop="copyAddress(account.address)" /> <div class="qr_code" @click.stop="qrcode(account.address)"></div></q-item-tile>
       </q-item-main>
       <q-item-side right>
         <q-item-tile class="balance-title">{{ $t('account.balance') }}</q-item-tile>
@@ -26,6 +26,12 @@
                color="primary"
                class="float-right q-my-md"
                @click="submit" />
+      </div>
+    </q-modal>
+
+    <q-modal class="qr-modal" v-model="showQrModal">
+      <div class="q-pa-md">
+        <img v-bind:src="qrdata" class="img-circle" ref="qrcodeImage" width="100%" height="100%"/>
       </div>
     </q-modal>
   </div>
@@ -79,16 +85,28 @@ div.verify-modal .q-btn
     width 70px
     height 36px
     background-color #10A0F8 !important
+.q-alert-content
+    background-color #10A0F8 !important
+div.qr_code
+    width 15px
+    height 15px
+    position relative
+    left 350px
+    top:-15px
+    background url("../assets/qr.png") no-repeat center !important
+    background-size cover
 </style>
 <script>
 import copy from 'clipboard-copy'
-
+const qrCode = require('qrcode')
 export default {
   name: 'AccountItem',
   data () {
     return {
       showVerifyModal: false,
-      copy_Address: ''
+      showQrModal: false,
+      copy_Address: '',
+      qrdata: ''
     }
   },
   props: {
@@ -108,6 +126,13 @@ export default {
       copy(this.copy_Address).then(() => {
         this.showVerifyModal = false
         this.$q.notify({ message: this.$t('account.copy.success'), color: 'primary' })
+      })
+    },
+    qrcode (address) {
+      this.showQrModal = true
+      qrCode.toDataURL(address, {version: 5}).then(url => {
+        console.log(url)
+        this.qrdata = url
       })
     }
   }

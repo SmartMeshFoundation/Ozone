@@ -138,28 +138,30 @@ div.trans-panel
 div.transfer-confirm .q-btn
     background-color #10A0F8 !important
 div.password-modal .modal-content
-  width 448px
-  height 214px
+    width 448px
+    height 214px
 div.password-modal .q-headline
-  font-size 18px
-  color #333333
-  line-height 25px
-  margin-top 14px
-  margin-left 8px
+    font-size 18px
+    color #333333
+    line-height 25px
+    margin-top 14px
+    margin-left 8px
 div.password-modal .modify-account-name
-  margin-top 30px !important
+    margin-top 30px !important
 div.password-modal .q-btn
-  position absolute
-  border-radius 2px
-  width 70px
-  height 36px
-  background-color #10A0F8 !important
+    position absolute
+    border-radius 2px
+    width 70px
+    height 36px
+    background-color #10A0F8 !important
 div.password-modal .cancel-btn
-  bottom 4px
-  right 105px !important
+    bottom 4px
+    right 105px !important
 div.password-modal .sub-btn
-  bottom 4px
-  right 26px !important
+    bottom 4px
+    right 26px !important
+.q-alert-content
+    background-color #FA5A53 !important
 </style>
 
 <script>
@@ -210,12 +212,11 @@ export default {
   },
   watch: {
     'form.from': function (newAddress, oldAddress) {
-      // this.balance = this.getAccountEther(newAddress)
     },
     'form.to': function () {
       this.estimateGas()
     },
-    'form.amount': function () {
+    'form.amount': function (newAmount, oldAmount) {
       this.estimateGas()
     }
   },
@@ -272,6 +273,10 @@ export default {
     },
     transfer () {
       this.$v.form.$touch()
+      if (this.form.amount > this.balance - this.gasFee) {
+        this.$q.notify({ message: this.$t('tx.transfer.insufficient_funds'), color: 'positive', timeout: 1000 })
+        return
+      }
       if (!this.$v.form.$error) {
         this.disabled = true
         this.showConfirmModal = true

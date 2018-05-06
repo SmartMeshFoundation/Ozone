@@ -24,6 +24,24 @@ export default {
     ipc.on(Types.NODE_STATE_CHANGE, (event, state) => {
       this.$store.commit('node/update', state)
     })
+
+    ipc.on(Types.SWICH_LAN, (event, lang) => {
+      if (lang === 'zh') {
+        lang = 'zh-hans'
+        this.$i18n.locale = 'zh'
+        // moment 组件国际化
+        this.$moment.locale('zh-cn')
+      } else {
+        lang = 'en-us'
+        this.$i18n.locale = 'en'
+        this.$moment.locale('en')
+      }
+
+      // 切换quasar-framework的语言
+      import(`quasar-framework/i18n/${lang}`).then(lang => {
+        this.$q.i18n.set(lang.default)
+      })
+    })
   },
   destroyed () {
     [
