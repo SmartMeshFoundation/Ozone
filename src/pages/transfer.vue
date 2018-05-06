@@ -166,7 +166,7 @@ div.password-modal .sub-btn
 
 <script>
 import _ from 'lodash'
-import { required, numeric } from 'vuelidate/lib/validators'
+import { required, minValue } from 'vuelidate/lib/validators'
 // import { ipc } from 'electron'
 import BigNumber from 'bignumber.js'
 const BN = BigNumber
@@ -198,7 +198,7 @@ export default {
     form: {
       from: { required },
       to: { required, address },
-      amount: { required, numeric }
+      amount: { required, minValue: minValue(0) }
     }
   },
   computed: {
@@ -305,7 +305,6 @@ export default {
   },
 
   created () {
-    this.$emit('updateToolbar', '转账', 'fa-exchange-alt')
     const $vm = this
 
     ipc.on(Types.SEND_TRANSACTION_REPLY, (event, reply) => {

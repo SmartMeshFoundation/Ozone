@@ -125,7 +125,7 @@ export default {
     submit () {
       copy(this.copy_Address).then(() => {
         this.showVerifyModal = false
-        this.$q.notify({ message: this.$t('account.copy.success'), color: 'primary' })
+        this.$q.notify({ message: this.$t('account.copy.success'), color: 'primary', timeout: 1000 })
       })
     },
     qrcode (address) {

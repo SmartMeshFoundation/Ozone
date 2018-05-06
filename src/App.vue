@@ -47,7 +47,8 @@ export default {
     [
       Types.SYNC_ACCOUNT,
       Types.SYNC_TRANSACTION,
-      Types.NODE_STATE_CHANGE
+      Types.NODE_STATE_CHANGE,
+      Types.SWICH_LAN
     ].forEach(channel => {
       ipc.removeAllListeners(channel)
     })
