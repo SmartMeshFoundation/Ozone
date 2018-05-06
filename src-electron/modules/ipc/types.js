@@ -13,5 +13,6 @@ export const Types = {
   SYNC_ALL_STATE: 'sync-all-state', // main
   UI_ACTION_CLIENTBINARYSTATUS: 'ui-action-clientbinarystatus',
   UI_ACTION_NODE_STATUS: 'ui-action-node-status',
-  UI_ACTION_NODE_LOGTEXT: 'ui-action-node-logtext'
+  UI_ACTION_NODE_LOGTEXT: 'ui-action-node-logtext',
+  SWICH_LAN: 'swich-lan'
 }

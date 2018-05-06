@@ -1,0 +1,22 @@
+{
+  "selectionMenu": {
+    "copy": "复制",
+    "selectall": "全选"
+  },
+  "inputMenu": {
+    "undo": "撤销",
+    "redo": "反撤销",
+    "cut": "剪切",
+    "copy": "复制",
+    "paste": "粘贴",
+    "selectall": "全选"
+  },
+  "appMenu": {
+    "view": "视图",
+    "language-swich": "语言切换",
+    "langCodes": {
+      "en": "English",
+      "zh": "普通話"
+    }
+  }
+}

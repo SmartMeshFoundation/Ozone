@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, Menu } from 'electron'
+import { app } from 'electron'
 import path from 'path'
 import Q from 'bluebird'
 import Web3 from 'web3'
@@ -16,8 +16,12 @@ import stateManager from '../modules/stateManager'
 import observeManager from '../modules/observeManager'
 import ipc from '../modules/ipc'
 import { Types } from '../modules/ipc/types'
+import i18n from '../modules/i18n'
+import OzoneMenu from '../modules/menu'
 
 const log = logger.create('Main')
+
+log.info('system language is ', app.getLocale())
 
 log.info(`Running in production mode: ${Settings.inProductionMode}`)
 // log.debug('\n================= process.env ================= \n', process.env)
@@ -40,6 +44,9 @@ global.db = db
 global.web3 = new Web3()
 global.windows = windows
 global.stateManager = stateManager
+global.language = 'zh'
+
+global.i18n = i18n
 
 // prevent crashed and close gracefully
 process.on('uncaughtException', error => {
@@ -113,22 +120,58 @@ function onReady () {
   })
 
   /** for context menus */
-  const selectionMenu = Menu.buildFromTemplate([
-    { role: 'copy' },
+  /* const selectionMenu = Menu.buildFromTemplate([
+    { role: 'copy', label: global.i18n.t('selectionMenu.copy') },
     { type: 'separator' },
-    { role: 'selectall' }
+    { role: 'selectall', label: global.i18n.t('selectionMenu.selectall') }
   ])
 
   const inputMenu = Menu.buildFromTemplate([
-    { role: 'undo' },
-    { role: 'redo' },
+    { role: 'undo', label: global.i18n.t('inputMenu.undo') },
+    { role: 'redo', label: global.i18n.t('inputMenu.redo') },
     { type: 'separator' },
-    { role: 'cut' },
-    { role: 'copy' },
-    { role: 'paste' },
+    { role: 'cut', label: global.i18n.t('inputMenu.cut') },
+    { role: 'copy', label: global.i18n.t('inputMenu.copy') },
+    { role: 'paste', label: global.i18n.t('inputMenu.paste') },
     { type: 'separator' },
-    { role: 'selectall' }
+    { role: 'selectall', label: global.i18n.t('inputMenu.selectall') }
   ])
+
+  const currentLanguage = global.language
+
+  const languageMenu = Object.keys(i18n.options.resources)
+    .filter(langCode => langCode !== 'dev')
+    .map(langCode => {
+      const menuItem = {
+        label: global.i18n.t(`appMenu.langCodes.${langCode}`),
+        type: 'checkbox',
+        checked: langCode === currentLanguage,
+        click: () => {
+          log.info('langCode==>', langCode)
+          global.language = langCode
+          Menu.setApplicationMenu(osxMenu)
+          mwin.webContents.removeAllListeners('context-menu')
+          mwin.webContents.on('context-menu', (e, props) => {
+            log.info(inputMenu)
+            const { selectionText, isEditable } = props
+            if (isEditable) {
+              inputMenu.popup(mwin)
+            } else if (selectionText && selectionText.trim() !== '') {
+              selectionMenu.popup(mwin)
+            }
+          })
+        }
+      }
+      return menuItem
+    })
+
+  const appMenu = [{
+    label: global.i18n.t('appMenu.language-swich'),
+    submenu: languageMenu
+  }]
+
+  var osxMenu = Menu.buildFromTemplate(appMenu)
+  Menu.setApplicationMenu(osxMenu)
 
   mwin.webContents.on('context-menu', (e, props) => {
     const { selectionText, isEditable } = props
@@ -137,7 +180,9 @@ function onReady () {
     } else if (selectionText && selectionText.trim() !== '') {
       selectionMenu.popup(mwin)
     }
-  })
+  }) */
+  let ozoneMenu = new OzoneMenu(mwin)
+  ozoneMenu.create()
   /** for context menus */
 
   mainWin.load(process.env.APP_URL)

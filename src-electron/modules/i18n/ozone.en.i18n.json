@@ -1,0 +1,22 @@
+{
+    "selectionMenu": {
+        "copy": "copy",
+        "selectall": "selectall"
+    },
+    "inputMenu": {
+        "undo": "undo",
+        "redo": "redo",
+        "cut": "cut",
+        "copy": "copy",
+        "paste": "paste",
+        "selectall": "selectall"
+    },
+    "appMenu": {
+      "view": "view",
+      "language-swich": "language swich",
+      "langCodes": {
+        "en": "English",
+        "zh": "普通話"
+      }
+    }
+}
