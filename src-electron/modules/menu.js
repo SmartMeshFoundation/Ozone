@@ -7,18 +7,18 @@ class OzoneMenu {
 
   create () {
     const selectionMenu = Menu.buildFromTemplate([
-      { role: 'copy', label: global.i18n.t('selectionMenu.copy') },
+      { role: 'copy', label: global.i18n.t('selectionMenu.copy'), accelerator: 'CmdOrCtrl+C' },
       { type: 'separator' },
       { role: 'selectall', label: global.i18n.t('selectionMenu.selectall') }
     ])
 
     const inputMenu = Menu.buildFromTemplate([
-      { role: 'undo', label: global.i18n.t('inputMenu.undo') },
-      { role: 'redo', label: global.i18n.t('inputMenu.redo') },
+      { role: 'undo', label: global.i18n.t('inputMenu.undo'), accelerator: 'CmdOrCtrl+Z' },
+      { role: 'redo', label: global.i18n.t('inputMenu.redo'), accelerator: 'Shift+CmdOrCtrl+Z' },
       { type: 'separator' },
-      { role: 'cut', label: global.i18n.t('inputMenu.cut') },
-      { role: 'copy', label: global.i18n.t('inputMenu.copy') },
-      { role: 'paste', label: global.i18n.t('inputMenu.paste') },
+      { role: 'cut', label: global.i18n.t('inputMenu.cut'), accelerator: 'CmdOrCtrl+X' },
+      { role: 'copy', label: global.i18n.t('inputMenu.copy'), accelerator: 'CmdOrCtrl+C' },
+      { role: 'paste', label: global.i18n.t('inputMenu.paste'), accelerator: 'CmdOrCtrl+V' },
       { type: 'separator' },
       { role: 'selectall', label: global.i18n.t('inputMenu.selectall') }
     ])
