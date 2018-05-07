@@ -18,13 +18,13 @@ class ObservePendingTransaction {
       .on('data', txHash => {
         this.web3.eth.getTransaction(txHash)
           .then(tx => {
-            log.debug('Incoming pending transaction:\n', tx)
             this._checkOwnedPendingTransaction(tx)
           })
       })
   }
 
   _checkOwnedPendingTransaction (tx) {
+    log.debug('Check incoming pending tx:\n', _.pick(tx, ['hash', 'blockNumber', 'from', 'to', 'value']))
     Promise.resolve()
       .then(() => {
         if (global.accounts) {
@@ -34,10 +34,9 @@ class ObservePendingTransaction {
         }
       })
       .then(accounts => {
-        log.debug('Current accounts: ', accounts)
         if (accounts && accounts.length > 0) {
-          let from = tx.from.toLowerCase()
-          let to = tx.to.toLowerCase()
+          let from = (tx.from ? tx.from.toLowerCase() : '')
+          let to = (tx.to ? tx.to.toLowerCase() : '')
           let owned = accounts.filter(address => {
             address = address.toLowerCase()
             return address === from || address === to

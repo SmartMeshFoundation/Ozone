@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     identicon () {
-      let seed = this.value
+      let seed = this.value.toLowerCase()
       let size = this.size
       return this.$icon(seed, size)
     }

@@ -58,7 +58,7 @@ class ObserveTransaction {
         })
         .then(receipt => {
           if (transaction && receipt) {
-            tx.confirmCount = blockHeader.number + 1 - tx.blockNumber
+            tx.confirmCount = blockHeader.number - tx.blockNumber
             log.debug('Check confirmations tx update confirmCount to ', tx.confirmCount)
             if (tx.confirmCount >= Settings.requiredConfirmations) {
               log.debug('The tx set to confirmed = true')
@@ -107,8 +107,11 @@ class ObserveTransaction {
 
         let tx = this.transactions.by('_id', txHash)
         if (tx != null) {
-          log.debug('Update owned transaction in db: \n', tx)
-          log.debug('Update owned transaction in chain: \n', transaction)
+          log.debug('Update owned transaction on db: \n', _.pick(tx, ['hash', 'blockNumber', 'timestamp']))
+          log.debug('Update owned transaction on chain: \n', _.pick(transaction, ['hash', 'blockNumber']))
+          log.debug('Block timestamp: ', block.timestamp)
+          tx.timestamp = block.timestamp
+
           this.transactions.update(_.assign(tx, transaction))
         } else {
           this._insertOwnedTransaction(transaction, block)

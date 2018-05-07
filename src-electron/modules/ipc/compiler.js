@@ -12,10 +12,8 @@ class ContractCompiler {
       let rtn = {}
       for (var contractName in output.contracts) {
         // code and ABI that are needed by web3
-        log.debug('contracts.', contractName, ': ' + output.contracts[contractName].bytecode
-        )
-        log.debug('contracts.', contractName, ': ' + JSON.parse(output.contracts[contractName].interface)
-        )
+        log.debug('contracts.', contractName, ' bytecode: ' + output.contracts[contractName].bytecode)
+        log.debug('contracts.', contractName, ' interface: ' + output.contracts[contractName].interface)
       }
       rtn.contracts = output.contracts
       rtn.errors = output.errors

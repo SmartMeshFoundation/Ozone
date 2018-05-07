@@ -16,6 +16,7 @@ import stateManager from '../modules/stateManager'
 import observeManager from '../modules/observeManager'
 import ipc from '../modules/ipc'
 import { Types } from '../modules/ipc/types'
+import menus from '../modules/menus'
 
 const log = logger.create('Main')
 
@@ -106,42 +107,14 @@ function onReady () {
   })
 
   let mwin = mainWin.window
+
   mwin.once('ready-to-show', () => {
     mainWin.show()
-    // mwin.webContents.on('did-finish-load', kickStart)
   })
 
-  /** for context menus */
-  const selectionMenu = Menu.buildFromTemplate([
-    { role: 'copy' },
-    { type: 'separator' },
-    { role: 'selectall' }
-  ])
-
-  const inputMenu = Menu.buildFromTemplate([
-    { role: 'undo' },
-    { role: 'redo' },
-    { type: 'separator' },
-    { role: 'cut' },
-    { role: 'copy' },
-    { role: 'paste' },
-    { type: 'separator' },
-    { role: 'selectall' }
-  ])
-
-  mwin.webContents.on('context-menu', (e, props) => {
-    const { selectionText, isEditable } = props
-    if (isEditable) {
-      inputMenu.popup(mwin)
-    } else if (selectionText && selectionText.trim() !== '') {
-      selectionMenu.popup(mwin)
-    }
-  })
-  /** for context menus */
+  mwin.webContents.on('did-finish-load', kickStart)
 
   mainWin.load(process.env.APP_URL)
-
-  kickStart()
 }
 
 function kickStart () {
@@ -201,9 +174,6 @@ function kickStart () {
     })
     .then(() => {
       log.info('Spectrum node started.')
-      // TODO
-      // update menu, to show node switching possibilities
-      // appMenu()
     })
     .then(function doSync () {
       return syncResultPromise
@@ -213,7 +183,9 @@ function kickStart () {
 
       ipc.bind()
 
-      // sync data to front vuex store
+      menus.init(mainWin.window)
+
+      // sync data to front-end vuex store
       stateManager.emit('sync')
 
       observeManager.start()
