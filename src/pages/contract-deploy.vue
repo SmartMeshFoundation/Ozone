@@ -11,10 +11,10 @@
       </div>
       <div class="q-mt-lg">
         <q-toggle class="q-ma-xs"
-                  v-model="advanced"
+                  v-model="advancedMode"
                   label="高级模式" />
       </div>
-      <div class="q-mt-md">
+      <div class="q-mt-md relative-position">
         <q-field :error="hasError"
                  error-label="源码分析发生错误:">
           <q-input v-model="form.source"
@@ -22,9 +22,10 @@
                    :max-height="200"
                    rows="5"
                    class="code"
-                   :class="{hidden: advanced}"
+                   :class="{hidden: advancedMode}"
                    placeholder="在这里粘贴 Solidity 源码" />
         </q-field>
+        <!-- <q-inner-loading :visible="isCompiling" /> -->
       </div>
 
       <div class="q-mt-md">
@@ -32,7 +33,7 @@
                  type="textarea"
                  :max-height="200"
                  rows="5"
-                 :class="{hidden: !advanced}"
+                 :class="{hidden: !advancedMode}"
                  placeholder="在这里粘贴智能合约的 ABI" />
       </div>
       <div class="q-mt-md">
@@ -40,15 +41,24 @@
                  type="textarea"
                  :max-height="200"
                  rows="5"
-                 :class="{hidden: !advanced}"
+                 :class="{hidden: !advancedMode}"
                  placeholder="在这里粘贴智能合约的 字节码" />
       </div>
       <div>
-        <q-field error-label="请选择发布需要发布的合约"
-                 :error="$v.form.contract.$error">
+        <q-field error-label="请选择需要发布的合约"
+                 :error="$v.form.deployedContract.$error">
           <q-select float-label="合约名称"
-                    v-model="form.contract"
+                    v-model="form.deployedContract"
                     :options="contractNames" />
+        </q-field>
+      </div>
+
+      <div v-if="hasConstractor">
+        <q-field>
+          <q-input float-label="构造参数"
+                   v-model="args"
+                   type="text"
+                   :placeholder="argsPlaceholder" />
         </q-field>
       </div>
 
@@ -63,6 +73,13 @@
       </div>
       <!-- error messages -->
 
+    </div>
+
+    <div class="row q-mt-md justify-end">
+      <q-btn
+        color="primary"
+        label=" 发布合约 "
+        @click="deploy" />
     </div>
   </q-page>
 </template>
@@ -87,37 +104,36 @@ export default {
         source: '',
         abi: '',
         bytecode: '',
-        contract: ''
+        deployedContract: ''
       },
       contracts: {},
       messages: [],
       hasError: false,
-      advanced: false,
-      visible: true
+      advancedMode: false,
+      hasConstractor: false,
+      args: '',
+      argsPlaceholder: ''
     }
   },
   methods: {
     compile: _.debounce(function (source) {
-      Promise.resolve()
-        .then(() => {
-          let output = ipc.sendSync(Types.UI_ACTION_COMPILE_SYNC, source)
-          console.log('output: ', output)
+      let output = ipc.sendSync(Types.UI_ACTION_COMPILE_SYNC, source)
+      console.log('compile output: ', output)
 
-          let errorFlag = false
-          if (output.errors && output.errors.length > 0) {
-            output.errors.forEach(error => {
-              if (error.indexOf('Error') >= 0) {
-                errorFlag = true
-                this.messages.push(error)
-              }
-            })
-          }
-          this.hasError = errorFlag
-
-          if (!this.hasError) {
-            this.contracts = output.contracts
+      let errorFlag = false
+      if (output.errors && output.errors.length > 0) {
+        output.errors.forEach(error => {
+          if (error.indexOf('Error') >= 0) {
+            errorFlag = true
+            this.messages.push(error)
           }
         })
+      }
+      this.hasError = errorFlag
+
+      if (!this.hasError) {
+        this.contracts = output.contracts
+      }
     }, 600),
 
     messageType (msg) {
@@ -128,8 +144,16 @@ export default {
       } else {
         return 'info'
       }
+    },
+
+    deploy () {
+      this.$v.form.$touch()
+      if (!this.$v.form.$error) {
+        // TODO send transaction
+      }
     }
   },
+
   computed: {
     options () {
       let accounts = this.$store.state.account.list
@@ -143,6 +167,7 @@ export default {
       })
       return options
     },
+
     contractNames () {
       let names = _.keys(this.contracts)
       let options = []
@@ -155,6 +180,7 @@ export default {
     }
 
   },
+
   watch: {
     'form.source' (newVal, oldVal) {
       this.messages.splice(0, this.messages.length)
@@ -165,14 +191,24 @@ export default {
       }
     }
   },
-  validations: {
-    form: {
-      from: { required },
-      contract: { required }
+
+  validations () {
+    if (this.advancedMode) {
+      return {
+        form: {
+          from: { required },
+          abi: { required },
+          bytecode: { required }
+        }
+      }
+    } else {
+      return {
+        form: {
+          from: { required },
+          deployedContract: { required }
+        }
+      }
     }
-  },
-  created () {
-    //
   }
 }
 </script>
