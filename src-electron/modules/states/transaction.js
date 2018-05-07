@@ -27,7 +27,6 @@ class TransactionState extends EventEmitter {
 
   _sendTransaction (event, obj) {
     const web3 = global.web3
-    const db = global.db
     log.info(
       'front end send transaction: \n',
       _.pick(obj.tx, ['from', 'to', 'value', 'data'])
@@ -41,41 +40,41 @@ class TransactionState extends EventEmitter {
           web3.eth
             .sendTransaction(tx)
             .once('transactionHash', hash => {
-              log.info('transactionHash: ', hash)
-              tx = {
-                _id: hash,
-                confirmed: false,
-                confirmCount: 0,
-                timestamp: moment().unix()
-              }
+              // log.info('transactionHash: ', hash)
+              // tx = {
+              //   _id: hash,
+              //   confirmed: false,
+              //   confirmCount: 0,
+              //   timestamp: moment().unix()
+              // }
 
-              tx = _.assign(tx, obj.tx)
-              db.transactions.insert(tx)
+              // tx = _.assign(tx, obj.tx)
+              // db.transactions.insert(tx)
               let reply = { transactionHash: hash, tx }
               event.sender.send(Types.SEND_TRANSACTION_REPLY, reply)
-              this._sync()
+              // this._sync()
             })
-            .once('confirmation', (confNumber, receipt) => {
-              log.debug(
-                '==>> confirmation: confNumber=',
-                confNumber,
-                ', receipt: ',
-                receipt
-              )
+            // .once('confirmation', (confNumber, receipt) => {
+            //   log.debug(
+            //     '==>> confirmation: confNumber=',
+            //     confNumber,
+            //     ', receipt: ',
+            //     receipt
+            //   )
 
-              tx = db.transactions.by('_id', receipt.transactionHash)
+            //   tx = db.transactions.by('_id', receipt.transactionHash)
 
-              if (tx != null) {
-                tx.receipt = receipt
-                db.transactions.update(tx)
-                this._sync()
-              } else {
-                log.error(
-                  'transaction not found in db: ',
-                  receipt.transactionHash
-                )
-              }
-            })
+            //   if (tx != null) {
+            //     tx.receipt = receipt
+            //     db.transactions.update(tx)
+            //     this._sync()
+            //   } else {
+            //     log.error(
+            //       'transaction not found in db: ',
+            //       receipt.transactionHash
+            //     )
+            //   }
+            // })
             .on('error', error => {
               throw error
             })

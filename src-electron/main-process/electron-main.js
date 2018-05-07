@@ -113,74 +113,13 @@ function onReady () {
   })
 
   let mwin = mainWin.window
+
   mwin.once('ready-to-show', () => {
     mainWin.show()
-    kickStart()
-    // mwin.webContents.on('did-finish-load', kickStart)
   })
 
-  /** for context menus */
-  /* const selectionMenu = Menu.buildFromTemplate([
-    { role: 'copy', label: global.i18n.t('selectionMenu.copy') },
-    { type: 'separator' },
-    { role: 'selectall', label: global.i18n.t('selectionMenu.selectall') }
-  ])
+  mwin.webContents.on('did-finish-load', kickStart)
 
-  const inputMenu = Menu.buildFromTemplate([
-    { role: 'undo', label: global.i18n.t('inputMenu.undo') },
-    { role: 'redo', label: global.i18n.t('inputMenu.redo') },
-    { type: 'separator' },
-    { role: 'cut', label: global.i18n.t('inputMenu.cut') },
-    { role: 'copy', label: global.i18n.t('inputMenu.copy') },
-    { role: 'paste', label: global.i18n.t('inputMenu.paste') },
-    { type: 'separator' },
-    { role: 'selectall', label: global.i18n.t('inputMenu.selectall') }
-  ])
-
-  const currentLanguage = global.language
-
-  const languageMenu = Object.keys(i18n.options.resources)
-    .filter(langCode => langCode !== 'dev')
-    .map(langCode => {
-      const menuItem = {
-        label: global.i18n.t(`appMenu.langCodes.${langCode}`),
-        type: 'checkbox',
-        checked: langCode === currentLanguage,
-        click: () => {
-          log.info('langCode==>', langCode)
-          global.language = langCode
-          Menu.setApplicationMenu(osxMenu)
-          mwin.webContents.removeAllListeners('context-menu')
-          mwin.webContents.on('context-menu', (e, props) => {
-            log.info(inputMenu)
-            const { selectionText, isEditable } = props
-            if (isEditable) {
-              inputMenu.popup(mwin)
-            } else if (selectionText && selectionText.trim() !== '') {
-              selectionMenu.popup(mwin)
-            }
-          })
-        }
-      }
-      return menuItem
-    })
-
-  const appMenu = [{
-    label: global.i18n.t('appMenu.language-swich'),
-    submenu: languageMenu
-  }]
-
-  var osxMenu = Menu.buildFromTemplate(appMenu)
-  Menu.setApplicationMenu(osxMenu)
-
-  mwin.webContents.on('context-menu', (e, props) => {
-    const { selectionText, isEditable } = props
-    if (isEditable) {
-      inputMenu.popup(mwin)
-    } else if (selectionText && selectionText.trim() !== '') {
-      selectionMenu.popup(mwin)
-    }
-  }) */
   let ozoneMenu = new OzoneMenu(mwin)
   ozoneMenu.create()
   /** for context menus */
@@ -245,9 +184,6 @@ function kickStart () {
     })
     .then(() => {
       log.info('Spectrum node started.')
-      // TODO
-      // update menu, to show node switching possibilities
-      // appMenu()
     })
     .then(function doSync () {
       return syncResultPromise
@@ -257,7 +193,7 @@ function kickStart () {
 
       ipc.bind()
 
-      // sync data to front vuex store
+      // sync data to front-end vuex store
       stateManager.emit('sync')
 
       observeManager.start()

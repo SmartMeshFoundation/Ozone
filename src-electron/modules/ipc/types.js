@@ -8,11 +8,12 @@ export const Types = {
   NODE_SYNC_STATUS: 'node-sync-status',
   SEND_TRANSACTION: 'send-transaction', // main
   SEND_TRANSACTION_REPLY: 'send-transaction-reply',
+  SWICH_LAN: 'swich-lan',
   SYNC_ACCOUNT: 'sync-account',
   SYNC_TRANSACTION: 'sync-transaction',
   SYNC_ALL_STATE: 'sync-all-state', // main
   UI_ACTION_CLIENTBINARYSTATUS: 'ui-action-clientbinarystatus',
   UI_ACTION_NODE_STATUS: 'ui-action-node-status',
   UI_ACTION_NODE_LOGTEXT: 'ui-action-node-logtext',
-  SWICH_LAN: 'swich-lan'
+  UI_ACTION_COMPILE_SYNC: 'ui-action-compile-sync'
 }
