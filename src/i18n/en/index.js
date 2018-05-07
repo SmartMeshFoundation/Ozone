@@ -30,7 +30,8 @@ export default {
     btn: {
       transfer: 'transfer',
       backupAccount: 'backup',
-      add: 'new account'
+      add: 'new account',
+      importAccount: 'import account'
     },
     copy: {
       alert: 'alert：copy address',

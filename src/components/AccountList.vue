@@ -17,10 +17,15 @@
                     :to="'/wallet/account/' + account.address" />
     </q-list>
 
-    <q-btn class="add-account" size="lg"
+    <q-btn class="account-btn add-account" size="lg"
            color="primary"
            :label="$t('account.btn.add')"
            @click="showNewAccountModal = true" />
+
+    <q-btn class="account-btn import-account" size="lg"
+           color="primary"
+           :label="$t('account.btn.importAccount')"
+           @click="importAccount()" />
 
     <!-- 创建账号对话框 -->
     <q-modal class="create-account-modal" v-model="showNewAccountModal"
@@ -71,7 +76,7 @@ h1.account-title
     font-size 17px
     font-weight bold
     color #FFBB44 !important
-.add-account
+.account-btn
     font-size 14px !important
     line-height 20px
     width 120px
@@ -79,6 +84,8 @@ h1.account-title
     padding 0px 3px
     border-radius 2px
     background-color #10A0F8 !important
+.import-account
+    margin-left 16px
 div.account-list
     margin-top -15px
 div.create-account-modal .q-headline
@@ -102,6 +109,8 @@ import { required, minLength, sameAs } from 'vuelidate/lib/validators'
 
 import BigNumber from 'bignumber.js'
 import { Types } from '../../src-electron/modules/ipc/types'
+import { shell } from 'electron'
+import path from 'path'
 
 const ipc = window.ipc
 const web3 = window.web3
@@ -165,6 +174,10 @@ export default {
           ipc.send(Types.SYNC_ACCOUNT)
         })
         .catch(console.log)
+    },
+    importAccount () {
+      let keystore = path.join(this.$settings.chainDataPath, 'keystore')
+      shell.showItemInFolder(keystore)
     }
   },
   validations: {

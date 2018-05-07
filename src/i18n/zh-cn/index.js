@@ -30,6 +30,7 @@ export default {
     btn: {
       transfer: '转账',
       backupAccount: '备份账户',
+      importAccount: '导入账户',
       add: '创建一个新账户'
     },
     copy: {
