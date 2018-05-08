@@ -11,8 +11,10 @@
         <span :title="item.from" class="trans-from"> {{accountName(item.from)}} </span>
         <q-icon name="send"
                 color="grey-5 q-px-md" />
-        <ident-icon :value="item.to.toLowerCase()" />
-        <span :title="item.to" class="trans-to"> {{accountName(item.to)}} </span>
+        <span v-if="item.to">
+          <ident-icon :value="item.to.toLowerCase()" />
+          <span :title="item.to" class="trans-to"> {{accountName(item.to)}} </span>
+        </span>
       </q-item-tile>
     </q-item-main>
     <q-item-main>

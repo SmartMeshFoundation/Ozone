@@ -1,4 +1,6 @@
 export const Types = {
+  DEPLOY_CONTRACT: 'deploy-contract',
+  DEPLOY_CONTRACT_REPLY: 'deploy-contract-reply',
   NODE_ALL_DONE: 'node-all-done',
   NODE_CONNECTED: 'node-connected',
   NODE_STATE_CHANGE: 'node-state-change',

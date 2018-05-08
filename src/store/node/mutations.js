@@ -1,4 +1,5 @@
-export const update = (state, { blockNumber, peers }) => {
-  state.blockNumber = blockNumber
-  state.peers = peers
+export const update = (state, data) => {
+  state.blockNumber = data.blockNumber
+  state.peers = data.peers
+  state.gasPrice = data.gasPrice
 }

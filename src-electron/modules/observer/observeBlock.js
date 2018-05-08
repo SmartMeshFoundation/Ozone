@@ -26,22 +26,16 @@ class ObserveBlock {
 
   // update the node status
   _updateNodeState () {
-    let blockNumber, peers
-    this.web3.eth
-      .getBlock('latest')
-      .then(block => {
-        if (block != null) {
-          blockNumber = block.number
-          return this.web3.eth.net.getPeerCount()
-        } else {
-          throw new Error('Can not found "latest" block.')
-        }
-      })
-      .then(count => {
-        peers = count
+    Promise.all([
+      this.web3.eth.getBlock('latest'),
+      this.web3.eth.net.getPeerCount(),
+      this.web3.eth.getGasPrice()
+    ])
+      .then(([block, peers, gasPrice]) => {
         global.windows.broadcast(Types.NODE_STATE_CHANGE, {
-          blockNumber,
-          peers
+          blockNumber: block.number,
+          peers,
+          gasPrice
         })
       })
       .catch(err => {
