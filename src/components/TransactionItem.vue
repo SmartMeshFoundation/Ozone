@@ -65,7 +65,7 @@
      </div>
      <div class="row q-pa-md">
        <div class="col">{{$t('tx.transfer.confirm.fee')}}：</div>
-       <div>{{toSMT(item.receipt.gasUsed * item.gasPrice)}} {{$unit}}</div>
+       <div>{{ gasFee }} {{$unit}}</div>
      </div>
    </q-modal>
  </div>
@@ -98,6 +98,8 @@ div.trans-item .trans-to
 
 <script>
 import BigNumber from 'bignumber.js'
+import _ from 'lodash'
+const BN = BigNumber
 const web3 = window.web3
 
 export default {
@@ -105,7 +107,8 @@ export default {
   props: ['item'],
   data () {
     return {
-      showTransactionModal: false
+      showTransactionModal: false,
+      gasFee: 0
     }
   },
   computed: {
@@ -142,9 +145,35 @@ export default {
       return accountName
     },
     viewTransaction (item) {
-      this.showTransactionModal = true
       console.log(this.item)
-    }
+      this.showTransactionModal = true
+      if (!this.item.receipt) {
+        this.estimateGas()
+      } else {
+        this.gasFee = this.toSMT(this.item.receipt.gasUsed * this.item.gasPrice)
+      }
+    },
+    estimateGas: _.debounce(function () {
+      let validTo = web3.utils.isAddress(this.item.to)
+      let amount = _.toNumber(this.item.value)
+
+      if (validTo && !isNaN(amount) && amount > 0) {
+        let from = this.item.from
+        let to = this.item.to
+        let value = web3.utils.toWei(new BN(amount).toFixed())
+        Promise.all([
+          web3.eth.estimateGas({ from, to, value }),
+          web3.eth.getGasPrice()
+        ])
+          .then(([gas, price]) => {
+            console.log('estimateGas = ', gas, ', gasPrice = ', price)
+            let fee = new BN(gas).times(new BN(price)).toFixed()
+            console.log('transfer fee: ', fee)
+            this.gasFee = web3.utils.fromWei(fee)
+          })
+          .catch(console.log)
+      }
+    }, 400)
   }
 }
 </script>
