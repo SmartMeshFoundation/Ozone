@@ -90,9 +90,9 @@ div.verify-modal .q-btn
 div.qr_code
     width 15px
     height 15px
-    position relative
-    left 350px
-    top:-15px
+    position absolute
+    left 416px
+    top:43px
     background url("../assets/qr.png") no-repeat center !important
     background-size cover
 </style>
