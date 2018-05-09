@@ -40,7 +40,7 @@ $ yarn dev
 
 For development we need a *Spectrum* node running. Start the `geth` in a separate terminal window:
 ```bash
-$ geth --testnet --syncmode fast console
+$ geth --testnet --syncmode fast --ws console
 ```
 
 ### Issues
