@@ -113,6 +113,8 @@ class NodeSync extends EventEmitter {
       let web3 = global.web3
       web3.eth.isSyncing()
         .then(result => {
+          this.emit('syncBlock', result)
+          log.info('result====>', result)
           if (!result) {
             // got no result, let's check the block number
             log.debug('Check latest block number')

@@ -173,6 +173,9 @@ function kickStart () {
 
       resolve()
     })
+    nodeSync.on('syncBlock', (results) => {
+      mainWin.webContents.send(Types.SYNC_BLOCK_NUMBER, results.currentBlock, results.highestBlock)
+    })
   })
 
   Q.resolve()

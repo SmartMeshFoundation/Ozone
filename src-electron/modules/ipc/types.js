@@ -15,5 +15,6 @@ export const Types = {
   UI_ACTION_CLIENTBINARYSTATUS: 'ui-action-clientbinarystatus',
   UI_ACTION_NODE_STATUS: 'ui-action-node-status',
   UI_ACTION_NODE_LOGTEXT: 'ui-action-node-logtext',
-  UI_ACTION_COMPILE_SYNC: 'ui-action-compile-sync'
+  UI_ACTION_COMPILE_SYNC: 'ui-action-compile-sync',
+  SYNC_BLOCK_NUMBER: 'sync_block_number'
 }

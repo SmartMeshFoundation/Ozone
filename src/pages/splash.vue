@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-modal v-model="showSyncing"
+    <q-modal class="sync-modal" v-model="showSyncing"
             no-esc-dismiss
             no-backdrop-dismiss
             minimized
@@ -12,12 +12,14 @@
       <div class="row justify-center">
         <q-progress indeterminate
                     animate
-                    color="positive" />
+                    color="info" />
       </div>
-
-      <div class="row q-pa-md gutter-md justify-end">
-        <div>
-          <q-btn color="secondary"
+      <div class="row q-pa-md gutter-md">
+        <div v-if="synced" class="sync-num">
+          {{synced}}/{{totalBlock}}
+        </div>
+        <div class="sync-ign">
+          <q-btn color="info"
                 @click="skip"
                 :label="$t('button.skip')"
                 flat />
@@ -43,6 +45,21 @@
     </q-modal>
   </div>
 </template>
+<style lang="stylus">
+  div.sync-modal .modal-content
+      border-radius 14px !important
+      width 350px
+      height 135px
+  div.sync-modal .sync-num
+      position relative
+      top 5px
+      left -20px
+      color #31ccec
+  div.sync-modal .sync-ign
+      position absolute
+      top 43px
+      right 5px
+</style>
 
 <script>
 import { Types } from '../../src-electron/modules/ipc/types'
@@ -64,7 +81,9 @@ export default {
   data () {
     return {
       showSyncing: false,
-      showDownloading: false
+      showDownloading: false,
+      totalBlock: 0,
+      synced: 0
     }
   },
   methods: {
@@ -85,7 +104,6 @@ export default {
   },
   created () {
     this.$q.loading.show(loadingOption)
-
     ipc.on(Types.NODE_ALL_DONE, (event, params) => {
       this.$q.loading.hide()
       this.goto('/dashboard')
@@ -107,11 +125,19 @@ export default {
         this.showSyncing = true
       }
     })
+
+    ipc.on(Types.SYNC_BLOCK_NUMBER, (event, synced, totalBlock) => {
+      if (this.showSyncing) {
+        this.totalBlock = totalBlock
+        this.synced = synced
+      }
+    })
   },
   destroyed () {
     ipc.removeAllListeners(Types.NODE_ALL_DONE)
     ipc.removeAllListeners(Types.UI_ACTION_CLIENTBINARYSTATUS)
     ipc.removeAllListeners(Types.NODE_SYNC_STATUS)
+    ipc.removeAllListeners(Types.SYNC_BLOCK_NUMBER)
   }
 }
 </script>
