@@ -65,7 +65,7 @@ class OzoneMenu {
         submenu: [
           {
             role: 'about',
-            label: global.i18n.t('appMenu.edit') + ' ' + app.getName()
+            label: global.i18n.t('appMenu.about') + ' ' + app.getName()
           },
 
           {type: 'separator'},
