@@ -8,7 +8,7 @@ export const Types = {
   NODE_SYNC_STATUS: 'node-sync-status',
   SEND_TRANSACTION: 'send-transaction', // main
   SEND_TRANSACTION_REPLY: 'send-transaction-reply',
-  SWICH_LAN: 'swich-lan',
+  SWITCH_LAN: 'switch-lan',
   SYNC_ACCOUNT: 'sync-account',
   SYNC_TRANSACTION: 'sync-transaction',
   SYNC_ALL_STATE: 'sync-all-state', // main

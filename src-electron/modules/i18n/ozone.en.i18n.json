@@ -1,22 +1,29 @@
 {
-    "selectionMenu": {
-        "copy": "copy",
-        "selectall": "selectall"
+  "selectionMenu": {
+    "copy": "Copy",
+    "selectall": "Select All"
+  },
+  "inputMenu": {
+    "undo": "Undo",
+    "redo": "Redo",
+    "cut": "Cut",
+    "copy": "Copy",
+    "paste": "Paste",
+    "selectall": "Select All"
+  },
+  "appMenu": {
+    "view": "view",
+    "language-switch": "Language",
+    "langCodes": {
+      "en": "English",
+      "zh": "中文(简体)"
     },
-    "inputMenu": {
-        "undo": "undo",
-        "redo": "redo",
-        "cut": "cut",
-        "copy": "copy",
-        "paste": "paste",
-        "selectall": "selectall"
-    },
-    "appMenu": {
-      "view": "view",
-      "language-swich": "language swich",
-      "langCodes": {
-        "en": "English",
-        "zh": "中文(简体)"
-      }
-    }
+    "edit": "Edit",
+    "about": "About",
+    "services": "Services",
+    "hide": "Hide",
+    "hideothers": "Hide Others",
+    "unhide": "Unhide",
+    "quit": "Quit"
+  }
 }

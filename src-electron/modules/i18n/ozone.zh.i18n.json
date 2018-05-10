@@ -5,7 +5,7 @@
   },
   "inputMenu": {
     "undo": "撤销",
-    "redo": "反撤销",
+    "redo": "重做",
     "cut": "剪切",
     "copy": "复制",
     "paste": "粘贴",
@@ -13,10 +13,17 @@
   },
   "appMenu": {
     "view": "视图",
-    "language-swich": "语言切换",
+    "language-switch": "语言",
     "langCodes": {
       "en": "English",
       "zh": "中文(简体)"
-    }
+    },
+    "edit": "编辑",
+    "about": "关于",
+    "services": "服务",
+    "hide": "隐藏",
+    "hideothers": "隐藏其它",
+    "unhide": "显示",
+    "quit": "退出"
   }
 }

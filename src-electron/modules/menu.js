@@ -1,4 +1,4 @@
-import { Menu } from 'electron'
+import { Menu, app } from 'electron'
 import { Types } from '../modules/ipc/types'
 class OzoneMenu {
   constructor (mwin) {
@@ -12,7 +12,7 @@ class OzoneMenu {
       { role: 'selectall', label: global.i18n.t('selectionMenu.selectall') }
     ])
 
-    const inputMenu = Menu.buildFromTemplate([
+    const editSubmenus = [
       { role: 'undo', label: global.i18n.t('inputMenu.undo'), accelerator: 'CmdOrCtrl+Z' },
       { role: 'redo', label: global.i18n.t('inputMenu.redo'), accelerator: 'Shift+CmdOrCtrl+Z' },
       { type: 'separator' },
@@ -21,7 +21,8 @@ class OzoneMenu {
       { role: 'paste', label: global.i18n.t('inputMenu.paste'), accelerator: 'CmdOrCtrl+V' },
       { type: 'separator' },
       { role: 'selectall', label: global.i18n.t('inputMenu.selectall') }
-    ])
+    ]
+    const inputMenu = Menu.buildFromTemplate(editSubmenus)
 
     const currentLanguage = global.language
 
@@ -33,7 +34,7 @@ class OzoneMenu {
           type: 'checkbox',
           checked: langCode === currentLanguage,
           click: () => {
-            this.mwin.webContents.send(Types.SWICH_LAN, langCode)
+            this.mwin.webContents.send(Types.SWITCH_LAN, langCode)
             global.language = langCode
             global.i18n.changeLanguage(langCode)
             this.create()
@@ -42,18 +43,91 @@ class OzoneMenu {
         return menuItem
       })
 
-    const appMenu = [{
-      label: global.i18n.t('appMenu.view'),
-      submenu: [
-        {
-          label: global.i18n.t('appMenu.language-swich'),
-          submenu: languageMenu
-        }
-      ]
-    }]
+    const appMenu = [
+      {
+        label: global.i18n.t('appMenu.edit'),
+        submenu: editSubmenus
+      },
+      {
+        label: global.i18n.t('appMenu.view'),
+        submenu: [
+          {
+            label: global.i18n.t('appMenu.language-switch'),
+            submenu: languageMenu
+          }
+        ]
+      }
+    ]
+
+    if (process.platform === 'darwin') {
+      appMenu.unshift({
+        label: app.getName(),
+        submenu: [
+          {
+            role: 'about',
+            label: global.i18n.t('appMenu.edit') + ' ' + app.getName()
+          },
+
+          {type: 'separator'},
+
+          {
+            role: 'services',
+            label: global.i18n.t('appMenu.services'),
+            submenu: []
+          },
+
+          {type: 'separator'},
+
+          {
+            role: 'hide',
+            label: global.i18n.t('appMenu.hide')
+          },
+
+          {
+            role: 'hideothers',
+            label: global.i18n.t('appMenu.hideothers')
+          },
+
+          {
+            role: 'unhide',
+            label: global.i18n.t('appMenu.unhide')
+          },
+
+          {type: 'separator'},
+
+          {
+            role: 'quit',
+            label: global.i18n.t('appMenu.quit') + ' ' + app.getName()
+          }
+
+        ]
+      })
+
+      // Edit menu
+      // appMenu[1].submenu.push(
+      //   {type: 'separator'},
+      //   {
+      //     label: 'Speech',
+      //     submenu: [
+      //       {role: 'startspeaking'},
+      //       {role: 'stopspeaking'}
+      //     ]
+      //   }
+      // )
+
+      // // Window menu
+      // appMenu[3].submenu = [
+      //   {role: 'close'},
+      //   {role: 'minimize'},
+      //   {role: 'zoom'},
+      //   {type: 'separator'},
+      //   {role: 'front'}
+      // ]
+    }
 
     var osxMenu = Menu.buildFromTemplate(appMenu)
     Menu.setApplicationMenu(osxMenu)
+
     this.mwin.webContents.removeAllListeners('context-menu')
     this.mwin.webContents.on('context-menu', (e, props) => {
       const { selectionText, isEditable } = props

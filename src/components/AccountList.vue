@@ -76,6 +76,7 @@ h1.account-title
     font-size 17px
     font-weight bold
     color #FFBB44 !important
+    letter-spacing 2px
 .account-btn
     font-size 14px !important
     line-height 20px

@@ -25,11 +25,11 @@ export default {
       this.$store.commit('node/update', state)
     })
 
-    ipc.on(Types.SWICH_LAN, (event, lang) => {
+    ipc.on(Types.SWITCH_LAN, (event, lang) => {
       if (lang === 'zh') {
         lang = 'zh-hans'
         this.$i18n.locale = 'zh'
-        // moment 组件国际化
+        // i18n for moment
         this.$moment.locale('zh-cn')
       } else {
         lang = 'en-us'
@@ -37,7 +37,7 @@ export default {
         this.$moment.locale('en')
       }
 
-      // 切换quasar-framework的语言
+      // i18n for quasar-framework
       import(`quasar-framework/i18n/${lang}`).then(lang => {
         this.$q.i18n.set(lang.default)
       })
@@ -48,7 +48,7 @@ export default {
       Types.SYNC_ACCOUNT,
       Types.SYNC_TRANSACTION,
       Types.NODE_STATE_CHANGE,
-      Types.SWICH_LAN
+      Types.SWITCH_LAN
     ].forEach(channel => {
       ipc.removeAllListeners(channel)
     })

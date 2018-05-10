@@ -3,22 +3,16 @@ The i18n module, loads the language files and initializes i18next
 
 @module i18n
 */
-const fs = require('fs')
-const i18n = require('i18next')
+import i18n from 'i18next'
 
-let i18nConf = fs.readFileSync(`${__dirname}/i18n/project-tap.i18n`)
-i18nConf = JSON.parse(i18nConf)
+import zh from './i18n/ozone.zh.i18n.json'
+import en from './i18n/ozone.en.i18n.json'
 
 const resources = {
-  dev: { translation: require('./i18n/ozone.zh.i18n.json') }
+  dev: { translation: zh },
+  en: { translation: en },
+  zh: { translation: zh }
 }
-
-// add supported languages
-i18nConf.supported_languages.forEach(lang => {
-  resources[lang] = {
-    translation: require(`./i18n/ozone.${lang}.i18n.json`)
-  }
-})
 
 /**
  * Given a language code, get best matched code from supported languages.
