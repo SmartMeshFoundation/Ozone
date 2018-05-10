@@ -88,11 +88,10 @@ div.verify-modal .q-btn
 .q-alert-content
     background-color #10A0F8 !important
 div.qr_code
+    display inline-block
+    vertical-align middle
     width 15px
     height 15px
-    position absolute
-    left 416px
-    top:43px
     background url("../assets/qr.png") no-repeat center !important
     background-size cover
 </style>
