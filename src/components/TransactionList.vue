@@ -5,7 +5,7 @@
             no-border
             striped-odd
             sparse
-            class="q-mt-lg transaction">
+            class="q-mt-md transaction">
       <q-list-header v-if="items.length === 0"> {{$t('tx.text.noTxs')}} </q-list-header>
       <transaction-item v-for="item of items" :key="item.hash" :item="item" />
     </q-list>

@@ -70,7 +70,8 @@ module.exports = function (ctx) {
         'QSpinnerGears',
         'QProgress',
         'QAlert',
-        'QToggle'
+        'QToggle',
+        'QInnerLoading'
       ],
       directives: ['Ripple', 'CloseOverlay'],
       // Quasar plugins

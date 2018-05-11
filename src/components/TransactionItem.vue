@@ -7,13 +7,19 @@
        </div>
      </q-item-side>
      <q-item-main>
+       <q-item-tile class="q-pb-sm">
+         <span v-if="item.to != null" >账户间转账</span>
+         <span v-if="item.to == null" >创建/调用合约</span>
+       </q-item-tile>
        <q-item-tile>
          <ident-icon :value="item.from.toLowerCase()" />
          <span :title="item.from" class="trans-from"> {{accountName(item.from)}} </span>
+         <span v-if="item.to != null">
          <q-icon name="send"
                  color="grey-5 q-px-md" />
          <ident-icon :value="item.to.toLowerCase()" />
          <span :title="item.to" class="trans-to"> {{accountName(item.to)}} </span>
+         </span>
        </q-item-tile>
      </q-item-main>
      <q-item-main>
@@ -69,19 +75,20 @@
      </div>
    </q-modal>
  </div>
+
 </template>
 <style lang="stylus">
 div.trans-container
-    height 60px
+    // height 60px
     font-size 15px
     line-height 21px
     color #333333
     border-radius 2px !important
     background-color #FFFFFF !important
     vertical-align middle
-    padding-top 11px
+    // padding-top 11px
 div.trans-container:nth-child(1)
-    margin-top:-20px
+    // margin-top:-20px
 div.trans-container:not(:first-child)
     margin-top:10px
 div.trans-container:hover
@@ -135,6 +142,9 @@ export default {
       return this.$moment.unix(timestamp).fromNow()
     },
     toSMT (value) {
+      if (!value) {
+        return 0
+      }
       return web3.utils.fromWei(new BigNumber(value).toFixed())
     },
     accountName (address) {

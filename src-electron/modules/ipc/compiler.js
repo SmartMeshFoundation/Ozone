@@ -9,17 +9,36 @@ class ContractCompiler {
   bind () {
     ipc.on(Types.UI_ACTION_COMPILE_SYNC, (event, source) => {
       let output = solc.compile(source, 1)
-      let rtn = {}
       for (var contractName in output.contracts) {
-        // code and ABI that are needed by web3
         log.debug('contracts.', contractName, ' bytecode: ' + output.contracts[contractName].bytecode)
         log.debug('contracts.', contractName, ' interface: ' + output.contracts[contractName].interface)
       }
-      rtn.contracts = output.contracts
-      rtn.errors = output.errors
-      event.returnValue = rtn
+      event.returnValue = output
     })
+
+    // ipc.on(Types.UI_ACTION_COMPILE, (event, source) => {
+    //   this._compile(source)
+    //     .then(output => {
+    //       for (var contractName in output.contracts) {
+    //         log.debug('contracts.', contractName, ' bytecode: ' + output.contracts[contractName].bytecode)
+    //         log.debug('contracts.', contractName, ' interface: ' + output.contracts[contractName].interface)
+    //       }
+    //       global.windows.broadcast(Types.UI_ACTION_COMPILE_REPLY, output)
+    //     })
+    // })
   }
+
+  // _compile (source) {
+  //   return new Promise((resolve, reject) => {
+  //     try {
+  //       let output = solc.compile(source, 1)
+  //       resolve(output)
+  //     } catch (err) {
+  //       log.error(err)
+  //       reject(new Error('Compile error.', err))
+  //     }
+  //   })
+  // }
 }
 
 export default new ContractCompiler()
