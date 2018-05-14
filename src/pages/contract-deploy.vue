@@ -10,6 +10,14 @@
         </q-field>
       </div>
       <div class="q-mt-lg">
+        <q-field error-label="金额必须是数字"
+                 :error="$v.form.value.$error">
+          <q-input float-label="金额"
+                   v-model="form.value"
+                   type="number" />
+        </q-field>
+      </div>
+      <div class="q-mt-lg">
         <q-toggle class="q-ma-xs"
                   v-model="advancedMode"
                   label="高级模式" />
@@ -139,6 +147,7 @@ import { required, requiredIf } from 'vuelidate/lib/validators'
 import _ from 'lodash'
 import { ipcRenderer as ipc } from 'electron'
 import { Types } from '../../src-electron/modules/ipc/types'
+import { number } from '../validators'
 
 const web3 = window.web3
 
@@ -148,6 +157,7 @@ export default {
       showConfirmModal: false,
       form: {
         from: '',
+        value: '',
         amount: '',
         source: '',
         abi: '',
@@ -322,6 +332,7 @@ export default {
     return {
       form: {
         from: { required },
+        value: { number },
         abi: {
           required: requiredIf(function (model) {
             return this.advancedMode
