@@ -126,14 +126,27 @@ module.exports = function (ctx) {
       extendWebpack (cfg) {
         // do something with cfg
       },
+      beforePackaging: function (opts) {
+        // do nothings
+      },
       packager: {
-        // OS X / Mac App Store
-        // appBundleId: '',
-        // appCategoryType: '',
-        // osxSign: '',
-        // protocol: 'myapp://path',
-        // Window only
-        // win32metadata: { ... }
+        afterCopy: [(buildPath, electronVersion, platform, arch, callback) => {
+          console.log('buildPath: ====>>', buildPath)
+          console.log('electronVersion: ====>>', electronVersion)
+          console.log('platform: ====>>', platform)
+          console.log('arch: ====>>', arch)
+
+          const path = require('path')
+          const rebuildModule = path.resolve(__dirname, 'node_modules', 'electron-rebuild')
+          const rebuild = require(rebuildModule).rebuild
+
+          return rebuild({ buildPath, electronVersion, arch })
+            .then(() => {
+              console.log('electron-rebuild OK')
+              callback()
+            })
+            .catch((error) => callback(error))
+        }]
       }
     },
 
