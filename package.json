@@ -52,7 +52,6 @@
     "electron-devtools-installer": "2.2.1",
     "electron-log": "^2.2.14",
     "electron-packager": "11.1.0",
-    "electron-rebuild": "^1.7.3",
     "eslint": "^4.18.2",
     "eslint-config-standard": "^11.0.0",
     "eslint-friendly-formatter": "^3.0.0",
