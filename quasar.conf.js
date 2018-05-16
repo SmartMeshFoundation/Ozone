@@ -8,8 +8,6 @@ module.exports = function (ctx) {
     extras: [
       ctx.theme.mat ? 'roboto-font' : null,
       'material-icons',
-      // 'ionicons',
-      // 'mdi',
       'fontawesome'
     ],
     supportIE: false,
@@ -131,18 +129,12 @@ module.exports = function (ctx) {
       },
       packager: {
         afterCopy: [(buildPath, electronVersion, platform, arch, callback) => {
-          console.log('buildPath: ====>>', buildPath)
-          console.log('electronVersion: ====>>', electronVersion)
-          console.log('platform: ====>>', platform)
-          console.log('arch: ====>>', arch)
-
           const path = require('path')
-          const rebuildModule = path.resolve(__dirname, 'node_modules', 'electron-rebuild')
-          const rebuild = require(rebuildModule).rebuild
+          const rebuild = require(path.resolve(__dirname, 'node_modules', 'electron-rebuild')).rebuild
 
-          return rebuild({ buildPath, electronVersion, arch })
+          rebuild({ buildPath, electronVersion, arch })
             .then(() => {
-              console.log('electron-rebuild OK')
+              console.log('Run electron-rebuild OK')
               callback()
             })
             .catch((error) => callback(error))
