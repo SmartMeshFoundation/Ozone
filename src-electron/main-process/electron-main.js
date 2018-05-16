@@ -101,7 +101,7 @@ function onReady () {
       show: false,
       title: Settings.productName,
       width: 1000,
-      height: 600,
+      height: 700,
       backgroundColor: '#2e2c29',
       useContentSize: true,
       webPreferences: {

@@ -124,7 +124,11 @@ class Settings {
   }
 
   get ipcConnection () {
-    return path.join(this.chainDataPath, _defaults.ipcFile)
+    if (this.platform === 'win') {
+      return '\\\\.\\pipe\\' + _defaults.ipcFile
+    } else {
+      return path.join(this.chainDataPath, _defaults.ipcFile)
+    }
   }
 
   loadUserData (path2) {

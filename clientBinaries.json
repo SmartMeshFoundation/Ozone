@@ -6,7 +6,7 @@
         "mac": {
           "download": {
             "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-darwin-eafb37b.tar.gz",
-            "md5": "afca6790bc4883d2227079982fc9006d",
+              "md5": "afca6790bc4883d2227079982fc9006d",
             "type": "tar",
             "bin": "geth-darwin-eafb37b/geth"
           },
@@ -42,4 +42,3 @@
     }
   }
 }
-

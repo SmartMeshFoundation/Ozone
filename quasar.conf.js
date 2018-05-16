@@ -8,8 +8,6 @@ module.exports = function (ctx) {
     extras: [
       ctx.theme.mat ? 'roboto-font' : null,
       'material-icons',
-      // 'ionicons',
-      // 'mdi',
       'fontawesome'
     ],
     supportIE: false,
@@ -126,14 +124,21 @@ module.exports = function (ctx) {
       extendWebpack (cfg) {
         // do something with cfg
       },
+      beforePackaging: function (opts) {
+        // do nothings
+      },
       packager: {
-        // OS X / Mac App Store
-        // appBundleId: '',
-        // appCategoryType: '',
-        // osxSign: '',
-        // protocol: 'myapp://path',
-        // Window only
-        // win32metadata: { ... }
+        afterCopy: [(buildPath, electronVersion, platform, arch, callback) => {
+          const path = require('path')
+          const rebuild = require(path.resolve(__dirname, 'node_modules', 'electron-rebuild')).rebuild
+
+          rebuild({ buildPath, electronVersion, arch })
+            .then(() => {
+              console.log('Run electron-rebuild OK')
+              callback()
+            })
+            .catch((error) => callback(error))
+        }]
       }
     },
 
