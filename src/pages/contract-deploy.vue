@@ -221,6 +221,7 @@ export default {
         .then(() => {
           let data = {
             from: this.form.from,
+            value: this.form.value,
             abi: this.form.abi,
             bytecode: this.form.bytecode,
             args: this.args

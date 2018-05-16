@@ -2,11 +2,12 @@ import { ipcMain as ipc } from 'electron'
 import { EventEmitter } from 'events'
 import _ from 'lodash'
 import moment from 'moment'
+import BigNumber from 'bignumber.js'
 import { Types } from '../ipc/types'
 import logger from '../logger'
 
 const log = logger.create('ContractState')
-const debug = log.debug
+const debug = _.bind(log.debug, log)
 
 class ContractState extends EventEmitter {
   constructor () {
@@ -52,9 +53,10 @@ class ContractState extends EventEmitter {
         }
 
         if (data.value && this._checkValue(data.value)) {
-          opts = _.extend(opts, { value: web3.utils.toWei(data.value) })
+          let value = new BigNumber(data.value).toFixed()
+          opts = _.extend(opts, { value: web3.utils.toWei(value) })
         }
-        debug('send options: ', opts)
+        debug('contract tx send options: ', opts)
 
         tx.send(opts)
           .on('error', error => {
@@ -63,6 +65,7 @@ class ContractState extends EventEmitter {
           })
           .on('transactionHash', (txHash) => {
             debug('tx hash: ', txHash)
+
             let contract = {
               _id: txHash,
               name: '',
@@ -70,6 +73,7 @@ class ContractState extends EventEmitter {
               contractAddress: '',
               timestamp: moment().unix()
             }
+
             db.contracts.insert(contract)
             global.windows.broadcast(Types.DEPLOY_CONTRACT_REPLY, { txHash })
           })
@@ -103,6 +107,15 @@ class ContractState extends EventEmitter {
         return _.isUndefined(arg) ? '' : arg
       }
     })
+  }
+
+  _checkValue (value) {
+    if (!value) {
+      return false
+    }
+    let n = Number(value)
+
+    return !Number.isNaN(n) && n > 0
   }
 }
 
