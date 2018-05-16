@@ -6,6 +6,7 @@ import { Types } from '../ipc/types'
 import logger from '../logger'
 
 const log = logger.create('ContractState')
+const debug = log.debug
 
 class ContractState extends EventEmitter {
   constructor () {
@@ -13,7 +14,7 @@ class ContractState extends EventEmitter {
     this.on('sync', this._sync)
 
     ipc.on(Types.DEPLOY_CONTRACT, (event, data) => {
-      log.debug('ipc call: ', Types.DEPLOY_CONTRACT)
+      debug('ipc call: ', Types.DEPLOY_CONTRACT)
       this._deploy(data)
     })
   }
@@ -36,25 +37,32 @@ class ContractState extends EventEmitter {
       options.arguments = this._parseArguments(abi, data.args)
     }
 
-    log.debug('deploy options: ', options)
+    debug('deploy options: ', options)
 
     let myContract = new web3.eth.Contract(abi)
     let tx = myContract.deploy(options)
 
     tx.estimateGas()
       .then(gas => {
-        log.debug('Estimate gas: ', gas)
+        debug('Estimate gas: ', gas)
 
-        tx.send({
+        let opts = {
           from: data.from,
           gas
-        })
+        }
+
+        if (data.value && this._checkValue(data.value)) {
+          opts = _.extend(opts, { value: web3.utils.toWei(data.value) })
+        }
+        debug('send options: ', opts)
+
+        tx.send(opts)
           .on('error', error => {
             log.warn('Failed to deploy.', error)
             global.windows.broadcast(Types.DEPLOY_CONTRACT_REPLY, { error: error.message })
           })
           .on('transactionHash', (txHash) => {
-            log.debug('tx hash: ', txHash)
+            debug('tx hash: ', txHash)
             let contract = {
               _id: txHash,
               name: '',
@@ -66,7 +74,7 @@ class ContractState extends EventEmitter {
             global.windows.broadcast(Types.DEPLOY_CONTRACT_REPLY, { txHash })
           })
           .on('receipt', (receipt) => {
-            log.debug('tx receipt: ', receipt)
+            debug('tx receipt: ', receipt)
             let contract = db.contracts.by('_id', receipt.transactionHash)
             contract.confirmed = true
             contract.contractAddress = receipt.contractAddress
