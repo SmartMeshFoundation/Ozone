@@ -157,7 +157,7 @@ export default {
       showConfirmModal: false,
       form: {
         from: '',
-        value: '',
+        value: 0,
         amount: '',
         source: '',
         abi: '',
