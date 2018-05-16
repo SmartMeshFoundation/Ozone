@@ -12,7 +12,7 @@
     "selectall": "Select All"
   },
   "appMenu": {
-    "view": "view",
+    "view": "View",
     "language-switch": "Language",
     "langCodes": {
       "en": "English",
@@ -24,6 +24,7 @@
     "hide": "Hide",
     "hideothers": "Hide Others",
     "unhide": "Unhide",
-    "quit": "Quit"
+    "quit": "Quit",
+    "file": "File"
   }
 }

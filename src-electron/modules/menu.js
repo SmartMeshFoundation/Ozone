@@ -102,27 +102,16 @@ class OzoneMenu {
 
         ]
       })
-
-      // Edit menu
-      // appMenu[1].submenu.push(
-      //   {type: 'separator'},
-      //   {
-      //     label: 'Speech',
-      //     submenu: [
-      //       {role: 'startspeaking'},
-      //       {role: 'stopspeaking'}
-      //     ]
-      //   }
-      // )
-
-      // // Window menu
-      // appMenu[3].submenu = [
-      //   {role: 'close'},
-      //   {role: 'minimize'},
-      //   {role: 'zoom'},
-      //   {type: 'separator'},
-      //   {role: 'front'}
-      // ]
+    } else {
+      appMenu.unshift({
+        label: global.i18n.t('appMenu.file'),
+        submenu: [
+          {
+            role: 'quit',
+            label: global.i18n.t('appMenu.quit') + ' ' + app.getName()
+          }
+        ]
+      })
     }
 
     var osxMenu = Menu.buildFromTemplate(appMenu)
