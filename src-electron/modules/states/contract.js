@@ -21,7 +21,31 @@ class ContractState extends EventEmitter {
   }
 
   _sync () {
-    // TODO
+    let web3 = global.web3
+    let db = global.db
+    let contracts = db.contracts.chain().simplesort('timestamp', true).data()
+
+    Promise.all(contracts.map((contract, index) => {
+      if (contract.name === '') {
+        contract.name = 'Contract ' + index
+      }
+
+      if (contract.contractAddress !== '') {
+        return Promise.resolve()
+      } else {
+        return new Promise((resolve, reject) => {
+          web3.eth.getTransactionReceipt(contract._id)
+            .then(receipt => {
+              debug('contract tx receipt: ', receipt)
+              contract.contractAddress = receipt.contractAddress
+            })
+            .finally(resolve)
+        })
+      }
+    }))
+      .then(() => {
+        global.windows.broadcast(Types.SYNC_CONTRACT, {contracts})
+      })
   }
 
   /**
@@ -69,8 +93,8 @@ class ContractState extends EventEmitter {
             let contract = {
               _id: txHash,
               name: '',
-              confirmed: false,
               contractAddress: '',
+              abi: data.abi,
               timestamp: moment().unix()
             }
 
@@ -80,7 +104,6 @@ class ContractState extends EventEmitter {
           .on('receipt', (receipt) => {
             debug('tx receipt: ', receipt)
             let contract = db.contracts.by('_id', receipt.transactionHash)
-            contract.confirmed = true
             contract.contractAddress = receipt.contractAddress
             db.contracts.update(contract)
           })

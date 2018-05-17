@@ -1,17 +1,17 @@
 
-// 更新账户列表
+// reset vuex store account list
 export const reset = (state, accounts) => {
   state.list = accounts
 }
 
-// 更新账户名称
+// update account's name
 export const updateAccountName = (state, obj) => {
   let account = state.list.find(account => account.address === obj.address)
   if (account != null) {
-    // 更新缓存数据
+    // update vuex store
     account.name = obj.name
 
-    // 更新数据库
+    // update database of back end
     const db = window.db
     const accounts = db.accounts
     let item = accounts.by('_id', obj.address)
