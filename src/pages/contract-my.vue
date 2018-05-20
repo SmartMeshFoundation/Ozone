@@ -1,18 +1,50 @@
 <template>
-  <q-page class="q-pa-lg wallet">
-    <account-list />
-    <br>
-    <transaction-list :items="txList" />
+  <q-page class="q-pa-lg">
+
+    <div class="row gutter-sm">
+      <div class="col-6">
+        <div class="item">
+          <div class="q-title">title1</div>
+          <div class="q-subheading">subtitle1</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="item">
+          <div class="q-title">title2</div>
+          <div class="q-subheading">subtitle2</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="item">
+          <div class="q-title">title3</div>
+          <div class="q-subheading">subtitle3</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="item">
+          <div class="q-title">title4</div>
+          <div class="q-subheading">subtitle4</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="item">
+          <div class="q-title">title5</div>
+          <div class="q-subheading">subtitle5</div>
+        </div>
+      </div>
+    </div>
+
   </q-page>
 </template>
 
 <style lang="stylus">
-
+.row .item
+  padding 10px
+  background-color #fff
+  cursor pointer
 </style>
 
 <script>
-// import { ipcRenderer as ipc } from 'electron'
-// import { Types } from '../../src-electron/modules/ipc/types'
 
 export default {
   data () {
@@ -20,23 +52,11 @@ export default {
     }
   },
   computed: {
-    txList () {
-      // let accounts = this.$store.state.account.list.map(account => {
-      //   return account.address.toLowerCase()
-      // })
-      return this.$store.state.transaction.list
-      // return this.$store.state.transaction.list.filter((item) => {
-      //   let from = item.from.toLowerCase()
-      //   let to = item.to.toLowerCase()
-      //   return accounts.indexOf(from) !== -1 || accounts.indexOf(to) !== -1
-      // })
-    }
+
   },
   created () {
     // pass data to parent component
-    this.$emit('updateToolbar', this.$t('nav.wallet.label'), 'fa-credit-card')
-
-    // ipc.send(Types.SYNC_ALL_STATE)
+    this.$emit('updateToolbar', '我的合约')
   }
 }
 </script>
