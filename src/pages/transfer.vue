@@ -78,7 +78,7 @@
       </div>
       <div class="row q-pa-md">
         <div class="col">{{$t('tx.transfer.confirm.total')}}：</div>
-        <div class="text-negative"><big>{{total}}</big> {{$unit}}</div>
+        <div>{{total}} {{$unit}}</div>
       </div>
       <div class="row q-pa-md gutter-md justify-end">
         <div>

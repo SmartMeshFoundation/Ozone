@@ -11,11 +11,11 @@ export default {
     },
     wallet: {
       label: '钱包',
-      sublabel: '管理你的钱包账户地址'
+      sublabel: '钱包地址管理'
     },
     transfer: {
       label: '转账',
-      sublabel: '向其它账户转移价值'
+      sublabel: '账户之间资产转移'
     },
     deploy_contract: {
       label: '部署合约',
@@ -52,7 +52,9 @@ export default {
     list: {
       caption: '最近交易',
       unconfirmed: '待确认',
-      block_confirm: '块确认'
+      block_confirm: '块确认',
+      abi: '创建/调用合约',
+      transfer: '账户间转账'
     },
     text: {
       noTxs: '还未有交易历史'

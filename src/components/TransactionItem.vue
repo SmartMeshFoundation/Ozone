@@ -8,8 +8,8 @@
      </q-item-side>
      <q-item-main>
        <q-item-tile class="q-pb-sm">
-         <span v-if="item.to != null" >账户间转账</span>
-         <span v-if="item.to == null" >创建/调用合约</span>
+         <span v-if="item.to != null" >{{$t('tx.list.transfer')}}</span>
+         <span v-if="item.to == null" >{{$t('tx.list.abi')}}</span>
        </q-item-tile>
        <q-item-tile>
          <ident-icon :value="item.from.toLowerCase()" />
@@ -22,7 +22,7 @@
          </span>
        </q-item-tile>
      </q-item-main>
-     <q-item-main>
+     <q-item-main class="trans-pro">
        <q-item-tile :class="{hidden: !showElapsedTime}">
          <span> {{now(item.timestamp)}} </span>
        </q-item-tile>
@@ -38,7 +38,7 @@
      </q-item-main>
      <q-item-side right>
        <q-item-tile class="trans-fee" color="negative">
-         -{{toSMT(item.value)}} {{$unit}}
+         {{toSMT(item.value)}} {{$unit}}
        </q-item-tile>
      </q-item-side>
    </q-item>
@@ -97,6 +97,9 @@ div.trans-item .q-item-side
     color #999999 !important
 div.trans-item .trans-fee
     color #FA5A53 !important
+    margin-top 25px
+div.trans-item .trans-pro
+    margin-top 25px
 div.trans-item .trans-from
     margin-left: 10px
 div.trans-item .trans-to
@@ -136,7 +139,7 @@ export default {
   },
   methods: {
     date (timestamp) {
-      return this.$moment(timestamp).format('MMMM Do')
+      return this.$moment.unix(timestamp).format('MMMM Do')
     },
     now (timestamp) {
       return this.$moment.unix(timestamp).fromNow()

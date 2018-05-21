@@ -32,7 +32,6 @@
              @hide="reset">
       <div class="q-pa-md">
         <p class="q-headline">{{ $t('account.create.title') }}</p>
-        <p class="text-1">{{ $t('account.create.text1') }}</p>
         <p class="text-warning">{{ $t('account.create.text2') }}</p>
         <q-field :helper="$t('account.create.password_tip1')"
                  v-show="showPasswordField">
@@ -45,7 +44,7 @@
         </q-field>
 
         <q-field :error-label="$t('account.create.password_tip2')"
-                 v-show="showPasswordField == false">
+                 v-show="showPasswordField">
           <q-input :float-label="$t('account.create.password_msg2')"
                    :autofocus="!showPasswordField"
                    type="password"
@@ -141,17 +140,14 @@ export default {
   },
   methods: {
     submit () {
-      if (this.showPasswordField) {
-        this.$v.form.password.$touch()
-        if (!this.$v.form.password.$error) {
-          this.showPasswordField = false
-        }
-        return
-      } else if (!this.showPasswordField) {
+      this.$v.form.password.$touch()
+      if (!this.$v.form.password.$error) {
         this.$v.form.repeatPassword.$touch()
         if (this.$v.form.repeatPassword.$error) {
           return
         }
+      } else {
+        return
       }
       this.createAccount()
       this.reset()

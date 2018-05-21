@@ -4,7 +4,7 @@
       <q-toolbar :glossy="$q.theme === 'mat'"
                  :inverted="$q.theme === 'ios'">
         <q-toolbar-title>
-          <span class="toolbar-title">{{ toolbarTitle }}</span>
+          <span class="toolbar-title">{{ titleBar }}</span>
           <!-- <div slot="subtitle">Impossible made possible</div> -->
         </q-toolbar-title>
         <q-btn class="toolbar-btn" flat
@@ -167,6 +167,9 @@ export default {
     },
     peerCount () {
       return this.$store.state.node.peers
+    },
+    titleBar () {
+      return this.$store.state.lan.titleBar
     }
   },
   watch: {
@@ -176,7 +179,7 @@ export default {
   },
   methods: {
     updateToolbar (title, icon) {
-      this.toolbarTitle = title
+      this.$store.commit('lan/update', title)
       this.toolbarIcon = icon
     }
   },

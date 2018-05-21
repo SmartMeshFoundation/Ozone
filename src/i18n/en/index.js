@@ -11,11 +11,11 @@ export default {
     },
     wallet: {
       label: 'Wallet',
-      sublabel: 'Manage your accounts'
+      sublabel: 'address management'
     },
     transfer: {
       label: 'Transfer',
-      sublabel: 'Transfer value to other accounts'
+      sublabel: 'Transfer value between accounts'
     },
     deploy_contract: {
       label: 'Deploy',
@@ -55,7 +55,9 @@ export default {
     list: {
       caption: 'Recent Transaction',
       unconfirmed: 'confirming',
-      block_confirm: 'blocks confirmed'
+      block_confirm: 'blocks confirmed',
+      abi: 'create or invoke contract',
+      transfer: 'transfer'
     },
     text: {
       noTxs: 'No transaction history'
