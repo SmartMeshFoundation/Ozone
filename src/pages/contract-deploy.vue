@@ -361,7 +361,7 @@ export default {
         this.$q.loading.hide()
         this.$q.notify(data.error)
       } else {
-        this.$router.push('/dashboard')
+        this.$router.push('/contract/my')
       }
     })
   },

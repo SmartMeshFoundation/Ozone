@@ -1,5 +1,6 @@
 import { ipcMain as ipc } from 'electron'
 import { EventEmitter } from 'events'
+
 import _ from 'lodash'
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
@@ -26,10 +27,6 @@ class ContractState extends EventEmitter {
     let contracts = db.contracts.chain().simplesort('timestamp', true).data()
 
     Promise.all(contracts.map((contract, index) => {
-      if (contract.name === '') {
-        contract.name = 'Contract ' + index
-      }
-
       if (contract.contractAddress !== '') {
         return Promise.resolve()
       } else {
@@ -92,7 +89,7 @@ class ContractState extends EventEmitter {
 
             let contract = {
               _id: txHash,
-              name: '',
+              name: 'Contract-' + (db.contracts.count() + 1),
               contractAddress: '',
               abi: data.abi,
               timestamp: moment().unix()
@@ -100,12 +97,14 @@ class ContractState extends EventEmitter {
 
             db.contracts.insert(contract)
             global.windows.broadcast(Types.DEPLOY_CONTRACT_REPLY, { txHash })
+            this.emit('sync')
           })
           .on('receipt', (receipt) => {
             debug('tx receipt: ', receipt)
             let contract = db.contracts.by('_id', receipt.transactionHash)
             contract.contractAddress = receipt.contractAddress
             db.contracts.update(contract)
+            this.emit('sync')
           })
       })
       .catch(error => {

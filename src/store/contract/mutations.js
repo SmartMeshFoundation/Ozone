@@ -19,3 +19,20 @@ export const updateName = (state, obj) => {
     }
   }
 }
+
+export const remove = (state, id) => {
+  let idx = state.list.findIndex(element => {
+    return element._id === id
+  })
+
+  if (idx !== -1) {
+    state.list.splice(idx, 1)
+
+    // delete from backend db
+    const db = window.db
+    let doc = db.contracts.by('_id', id)
+    if (doc) {
+      db.contracts.remove(doc)
+    }
+  }
+}

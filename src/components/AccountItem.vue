@@ -85,8 +85,8 @@ div.verify-modal .q-btn
     width 70px
     height 36px
     background-color #10A0F8 !important
-.q-alert-content
-    background-color #10A0F8 !important
+// .q-alert-content
+//     background-color #10A0F8 !important
 div.qr_code
     display inline-block
     vertical-align middle
