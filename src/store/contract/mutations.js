@@ -29,10 +29,9 @@ export const remove = (state, id) => {
     state.list.splice(idx, 1)
 
     // delete from backend db
-    const db = window.db
-    let doc = db.contracts.by('_id', id)
+    let doc = window.db.contracts.by('_id', id)
     if (doc) {
-      db.contracts.remove(doc)
+      window.db.contracts.remove(doc)
     }
   }
 }

@@ -31,6 +31,8 @@ export default [
     component: () => import('layouts/default'),
     children: [
       { path: 'deploy', component: () => import('pages/contract-deploy') },
+      { path: 'add', component: () => import('pages/contract-add') },
+      { path: 'view', component: () => import('pages/contract-view') },
       { path: 'my', component: () => import('pages/contract-my') }
     ]
   },

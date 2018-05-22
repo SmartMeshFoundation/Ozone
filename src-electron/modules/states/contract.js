@@ -4,6 +4,8 @@ import { EventEmitter } from 'events'
 import _ from 'lodash'
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
+import uuidv4 from 'uuid/v4'
+
 import { Types } from '../ipc/types'
 import logger from '../logger'
 
@@ -16,8 +18,18 @@ class ContractState extends EventEmitter {
     this.on('sync', this._sync)
 
     ipc.on(Types.DEPLOY_CONTRACT, (event, data) => {
-      debug('ipc call: ', Types.DEPLOY_CONTRACT)
+      debug('ipc call deploy contract: ', Types.DEPLOY_CONTRACT)
       this._deploy(data)
+    })
+
+    ipc.on(Types.IMPORT_CONTRACT, (event, data) => {
+      debug('ipc call import contract: ', data)
+      this._import(data)
+    })
+
+    ipc.on(Types.ADD_CONTRACT, (event, data) => {
+      debug('ipc call add contract: ', data)
+      this._addContract(data)
     })
   }
 
@@ -86,10 +98,13 @@ class ContractState extends EventEmitter {
           })
           .on('transactionHash', (txHash) => {
             debug('tx hash: ', txHash)
-
+            let name = data.name
+            if (!name || name === '') {
+              name = 'Contract-' + (db.contracts.count() + 1)
+            }
             let contract = {
               _id: txHash,
-              name: 'Contract-' + (db.contracts.count() + 1),
+              name,
               contractAddress: '',
               abi: data.abi,
               timestamp: moment().unix()
@@ -138,6 +153,34 @@ class ContractState extends EventEmitter {
     let n = Number(value)
 
     return !Number.isNaN(n) && n > 0
+  }
+
+  _import (data) {
+    const contracts = global.db.contracts
+    if (data && data.length && data.length > 0) {
+      data.forEach((item) => {
+        if (item.$loki) {
+          delete item.$loki
+        }
+        contracts.insert(item)
+      })
+
+      this._sync()
+    }
+  }
+
+  _addContract (data) {
+    let doc = {
+      _id: uuidv4(),
+      name: data.name,
+      contractAddress: data.address,
+      abi: data.abi,
+      timestamp: moment().unix()
+    }
+    global.db.contracts.insert(doc)
+    this._sync()
+
+    global.windows.broadcast(Types.ADD_CONTRACT_REPLY)
   }
 }
 

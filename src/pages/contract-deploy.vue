@@ -1,23 +1,8 @@
 <template>
   <q-page class="q-pa-md">
     <div class="bg-white q-pa-md">
+
       <div>
-        <q-field error-label="请选择发布合约的账户"
-                 :error="$v.form.from.$error">
-          <q-select float-label="合约所有者"
-                    v-model="form.from"
-                    :options="options" />
-        </q-field>
-      </div>
-      <div class="q-mt-lg">
-        <q-field error-label="金额必须是数字"
-                 :error="$v.form.value.$error">
-          <q-input float-label="金额"
-                   v-model="form.value"
-                   type="number" />
-        </q-field>
-      </div>
-      <div class="q-mt-lg">
         <q-toggle class="q-ma-xs"
                   v-model="advancedMode"
                   label="高级模式" />
@@ -74,9 +59,9 @@
       </div>
       <div class="q-mt-md" v-if="!advancedMode">
         <q-field error-label="请选择需要发布的合约"
-                 :error="$v.form.deployedContract.$error">
+                 :error="$v.form.contractName.$error">
           <q-select float-label="合约名称"
-                    v-model="form.deployedContract"
+                    v-model="form.contractName"
                     :options="contractNames" />
         </q-field>
       </div>
@@ -90,10 +75,36 @@
         </q-field>
       </div>
 
+      <div class="q-mt-md">
+        <q-field>
+          <q-input float-label="自定义名称"
+                   v-model="customName"
+                   type="text"
+                   placeholder="自定义合约的名称" />
+        </q-field>
+      </div>
+
+      <div class="q-mt-lg">
+        <q-field error-label="请选择发布合约的账户"
+                 :error="$v.form.from.$error">
+          <q-select float-label="合约所有者"
+                    v-model="form.from"
+                    :options="options" />
+        </q-field>
+      </div>
+      <div class="q-mt-lg">
+        <q-field error-label="金额必须是数字"
+                 :error="$v.form.value.$error">
+          <q-input float-label="金额"
+                   v-model="form.value"
+                   type="number" />
+        </q-field>
+      </div>
+
     </div>
 
-    <div class="row q-mt-md justify-end">
-      <q-btn color="primary"
+    <div class="row q-mt-md justify-center">
+      <q-btn color="primary full-width"
              label=" 创建合约 "
              @click="checkForm" />
     </div>
@@ -106,9 +117,11 @@
         <div class="q-display-1">确认部署合约</div>
       </div>
 
-      <div class="row q-pa-md">
-        <div class="col">合约所有者：</div>
-        <div>{{form.from}}</div>
+      <div class="row items-center q-pa-md">
+        <div class="col">
+          <ident-icon :value="form.from" />
+        </div>
+        <div class="q-ml-sm">{{form.from}}</div>
       </div>
 
       <div class="row q-pa-md" v-if="hasConstructor">
@@ -139,7 +152,11 @@
 </template>
 
 <style>
-
+.v-center {
+  position: relative;
+  top:50%;
+  transform: translateY(-50%);
+}
 </style>
 
 <script>
@@ -162,7 +179,7 @@ export default {
         source: '',
         abi: '',
         bytecode: '',
-        deployedContract: ''
+        contractName: ''
       },
       contracts: {},
       messages: [],
@@ -171,7 +188,8 @@ export default {
       hasConstructor: false,
       args: '',
       argsPlaceholder: '',
-      password: ''
+      password: '',
+      customName: '' // 自定义合约名称
     }
   },
   methods: {
@@ -193,7 +211,7 @@ export default {
       if (!this.hasError) {
         this.contracts = output.contracts
       }
-    }, 600),
+    }, 300),
 
     messageType (msg) {
       if (msg.indexOf('Warn') >= 0) {
@@ -224,7 +242,8 @@ export default {
             value: this.form.value,
             abi: this.form.abi,
             bytecode: this.form.bytecode,
-            args: this.args
+            args: this.args,
+            name: this.customName
           }
 
           ipc.send(Types.DEPLOY_CONTRACT, data)
@@ -301,13 +320,15 @@ export default {
       }
     },
 
-    'form.deployedContract' (newVal, oldVal) {
+    'form.contractName' (newVal, oldVal) {
       if (newVal && newVal.trim() !== '') {
         let contract = this.contracts[newVal]
         this.form.abi = contract.interface
         this.form.bytecode = contract.bytecode
 
         this.updateArguments(contract.interface)
+
+        this.customName = newVal.replace(':', '')
       }
     },
 
@@ -344,7 +365,7 @@ export default {
             return this.advancedMode
           })
         },
-        deployedContract: {
+        contractName: {
           required: requiredIf(function (model) {
             return !this.advancedMode
           })
