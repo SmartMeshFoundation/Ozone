@@ -67,7 +67,8 @@ module.exports = function (ctx) {
         'QProgress',
         'QAlert',
         'QToggle',
-        'QInnerLoading'
+        'QInnerLoading',
+        'QTable'
       ],
       directives: ['Ripple', 'CloseOverlay'],
       // Quasar plugins

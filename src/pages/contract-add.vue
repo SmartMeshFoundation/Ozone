@@ -1,8 +1,8 @@
 <template>
   <q-page class="q-pa-md">
-    <q-alert type="info">
+    <div class="q-subheading">
       添加已经部署到链上的合约到 '我的合约' 中
-    </q-alert>
+    </div>
     <div class="bg-white q-pa-md q-mt-md">
       <div class="q-mt-md">
         <q-field error-label="请输入合约名称"
