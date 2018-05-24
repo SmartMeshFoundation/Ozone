@@ -31,6 +31,11 @@ class ContractState extends EventEmitter {
       debug('ipc call add contract: ', data)
       this._addContract(data)
     })
+
+    ipc.on(Types.CALL_CONTRACT, (event, data) => {
+      debug('ipc call contract')
+      this._callContract(data)
+    })
   }
 
   _sync () {
@@ -181,6 +186,42 @@ class ContractState extends EventEmitter {
     this._sync()
 
     global.windows.broadcast(Types.ADD_CONTRACT_REPLY)
+  }
+
+  _callContract (data) {
+    const web3 = global.web3
+    let { from, password, abi, address, method, inputs } = data
+    abi = JSON.parse(abi)
+    method = abi.find((item) => {
+      return item.name === method
+    })
+
+    let myContract = new web3.eth.Contract(abi, address)
+
+    let target = this._getMethod(myContract, method, inputs)
+
+    if (method.constant) { // view contract state
+      debug('call target')
+      target.call()
+        .then((result) => {
+          debug('call result: ', result)
+        })
+        .catch(error => {
+          global.windows.broadcast(Types.CALL_CONTRACT_REPLY, { error: error.message })
+        })
+    } else { // send transaction
+      // TODO
+    }
+  }
+
+  // TODO check argument types
+  _getMethod (contract, method, inputs) {
+    debug('method: ', method, ', inputs: ', inputs)
+    if (_.isUndefined(inputs)) {
+      return contract.methods[method.signature]()
+    } else {
+      return contract.methods[method.signature](inputs)
+    }
   }
 }
 

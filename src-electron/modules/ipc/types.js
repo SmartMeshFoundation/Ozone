@@ -1,6 +1,8 @@
 export const Types = {
   ADD_CONTRACT: 'add-contract',
   ADD_CONTRACT_REPLY: 'add-contract-reply',
+  CALL_CONTRACT: 'call-contract',
+  CALL_CONTRACT_REPLY: 'call-contract-reply',
   DEPLOY_CONTRACT: 'deploy-contract',
   DEPLOY_CONTRACT_REPLY: 'deploy-contract-reply',
   IMPORT_CONTRACT: 'import-contract',
