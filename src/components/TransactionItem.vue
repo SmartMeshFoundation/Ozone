@@ -37,8 +37,14 @@
        </q-item-tile>
      </q-item-main>
      <q-item-side right>
-       <q-item-tile class="trans-fee" color="negative">
+       <q-item-tile class="trans-fee" v-if="address===undefined" color="negative">
          {{toSMT(item.value)}} {{$unit}}
+       </q-item-tile>
+       <q-item-tile class="trans-fee" v-if="address===item.from" color="negative">
+         -{{toSMT(item.value)}} {{$unit}}
+       </q-item-tile>
+       <q-item-tile class="trans-fee" v-if="address===item.to" color="negative">
+         +{{toSMT(item.value)}} {{$unit}}
        </q-item-tile>
      </q-item-side>
    </q-item>
@@ -117,6 +123,7 @@ export default {
   props: ['item'],
   data () {
     return {
+      address: this.$route.params.address,
       showTransactionModal: false,
       gasFee: 0
     }
