@@ -78,9 +78,9 @@
 import moment from 'moment'
 import uuidv4 from 'uuid/v4'
 
-import { Types } from '../../src-electron/modules/ipc/types.js'
+// import { Types } from '../../src-electron/modules/ipc/types.js'
 
-const ipc = window.ipc
+// const ipc = window.ipc
 const web3 = window.web3
 
 export default {
@@ -89,10 +89,7 @@ export default {
       messages: [],
       from: '',
       password: '',
-      methodInputs: {},
-      values: {
-        minter: []
-      }
+      methodInputs: {}
     }
   },
 
@@ -119,25 +116,22 @@ export default {
           .then(result => {
             console.log('called result: ', result)
 
-            let values = []
-
             let outputs = method.outputs
             if (outputs.length > 1) {
               for (let i = 0; i < outputs.length; i++) {
-                values.push({
+                this.results[name].push({
                   type: outputs[i].type,
                   value: result[i]
                 })
               }
             } else {
-              values.push({
+              this.results[name].push({
                 type: outputs[0].type,
                 value: result
               })
             }
 
-            Object.assign(this.values, {[name]: values})
-            console.log(this.results)
+            console.log('called results: ', this.results)
           })
       }
     }
@@ -153,37 +147,41 @@ export default {
     },
 
     states () {
-      let items = []
+      let status = []
       this.abi.forEach(item => {
         if (item.constant) {
-          items.push({
+          status.push({
             name: item.name,
             inputs: item.inputs
           })
         }
       })
-      return items
+      return status
     },
 
     results () {
-      return this.values
+      let rts = {}
+      this.abi.forEach(item => {
+        rts[item.name] = []
+      })
+      return rts
     }
   },
 
   created () {
     console.log('id: ', this.$route.query.id)
-    // this.addMessage('one line')
-    // this.addMessage('two line')
-    // this.addMessage('three line')
-    ipc.on(Types.CALL_CONTRACT_REPLY, (event, data) => {
-      if (data.error) {
-        this.addMessage(data.error)
-      }
-    })
+
+    console.log('results: ', this.results)
+
+    // ipc.on(Types.CALL_CONTRACT_REPLY, (event, data) => {
+    //   if (data.error) {
+    //     this.addMessage(data.error)
+    //   }
+    // })
   },
 
   destroyed () {
-    ipc.removeAllListeners(Types.CALL_CONTRACT_REPLY)
+    // ipc.removeAllListeners(Types.CALL_CONTRACT_REPLY)
   }
 }
 </script>
