@@ -27,7 +27,7 @@
                                          v-model="methodInputs[state.name]"
                                          :placeholder="state.inputs[0].type" />
                             </q-item-tile>
-                            <q-item-tile v-for="(item, idx) in results[state.name]"
+                            <q-item-tile v-for="(item, idx) in returnValues[state.name]"
                                          :key="uuid(idx)">
                                 <small>{{idx}}: {{item.type}}: {{item.value}}</small>
                             </q-item-tile>
@@ -89,7 +89,8 @@ export default {
       messages: [],
       from: '',
       password: '',
-      methodInputs: {}
+      methodInputs: {},
+      returnValues: this.getReturnValues()
     }
   },
 
@@ -102,11 +103,17 @@ export default {
       return uuidv4()
     },
 
-    callContract (name) {
-      // ipc.send(Types.CALL_CONTRACT, data)
-      let abi = JSON.parse(this.contract.abi)
+    getReturnValues () {
+      let abi = JSON.parse(this.$store.getters['contract/get'](this.$route.query.id).abi)
+      let values = {}
+      abi.forEach(item => {
+        values[item.name] = []
+      })
+      return values
+    },
 
-      let myContract = new web3.eth.Contract(abi, this.contract.contractAddress)
+    callContract (name) {
+      let myContract = new web3.eth.Contract(this.abi, this.contract.contractAddress)
       let method = myContract.options.jsonInterface.find(item => {
         return item.name === name
       })
@@ -114,24 +121,23 @@ export default {
       if (method.constant) {
         myContract.methods[method.signature]().call()
           .then(result => {
-            console.log('called result: ', result)
-
+            console.log('called result of ', name, ': ', result)
+            let values = []
             let outputs = method.outputs
             if (outputs.length > 1) {
               for (let i = 0; i < outputs.length; i++) {
-                this.results[name].push({
+                values.push({
                   type: outputs[i].type,
                   value: result[i]
                 })
               }
             } else {
-              this.results[name].push({
+              values.push({
                 type: outputs[0].type,
                 value: result
               })
             }
-
-            console.log('called results: ', this.results)
+            this.returnValues[name] = values
           })
       }
     }
@@ -157,31 +163,15 @@ export default {
         }
       })
       return status
-    },
-
-    results () {
-      let rts = {}
-      this.abi.forEach(item => {
-        rts[item.name] = []
-      })
-      return rts
     }
+
   },
 
   created () {
     console.log('id: ', this.$route.query.id)
-
-    console.log('results: ', this.results)
-
-    // ipc.on(Types.CALL_CONTRACT_REPLY, (event, data) => {
-    //   if (data.error) {
-    //     this.addMessage(data.error)
-    //   }
-    // })
   },
 
   destroyed () {
-    // ipc.removeAllListeners(Types.CALL_CONTRACT_REPLY)
   }
 }
 </script>
