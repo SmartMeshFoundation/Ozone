@@ -23,13 +23,14 @@
                                        color="secondary"
                                        class="shadow-1" />
                                 <q-input class="inputs"
-                                         v-if="state.inputs.length > 0"
-                                         v-model="methodInputs[state.name]"
-                                         :placeholder="state.inputs[0].type" />
+                                         v-for="input in methodInputs[state.name]"
+                                         v-model="input.value"
+                                         :key="'input-'+input.pos"
+                                         :placeholder="'Input ' +input.pos + ': ' + input.type" />
                             </q-item-tile>
-                            <q-item-tile v-for="(item, idx) in returnValues[state.name]"
+                            <q-item-tile class="output" v-for="(item, idx) in returnValues[state.name]"
                                          :key="uuid(idx)">
-                                <small>{{idx}}: {{item.type}}: {{item.value}}</small>
+                                <small>Output {{idx}}: {{item.type}}: {{item.value}}</small>
                             </q-item-tile>
                         </q-item-main>
                     </q-item>
@@ -46,7 +47,7 @@
             </div>
         </div>
 
-        <ul class="output q-py-sm">
+        <ul class="messages q-py-sm">
             <li v-for="msg in messages"
                 :key="uuid(msg)">{{msg}}</li>
         </ul>
@@ -60,17 +61,21 @@
   padding: 16px;
 }
 
+.inputs {
+  padding-bottom: 4px
+  font-size: 13px
+}
+
 .output {
+  margin-top 16px
+}
+
+.messages {
   background-color: #ffffff;
 }
 
-.output > li {
+.messages > li {
   padding: 5px 0px;
-}
-
-.inputs {
-  padding-bottom: 4px;
-  font-size: 13px;
 }
 </style>
 
@@ -89,7 +94,7 @@ export default {
       messages: [],
       from: '',
       password: '',
-      methodInputs: {},
+      methodInputs: this.getMethodInputs(),
       returnValues: this.getReturnValues()
     }
   },
@@ -103,6 +108,20 @@ export default {
       return uuidv4()
     },
 
+    getMethodInputs () {
+      let abi = JSON.parse(this.$store.getters['contract/get'](this.$route.query.id).abi)
+      let inputs = {}
+      abi.forEach(item => {
+        if (item.inputs && item.inputs.length > 0) {
+          inputs[item.name] = []
+          item.inputs.forEach((input, idx) => {
+            inputs[item.name].push({pos: idx, type: input.type, value: ''})
+          })
+        }
+      })
+      return inputs
+    },
+
     getReturnValues () {
       let abi = JSON.parse(this.$store.getters['contract/get'](this.$route.query.id).abi)
       let values = {}
@@ -112,11 +131,22 @@ export default {
       return values
     },
 
+    parseInputs (name) {
+      if (!this.methodInputs[name]) {
+        return null
+      }
+
+      let inputs = this.methodInputs[name]
+
+    }
+
     callContract (name) {
       let myContract = new web3.eth.Contract(this.abi, this.contract.contractAddress)
       let method = myContract.options.jsonInterface.find(item => {
         return item.name === name
       })
+
+      let inputs = this.parseInputs(name)
 
       if (method.constant) {
         myContract.methods[method.signature]().call()
