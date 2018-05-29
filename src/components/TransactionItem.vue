@@ -8,8 +8,9 @@
      </q-item-side>
      <q-item-main>
        <q-item-tile class="q-pb-sm">
-         <span v-if="item.to != null" >账户间转账</span>
-         <span v-if="item.to == null" >创建/调用合约</span>
+         <span v-if="item.to != null && item.input === '0x'" >账户间转账</span>
+         <span v-if="item.to != null && item.input !== '0x'" >调用合约</span>
+         <span v-if="item.to == null" >创建合约</span>
        </q-item-tile>
        <q-item-tile>
          <ident-icon :value="item.from.toLowerCase()" />
@@ -24,7 +25,7 @@
      </q-item-main>
      <q-item-main>
        <q-item-tile :class="{hidden: !showElapsedTime}">
-         <span> {{now(item.timestamp)}} </span>
+         <span> {{fromNow(item.timestamp)}} </span>
        </q-item-tile>
        <q-item-tile :class="{hidden: !showProgress}">
          <q-progress :percentage="progress" />
@@ -136,9 +137,9 @@ export default {
   },
   methods: {
     date (timestamp) {
-      return this.$moment(timestamp).format('MMMM Do')
+      return this.$moment.unix(timestamp).format('MMMM Do')
     },
-    now (timestamp) {
+    fromNow (timestamp) {
       return this.$moment.unix(timestamp).fromNow()
     },
     toSMT (value) {
