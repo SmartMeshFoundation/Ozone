@@ -83,7 +83,7 @@
         >
           <template slot="top-left" slot-scope="props">
             <q-input placeholder="起始区块号" v-model="fromBlock" class="q-mr-md"></q-input>
-            <q-btn label="查询合约日志" color="secondary" @click="getPastEvents"></q-btn>
+            <q-btn label="查询历史事件" color="secondary" @click="getPastEvents"></q-btn>
           </template>
         </q-table>
 
@@ -94,7 +94,7 @@
           color="secondary"
         >
           <template slot="top-left" slot-scope="props">
-            <q-btn :loading="watching" label="观察合约" color="secondary" @click="watchEvents"></q-btn>
+            <q-btn :loading="watching" label="观察合约事件" color="secondary" @click="watchEvents"></q-btn>
           </template>
         </q-table>
 
