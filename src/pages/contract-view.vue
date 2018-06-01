@@ -80,15 +80,16 @@
           :columns="eventColumns"
           row-key="name"
           color="secondary"
+          :loading="loading"
         >
           <template slot="top-left" slot-scope="props">
             <q-input placeholder="起始区块号" v-model="fromBlock" class="q-mr-md"></q-input>
-            <q-btn label="查询历史事件" color="secondary" @click="getPastEvents"></q-btn>
+            <q-btn :disable="loading" label="查询历史事件" color="secondary" @click="getPastEvents"></q-btn>
           </template>
         </q-table>
 
         <q-table class="bg-white q-mt-lg"
-          :data="receiveEvents"
+          :data="watchedEvents"
           :columns="eventColumns"
           row-key="name"
           color="secondary"
@@ -98,7 +99,7 @@
           </template>
         </q-table>
 
-        <ul class="messages q-py-sm">
+        <ul class="messages q-py-sm" v-if="messages.length > 0">
             <li v-for="msg in messages" :class="{error: !!msg.error}"
                 :key="uuid(msg)">{{msg.message}}</li>
         </ul>
@@ -156,8 +157,9 @@ export default {
         {name: 'event', label: '事件', field: 'event'},
         {name: 'returnValues', label: '返回值', field: 'returnValues', align: 'left'}
       ],
-      receiveEvents: [],
-      watching: false
+      watchedEvents: [],
+      watching: false,
+      loading: false
     }
   },
 
@@ -313,25 +315,28 @@ export default {
     },
 
     getPastEvents () {
+      this.loading = true
+      this.pastEvents.splice(0, this.pastEvents.length)
       let myContract = new web3.eth.Contract(this.abi, this.contract.contractAddress)
       let fromBlock = this.fromBlock
       fromBlock = fromBlock === '' ? 'latest' : fromBlock
       myContract.getPastEvents('allEvents', { fromBlock })
         .then(events => {
           console.log('past events: ', events)
-          this.pastEvents.splice(0, this.pastEvents.length)
 
           events.forEach(event => {
             this.pastEvents.push({
               id: event.id,
               event: event.event,
               blockNumber: event.blockNumber,
-              returnValues: this.convertValues(event.returnValues)
+              returnValues: this.convertValues(event.event, event.returnValues)
             })
           })
+          this.loading = false
         })
         .catch(error => {
           this.addMessage(error, true)
+          this.loading = false
         })
     },
 
@@ -344,11 +349,11 @@ export default {
           if (!error) {
             console.log('fired event: ', event)
 
-            this.receiveEvents.push({
+            this.watchedEvents.push({
               id: event.id,
               event: event.event,
               blockNumber: event.blockNumber,
-              returnValues: this.convertValues(event.returnValues)
+              returnValues: this.convertValues(event.event, event.returnValues)
             })
           } else {
             this.addMessage(error, true)
@@ -357,15 +362,20 @@ export default {
       }
     },
 
-    convertValues (obj) {
+    convertValues (name, obj) {
+      let event = this.abi.find(item => item.name === name)
+
       let values = []
-      for (let i = 0; i < 10; i++) {
-        if (obj[i]) {
-          values.push(obj[i])
-        } else {
-          break
-        }
-      }
+      event.inputs.forEach(item => {
+        values.push(item.name + ': ' + obj[item.name])
+      })
+      // for (let i = 0; i < 10; i++) {
+      //   if (obj[i]) {
+      //     values.push(obj[i])
+      //   } else {
+      //     break
+      //   }
+      // }
       return values.join(', ')
     }
   },
