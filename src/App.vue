@@ -21,6 +21,10 @@ export default {
       this.$store.commit('transaction/reset', transactions)
     })
 
+    ipc.on(Types.SYNC_CONTRACT, (event, { contracts }) => {
+      this.$store.commit('contract/reset', contracts)
+    })
+
     ipc.on(Types.NODE_STATE_CHANGE, (event, state) => {
       this.$store.commit('node/update', state)
     })
@@ -49,7 +53,8 @@ export default {
       Types.SYNC_ACCOUNT,
       Types.SYNC_TRANSACTION,
       Types.NODE_STATE_CHANGE,
-      Types.SWITCH_LAN
+      Types.SWITCH_LAN,
+      Types.SYNC_CONTRACT
     ].forEach(channel => {
       ipc.removeAllListeners(channel)
     })

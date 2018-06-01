@@ -160,8 +160,7 @@ div.password-modal .cancel-btn
 div.password-modal .sub-btn
     bottom 4px
     right 26px !important
-.q-alert-content
-    background-color #FA5A53 !important
+
 </style>
 
 <script>

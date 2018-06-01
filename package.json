@@ -38,6 +38,7 @@
     "superagent": "^3.8.2",
     "thunkify": "^2.1.2",
     "util": "^0.10.3",
+    "uuid": "^3.2.1",
     "vue-countup-v2": "^1.0.3",
     "vue-i18n": "^7.6.0",
     "vuelidate": "^0.6.2",
@@ -53,7 +54,7 @@
     "electron-log": "^2.2.14",
     "electron-packager": "11.1.0",
     "electron-rebuild": "^1.7.3",
-    "eslint": "^4.18.2",
+    "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^2.0.0",
@@ -62,7 +63,7 @@
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-standard": "^3.0.1",
     "eslint-plugin-vue": "^4.3.0",
-    "quasar-cli": "^0.15.11"
+    "quasar-cli": "^0.16.0"
   },
   "engines": {
     "node": ">= 8.9.0",

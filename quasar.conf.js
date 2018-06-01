@@ -11,10 +11,7 @@ module.exports = function (ctx) {
       'fontawesome'
     ],
     supportIE: false,
-    vendor: {
-      add: [],
-      remove: []
-    },
+
     build: {
       scopeHoisting: true,
       vueRouterMode: 'history',
@@ -47,6 +44,7 @@ module.exports = function (ctx) {
         'QPage',
         'QToolbar',
         'QToolbarTitle',
+        'QBtnGroup',
         'QBtn',
         'QIcon',
         'QList',
@@ -69,7 +67,8 @@ module.exports = function (ctx) {
         'QProgress',
         'QAlert',
         'QToggle',
-        'QInnerLoading'
+        'QInnerLoading',
+        'QTable'
       ],
       directives: ['Ripple', 'CloseOverlay'],
       // Quasar plugins

@@ -1,5 +1,4 @@
 import logger from '../logger'
-import { Types } from '../ipc/types'
 import observeTransaction from '../observer/observeTransaction'
 
 const log = logger.create('ObserveBlock')
@@ -26,21 +25,7 @@ class ObserveBlock {
 
   // update the node status
   _updateNodeState () {
-    Promise.all([
-      this.web3.eth.getBlock('latest'),
-      this.web3.eth.net.getPeerCount(),
-      this.web3.eth.getGasPrice()
-    ])
-      .then(([block, peers, gasPrice]) => {
-        global.windows.broadcast(Types.NODE_STATE_CHANGE, {
-          blockNumber: block.number,
-          peers,
-          gasPrice
-        })
-      })
-      .catch(err => {
-        log.error('Try to update node state occur error.', err)
-      })
+    global.stateManager.emit('sync', 'node')
   }
 
   _syncAccount (blockHeader) {

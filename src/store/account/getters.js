@@ -1,4 +1,3 @@
-// 根据 address 查找缓存中的账户
 export const get = state => address => {
   return state.list.find(
     account => account.address.toLowerCase() === address.toLowerCase()

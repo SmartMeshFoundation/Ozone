@@ -81,7 +81,7 @@
     margin-left 16px
     border-radius 2px
 .account-item .trans-title
-    margin-top 180px
+    margin-top 60px
 div.modify-modal .modal-content
   width 448px
   height 214px
@@ -130,7 +130,7 @@ export default {
       let address = this.$route.params.address.toLowerCase()
       return this.$store.state.transaction.list.filter((item) => {
         let from = item.from.toLowerCase()
-        let to = item.to.toLowerCase()
+        let to = !item.to ? 'NULL' : item.to.toLowerCase()
         return from === address || to === address
       })
     }

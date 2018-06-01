@@ -74,13 +74,19 @@
           <q-item-main :label="$t('nav.transfer.label')"
                        :sublabel="$t('nav.transfer.sublabel')" />
         </q-item>
-        <!-- <q-list-header>{{ $t('nav.header.contract') }}</q-list-header>
+        <q-list-header>{{ $t('nav.header.contract') }}</q-list-header>
         <q-item to="/contract/deploy"
           @click.native="updateToolbar($t('nav.deploy_contract.label'))">
           <q-item-side icon="code" />
           <q-item-main :label="$t('nav.deploy_contract.label')"
                        :sublabel="$t('nav.deploy_contract.sublabel')" />
-        </q-item> -->
+        </q-item>
+        <q-item to="/contract/my"
+          @click.native="updateToolbar('我的合约')">
+          <q-item-side icon="code" />
+          <q-item-main label="我的合约"
+                       sublabel="管理你的智能合约" />
+        </q-item>
       </q-list>
     </q-layout-drawer>
 
