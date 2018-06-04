@@ -160,6 +160,15 @@ export default {
         this.showModifyModal = false
       }
     }
+  },
+
+  created () {
+    this.$store.commit('ui/update', {
+      breadcrumbs: [
+        { key: 'nav.wallet.label', to: '/wallet' },
+        { key: 'nav.wallet.account' }
+      ]
+    })
   }
 }
 </script>

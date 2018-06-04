@@ -6,15 +6,15 @@ Vue.use(Vuex)
 import account from './account'
 import transaction from './transaction'
 import node from './node'
-import lan from './lan'
 import contract from './contract'
+import ui from './ui'
 
 let modules = {
   account,
   transaction,
   node,
   contract,
-  lan
+  ui
 }
 
 const store = new Vuex.Store({ modules })
@@ -26,7 +26,7 @@ if (process.env.DEV && module.hot) {
     './transaction',
     './node',
     './contract',
-    './lan'
+    './ui'
   ], () => {
     store.hotUpdate({
       modules: {
@@ -34,7 +34,8 @@ if (process.env.DEV && module.hot) {
         transaction: require('./transaction').default,
         node: require('./node').default,
         contract: require('./contract').default,
-        lan: require('./lan').default
+        // lan: require('./lan').default,
+        ui: require('./ui').default
       }
     })
   }

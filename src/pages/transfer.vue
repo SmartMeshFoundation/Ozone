@@ -304,6 +304,12 @@ export default {
   },
 
   created () {
+    this.$store.commit('ui/update', {
+      breadcrumbs: [
+        {key: 'nav.transfer.label', to: '/transfer'}
+      ]
+    })
+
     const $vm = this
 
     ipc.on(Types.SEND_TRANSACTION_REPLY, (event, reply) => {

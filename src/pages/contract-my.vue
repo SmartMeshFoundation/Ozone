@@ -14,7 +14,7 @@
             <q-btn icon="add"
                     label="添加合约"
                     color="secondary"
-                    @click="$router.push('/contract/add')" />
+                    @click="$router.push('/contract/my/add')" />
           </q-btn-group>
         </div>
 
@@ -137,8 +137,11 @@ export default {
   },
 
   created () {
-    // pass data to parent component
-    this.$emit('updateToolbar', '我的合约')
+    this.$store.commit('ui/update', {
+      breadcrumbs: [
+        {key: 'nav.contract.my.label', to: '/contract/my'}
+      ]
+    })
   }
 }
 </script>

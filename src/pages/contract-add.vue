@@ -1,42 +1,40 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="q-subheading">
-      添加已经部署到链上的合约到 '我的合约' 中
-    </div>
+    <div class="q-subheading">{{ $t('contract.add.description') }}</div>
     <div class="bg-white q-pa-md q-mt-md">
       <div class="q-mt-md">
-        <q-field error-label="请输入合约名称"
+        <q-field :error-label="$t('contract.add.name.error')"
                  :error="$v.contract.name.$error">
-          <q-input float-label="合约名称"
+          <q-input :float-label="$t('contract.add.name.label')"
                    v-model="contract.name"
                    type="text"
                    @blur="$v.contract.name.$touch"
-                   placeholder="自定义合约的名称" />
+                   :placeholder="$t('contract.add.name.placeholder')" />
         </q-field>
       </div>
 
       <div class="q-mt-md">
-        <q-field error-label="合约的 ABI 不能为空"
+        <q-field :error-label="contract.add.abi.error"
                  :error="$v.contract.abi.$error">
         <q-input v-model="contract.abi"
-                 float-label="智能合约的 ABI"
+                 :float-label="$t('contract.add.abi.label')"
                  type="textarea"
                  :max-height="200"
                  rows="5"
                  class="code"
                  @blur="$v.contract.abi.$touch"
-                 placeholder="json interface" />
+                 :placeholder="$t('contract.add.abi.placeholder')" />
         </q-field>
       </div>
 
       <div class="q-mt-md">
-        <q-field error-label="非法的合约地址"
+        <q-field :error-label="$t('contract.add.address.error')"
                  :error="$v.contract.address.$error">
-          <q-input float-label="合约地址"
+          <q-input :float-label="$t('contract.add.address.label')"
                    v-model="contract.address"
                    type="text"
                    @blur="$v.contract.address.$touch"
-                   placeholder="0x00000f..." />
+                   :placeholder="$t('contract.add.address.placeholder')" />
         </q-field>
       </div>
 
@@ -44,11 +42,11 @@
 
     <div class="row q-mt-md justify-center">
       <q-btn color="tertiary"
-            label=" 取 消 "
+            :label="$t('contract.add.btn.cancel')"
             @click="$router.go(-1)" />
 
       <q-btn color="primary q-ml-lg"
-            label=" 添加合约 "
+            :label="$t('contract.add.btn.ok')"
             @click="addContract" />
     </div>
   </q-page>
@@ -82,7 +80,7 @@ export default {
           this.$q.loading.show()
           ipc.send(Types.ADD_CONTRACT, this.contract)
         } else {
-          this.$q.notify({message: '合约地址已经存在！'})
+          this.$q.notify({message: this.$t('contract.add.notify.exists')})
         }
       }
     }
@@ -102,6 +100,13 @@ export default {
   },
 
   created () {
+    this.$store.commit('ui/update', {
+      breadcrumbs: [
+        { key: 'nav.contract.my.label', to: '/contract/my' },
+        { key: 'nav.contract.my.add' }
+      ]
+    })
+
     ipc.on(Types.ADD_CONTRACT_REPLY, (event, data) => {
       this.$q.loading.hide()
 

@@ -22,20 +22,15 @@ export default {
   },
   computed: {
     txList () {
-      // let accounts = this.$store.state.account.list.map(account => {
-      //   return account.address.toLowerCase()
-      // })
       return this.$store.state.transaction.list
-      // return this.$store.state.transaction.list.filter((item) => {
-      //   let from = item.from.toLowerCase()
-      //   let to = item.to.toLowerCase()
-      //   return accounts.indexOf(from) !== -1 || accounts.indexOf(to) !== -1
-      // })
     }
   },
   created () {
-    // pass data to parent component
-    this.$emit('updateToolbar', this.$t('nav.wallet.label'), 'fa-credit-card')
+    this.$store.commit('ui/update', {
+      breadcrumbs: [
+        {key: 'nav.wallet.label', to: '/wallet'}
+      ]
+    })
 
     // ipc.send(Types.SYNC_ALL_STATE)
   }

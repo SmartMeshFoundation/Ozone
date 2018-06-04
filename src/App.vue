@@ -30,7 +30,6 @@ export default {
     })
 
     ipc.on(Types.SWITCH_LAN, (event, lang) => {
-      this.$store.commit('lan/updateByLan', {lan: lang})
       if (lang === 'zh') {
         lang = 'zh-hans'
         this.$i18n.locale = 'zh'

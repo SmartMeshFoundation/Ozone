@@ -4,6 +4,7 @@ export default {
     cancel: '取消',
     skip: '忽略'
   },
+
   nav: {
     header: {
       account: '账户管理',
@@ -11,17 +12,31 @@ export default {
     },
     wallet: {
       label: '钱包',
-      sublabel: '钱包地址管理'
+      sublabel: '钱包地址管理',
+      account: '账户明细'
     },
     transfer: {
       label: '转账',
       sublabel: '账户之间资产转移'
     },
-    deploy_contract: {
-      label: '部署合约',
-      sublabel: '发布合约到区块链上'
+    contract: {
+      deploy: {
+        label: '部署合约',
+        sublabel: '发布合约到 Spectrum'
+      },
+      my: {
+        label: '我的合约',
+        sublabel: '管理链上的合约',
+        view: '合约详情',
+        add: '添加合约'
+      }
     }
   },
+
+  notify: {
+    error_password: '账户密码错误'
+  },
+
   account: {
     balance: '账户余额',
     account_list: '账户列表',
@@ -91,6 +106,78 @@ export default {
     },
     syncing: {
       title: '正在同步区块数据 ...'
+    }
+  },
+
+  ui: {
+    toolbar: {
+      title: 'Ozone'
+    }
+  },
+
+  contract: {
+    add: {
+      description: '在 "我的合约" 添加已经部署到 Spectrum 的合约',
+      name: {
+        label: '合约名称',
+        error: '请输入合约名称',
+        placeholder: '自定义合约的名称'
+      },
+      abi: {
+        label: '智能合约的 ABI',
+        error: '合约的 ABI 不能为空',
+        placeholder: 'Json Interface'
+      },
+      address: {
+        label: '合约地址',
+        error: '非法的合约地址',
+        placeholder: '合约地址'
+      },
+      btn: {
+        cancel: ' 取 消 ',
+        ok: ' 添加合约 '
+      },
+      notify: {
+        exists: '合约地址已经存在！'
+      }
+    },
+    deploy: {
+      advancedMode: '高级模式',
+      source: {
+        error: '源码分析发生错误',
+        placeholder: '在这里粘贴 Solidity 源码'
+      },
+      bytecode: {
+        label: '合约的 字节码',
+        error: '合约的 字节码 不能为空',
+        placeholder: '0x......'
+      },
+      contract_name: {
+        label: '合约名称',
+        error: '请选择需要发布的合约'
+      },
+      constructor: {
+        label: '构造参数'
+      },
+      custom_name: {
+        label: '自定义名称',
+        placeholder: '自定义合约的名称'
+      },
+      from: {
+        label: '合约所有者',
+        error: '请选择发布合约的账户'
+      },
+      value: {
+        label: '金额',
+        error: '金额必须是数字'
+      },
+      btn: {
+        create: ' 创建合约 '
+      },
+      confirm: {
+        title: '确认部署合约',
+        placeholder: '输入合约所有者的账户密码'
+      }
     }
   }
 }

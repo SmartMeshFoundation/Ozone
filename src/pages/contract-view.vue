@@ -418,7 +418,13 @@ export default {
   },
 
   created () {
-    console.log('id: ', this.$route.query.id)
+    // console.log('id: ', this.$route.query.id)
+    this.$store.commit('ui/update', {
+      breadcrumbs: [
+        { key: 'nav.contract.my.label', to: '/contract/my' },
+        { key: 'nav.contract.my.view' }
+      ]
+    })
   },
 
   destroyed () {

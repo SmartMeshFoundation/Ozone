@@ -1,10 +1,14 @@
 <template>
     <div class="col-6">
         <div class="row item items-start shadow-1">
-            <div class="col-11 item-main" @click="$router.push('/contract/view?id='+item._id)">
+            <router-link tag="div" class="col-11 item-main" :to="'/contract/my/view?id='+item._id">
+              <div class="q-title">{{item.name}}</div>
+              <div class="q-subheading address q-mt-md" @click.stop>{{contractAddress}}</div>
+            </router-link>
+            <!-- <div class="col-11 item-main" @click="$router.push('/contract/view?id='+item._id)">
                 <div class="q-title">{{item.name}}</div>
                 <div class="q-subheading address q-mt-md" @click.stop>{{contractAddress}}</div>
-            </div>
+            </div> -->
             <div class="col-1 text-center">
                 <q-btn icon="delete"
                        color="secondary"
