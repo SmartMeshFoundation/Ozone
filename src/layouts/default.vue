@@ -3,16 +3,18 @@
     <q-layout-header style="-webkit-app-region: drag">
       <q-toolbar :glossy="$q.theme === 'mat'"
                  :inverted="$q.theme === 'ios'">
-        <q-toolbar-title>
-          <span class="toolbar-title">{{ titleBar }}</span>
-          <!-- <div slot="subtitle">Impossible made possible</div> -->
-        </q-toolbar-title>
-        <q-btn class="toolbar-btn" flat
+
+        <q-btn class="toolbar-btn"
+               flat
                dense
                round
                @click="leftDrawerOpen = !leftDrawerOpen"
                aria-label="Menu"
                icon="menu" />
+
+        <q-breadcrumbs class="q-ml-xs" active-color="secondary" color="light">
+          <q-breadcrumbs-el v-for="item in breadcrumbs" :key="item.key" :label="$t(item.key)" :to="item.to"/>
+        </q-breadcrumbs>
 
       </q-toolbar>
     </q-layout-header>
@@ -62,30 +64,37 @@
               link
               inset-delimiter>
         <q-list-header>{{ $t('nav.header.account') }}</q-list-header>
-        <q-item to="/wallet"
-                @click.native="updateToolbar($t('nav.wallet.label'), 'fa-credit-card')">
+
+        <q-item to="/wallet">
           <q-item-side class="wallet-menu" />
           <q-item-main :label="$t('nav.wallet.label')"
                        :sublabel="$t('nav.wallet.sublabel')" />
         </q-item>
-        <q-item to="/transfer/"
-                @click.native="updateToolbar($t('nav.transfer.label'), 'fa-exchange-alt')">
+
+        <q-item to="/transfer/">
           <q-item-side class="trans-menu" />
           <q-item-main :label="$t('nav.transfer.label')"
                        :sublabel="$t('nav.transfer.sublabel')" />
         </q-item>
-        <!-- <q-list-header>{{ $t('nav.header.contract') }}</q-list-header>
-        <q-item to="/contract/deploy"
-          @click.native="updateToolbar($t('nav.deploy_contract.label'))">
+
+        <q-list-header>{{ $t('nav.header.contract') }}</q-list-header>
+
+        <q-item to="/contract/deploy">
           <q-item-side icon="code" />
-          <q-item-main :label="$t('nav.deploy_contract.label')"
-                       :sublabel="$t('nav.deploy_contract.sublabel')" />
-        </q-item> -->
+          <q-item-main :label="$t('nav.contract.deploy.label')"
+                       :sublabel="$t('nav.contract.deploy.sublabel')" />
+        </q-item>
+
+        <q-item to="/contract/my">
+          <q-item-side icon="settings_ethernet" />
+          <q-item-main :label="$t('nav.contract.my.label')"
+                       :sublabel="$t('nav.contract.my.sublabel')" />
+        </q-item>
       </q-list>
     </q-layout-drawer>
 
     <q-page-container>
-      <router-view @updateToolbar="updateToolbar"/>
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
@@ -100,10 +109,6 @@
     font-size 22px
     line-height 30px
 .toolbar-title
-    position absolute
-    left 27px
-    line-height 22px
-    top 14px
     font-size 16px
     color #788083 !important
 .toolbar-btn
@@ -144,6 +149,7 @@ div.wallet-menu
     background url("../assets/wallet@2x.png") no-repeat center
 div.trans-menu
     background url("../assets/trans@2x.png") no-repeat center
+
 </style>
 <script>
 let timer
@@ -154,7 +160,6 @@ export default {
   data () {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop,
-      toolbarTitle: 'Ozone',
       toolbarIcon: 'layers',
       elapsedTime: 0,
       isTestNet: false,
@@ -168,8 +173,8 @@ export default {
     peerCount () {
       return this.$store.state.node.peers
     },
-    titleBar () {
-      return this.$store.state.lan.titleBar
+    breadcrumbs () {
+      return this.$store.state.ui.breadcrumbs
     }
   },
   watch: {
@@ -178,10 +183,7 @@ export default {
     }
   },
   methods: {
-    updateToolbar (title, icon) {
-      this.$store.commit('lan/update', title)
-      this.toolbarIcon = icon
-    }
+
   },
   created () {
     let $vm = this

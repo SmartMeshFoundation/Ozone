@@ -1,36 +1,45 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+Vue.use(Vuex)
+
 import account from './account'
 import transaction from './transaction'
 import node from './node'
-import lan from './lan'
+import contract from './contract'
+import ui from './ui'
 
-Vue.use(Vuex)
+let modules = {
+  account,
+  transaction,
+  node,
+  contract,
+  ui
+}
 
-const store = new Vuex.Store({
-  modules: {
-    account,
-    transaction,
-    node,
-    lan
-  }
-})
+const store = new Vuex.Store({ modules })
 
+// for dev store hot load
 if (process.env.DEV && module.hot) {
-  module.hot.accept(['./account', './transaction', './node', './lan'], () => {
-    const newAccount = require('./account').default
-    const newTransaction = require('./transaction').default
-    const newnode = require('./node').default
-    const newLan = require('./lan').default
-
-    store.hotUpdate({ modules: {
-      account: newAccount,
-      transaction: newTransaction,
-      node: newnode,
-      lan: newLan
-    } })
-  })
+  module.hot.accept([
+    './account',
+    './transaction',
+    './node',
+    './contract',
+    './ui'
+  ], () => {
+    store.hotUpdate({
+      modules: {
+        account: require('./account').default,
+        transaction: require('./transaction').default,
+        node: require('./node').default,
+        contract: require('./contract').default,
+        // lan: require('./lan').default,
+        ui: require('./ui').default
+      }
+    })
+  }
+  )
 }
 
 export default store

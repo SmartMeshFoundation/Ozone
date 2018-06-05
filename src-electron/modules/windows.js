@@ -159,6 +159,7 @@ class Window extends EventEmitter {
 class Windows {
   constructor () {
     this._windows = {}
+    this.init()
   }
 
   init () {

@@ -7,9 +7,6 @@
             sparse
             inset-separator
             no-border>
-      <!--<q-list-header v-if="accounts.length == 0">现在开始，点击下面的
-        <q-icon round
-                name="add" />按钮，添加一个账户吧！</q-list-header>-->
 
       <account-item v-for="account of accounts"
                     :account="account"
@@ -27,7 +24,7 @@
            :label="$t('account.btn.importAccount')"
            @click="importAccount()" />
 
-    <!-- 创建账号对话框 -->
+    <!-- Create Account Modal -->
     <q-modal class="create-account-modal" v-model="showNewAccountModal"
              @hide="reset">
       <div class="q-pa-md">
@@ -59,7 +56,7 @@
                @click="submit" />
       </div>
     </q-modal>
-    <!-- 创建账号对话框 end -->
+    <!-- Create Account Modal end -->
   </div>
 </template>
 <style lang="stylus">

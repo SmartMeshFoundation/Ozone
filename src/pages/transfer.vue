@@ -160,8 +160,7 @@ div.password-modal .cancel-btn
 div.password-modal .sub-btn
     bottom 4px
     right 26px !important
-.q-alert-content
-    background-color #FA5A53 !important
+
 </style>
 
 <script>
@@ -305,6 +304,12 @@ export default {
   },
 
   created () {
+    this.$store.commit('ui/update', {
+      breadcrumbs: [
+        {key: 'nav.transfer.label', to: '/transfer'}
+      ]
+    })
+
     const $vm = this
 
     ipc.on(Types.SEND_TRANSACTION_REPLY, (event, reply) => {

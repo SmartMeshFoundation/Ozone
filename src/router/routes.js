@@ -30,7 +30,10 @@ export default [
     path: '/contract',
     component: () => import('layouts/default'),
     children: [
-      { path: 'deploy', component: () => import('pages/contract-deploy') }
+      { path: 'deploy', component: () => import('pages/contract-deploy') },
+      { path: 'my', component: () => import('pages/contract-my') },
+      { path: 'my/add', component: () => import('pages/contract-add') },
+      { path: 'my/view', component: () => import('pages/contract-view') }
     ]
   },
 

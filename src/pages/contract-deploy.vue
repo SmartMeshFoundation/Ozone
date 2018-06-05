@@ -1,29 +1,22 @@
 <template>
   <q-page class="q-pa-md">
     <div class="bg-white q-pa-md">
+
       <div>
-        <q-field error-label="请选择发布合约的账户"
-                 :error="$v.form.from.$error">
-          <q-select float-label="合约所有者"
-                    v-model="form.from"
-                    :options="options" />
-        </q-field>
-      </div>
-      <div class="q-mt-lg">
         <q-toggle class="q-ma-xs"
                   v-model="advancedMode"
-                  label="高级模式" />
+                  :label="$t('contract.deploy.advancedMode')" />
       </div>
       <div class="q-mt-md relative-position">
         <q-field :error="hasError"
-                 error-label="源码分析发生错误:">
+                 :error-label="$t('contract.deploy.source.error')">
           <q-input v-model="form.source"
                    type="textarea"
                    :max-height="200"
                    rows="5"
                    class="code"
                    :class="{hidden: advancedMode}"
-                   placeholder="在这里粘贴 Solidity 源码" />
+                   :placeholder="$t('contract.deploy.source.placeholder')" />
         </q-field>
         <!-- <q-inner-loading :visible="isCompiling" /> -->
       </div>
@@ -39,54 +32,81 @@
       <!-- error messages -->
 
       <div class="q-mt-md">
-        <q-field error-label="合约的 ABI 不能为空"
+        <q-field :error-label="$t('contract.add.abi.error')"
                  :error="$v.form.abi.$error">
         <q-input v-model="form.abi"
-                 float-label="智能合约的 ABI"
+                 :float-label="$t('contract.add.abi.label')"
                  type="textarea"
                  :max-height="200"
                  rows="5"
                  class="code"
                  :class="{hidden: !advancedMode}"
-                 placeholder="json interface" />
+                 :placeholder="$t('contract.add.abi.placeholder')" />
         </q-field>
       </div>
       <div class="q-mt-md">
-        <q-field error-label="合约的 字节码 不能为空"
+        <q-field :error-label="$t('contract.deploy.bytecode.error')"
                  :error="$v.form.bytecode.$error">
         <q-input v-model="form.bytecode"
-                 float-label="智能合约的 字节码"
+                 :float-label="$t('contract.deploy.bytecode.label')"
                  type="textarea"
                  :max-height="200"
                  rows="5"
                  class="code"
                  :class="{hidden: !advancedMode}"
-                 placeholder="0x......" />
+                 :placeholder="$t('contract.deploy.bytecode.placeholder')" />
         </q-field>
       </div>
       <div class="q-mt-md" v-if="!advancedMode">
-        <q-field error-label="请选择需要发布的合约"
-                 :error="$v.form.deployedContract.$error">
-          <q-select float-label="合约名称"
-                    v-model="form.deployedContract"
+        <q-field :error-label="$t('contract.deploy.contract_name.error')"
+                 :error="$v.form.contractName.$error">
+          <q-select :float-label="$t('contract.deploy.contract_name.label')"
+                    v-model="form.contractName"
                     :options="contractNames" />
         </q-field>
       </div>
 
       <div class="q-mt-md" v-if="hasConstructor">
         <q-field>
-          <q-input float-label="构造参数"
+          <q-input :float-label="$t('contract.deploy.constructor.label')"
                    v-model="args"
                    type="text"
                    :placeholder="argsPlaceholder" />
         </q-field>
       </div>
 
+      <div class="q-mt-md">
+        <q-field>
+          <q-input :float-label="$t('contract.deploy.custom_name.label')"
+                   v-model="customName"
+                   type="text"
+                   :placeholder="$t('contract.deploy.custom_name.placeholder')" />
+        </q-field>
+      </div>
+
+      <div class="q-mt-lg">
+        <q-field :error-label="$t('contract.deploy.from.error')"
+                 :error="$v.form.from.$error">
+          <q-select :float-label="$t('contract.deploy.from.label')"
+                    v-model="form.from"
+                    :options="options" />
+        </q-field>
+      </div>
+      <div class="q-mt-lg">
+        <q-field :error-label="$t('contract.deploy.value.error')"
+                 :error="$v.form.value.$error">
+          <q-input :float-label="$t('contract.deploy.value.label')"
+                   v-model="form.value"
+                   type="number"
+                   :suffix="$unit" />
+        </q-field>
+      </div>
+
     </div>
 
-    <div class="row q-mt-md justify-end">
-      <q-btn color="primary"
-             label=" 创建合约 "
+    <div class="row q-mt-md justify-center">
+      <q-btn color="primary full-width"
+             :label="$t('contract.deploy.btn.create')"
              @click="checkForm" />
     </div>
 
@@ -95,22 +115,24 @@
              :content-css="{padding: '20px'}">
 
       <div class="row justify-center q-mb-md">
-        <div class="q-display-1">确认部署合约</div>
+        <div class="q-display-1">{{ $t('contract.deploy.confirm.title') }}</div>
       </div>
 
-      <div class="row q-pa-md">
-        <div class="col">合约所有者：</div>
-        <div>{{form.from}}</div>
+      <div class="row items-center q-pa-md">
+        <div class="col">
+          <ident-icon :value="form.from" />
+        </div>
+        <div class="q-ml-sm">{{form.from}}</div>
       </div>
 
       <div class="row q-pa-md" v-if="hasConstructor">
-        <div class="col">构造参数: </div>
+        <div class="col">{{ $t('contract.deploy.constructor.label')}}: </div>
         <div>{{args}}</div>
       </div>
 
       <div class="row q-pa-md">
         <div class="col">
-          <q-input type="password" v-model="password" placeholder="输入合约所有者的账户密码" />
+          <q-input type="password" v-model="password" :placeholder="$t('contract.deploy.confirm.placeholder')" />
         </div>
       </div>
 
@@ -131,7 +153,11 @@
 </template>
 
 <style>
-
+.v-center {
+  position: relative;
+  top:50%;
+  transform: translateY(-50%);
+}
 </style>
 
 <script>
@@ -139,6 +165,7 @@ import { required, requiredIf } from 'vuelidate/lib/validators'
 import _ from 'lodash'
 import { ipcRenderer as ipc } from 'electron'
 import { Types } from '../../src-electron/modules/ipc/types'
+import { number } from '../validators'
 
 const web3 = window.web3
 
@@ -148,11 +175,12 @@ export default {
       showConfirmModal: false,
       form: {
         from: '',
+        value: 0,
         amount: '',
         source: '',
         abi: '',
         bytecode: '',
-        deployedContract: ''
+        contractName: ''
       },
       contracts: {},
       messages: [],
@@ -161,7 +189,8 @@ export default {
       hasConstructor: false,
       args: '',
       argsPlaceholder: '',
-      password: ''
+      password: '',
+      customName: '' // custom name of contract
     }
   },
   methods: {
@@ -183,7 +212,7 @@ export default {
       if (!this.hasError) {
         this.contracts = output.contracts
       }
-    }, 600),
+    }, 300),
 
     messageType (msg) {
       if (msg.indexOf('Warn') >= 0) {
@@ -211,9 +240,11 @@ export default {
         .then(() => {
           let data = {
             from: this.form.from,
+            value: this.form.value,
             abi: this.form.abi,
             bytecode: this.form.bytecode,
-            args: this.args
+            args: this.args,
+            name: this.customName
           }
 
           ipc.send(Types.DEPLOY_CONTRACT, data)
@@ -221,7 +252,7 @@ export default {
         .catch((err) => {
           console.log(err)
           this.$q.loading.hide()
-          this.$q.notify('账户密码错误')
+          this.$q.notify(this.$t('notify.error_password'))
         })
     },
 
@@ -290,13 +321,15 @@ export default {
       }
     },
 
-    'form.deployedContract' (newVal, oldVal) {
+    'form.contractName' (newVal, oldVal) {
       if (newVal && newVal.trim() !== '') {
         let contract = this.contracts[newVal]
         this.form.abi = contract.interface
         this.form.bytecode = contract.bytecode
 
         this.updateArguments(contract.interface)
+
+        this.customName = newVal.replace(':', '')
       }
     },
 
@@ -322,6 +355,7 @@ export default {
     return {
       form: {
         from: { required },
+        value: { number },
         abi: {
           required: requiredIf(function (model) {
             return this.advancedMode
@@ -332,7 +366,7 @@ export default {
             return this.advancedMode
           })
         },
-        deployedContract: {
+        contractName: {
           required: requiredIf(function (model) {
             return !this.advancedMode
           })
@@ -342,6 +376,12 @@ export default {
   },
 
   created () {
+    this.$store.commit('ui/update', {
+      breadcrumbs: [
+        {key: 'nav.contract.deploy.label'}
+      ]
+    })
+
     ipc.on(Types.DEPLOY_CONTRACT_REPLY, (event, data) => {
       this.$q.loading.hide()
 
@@ -349,7 +389,7 @@ export default {
         this.$q.loading.hide()
         this.$q.notify(data.error)
       } else {
-        this.$router.push('/dashboard')
+        this.$router.push('/contract/my')
       }
     })
   },

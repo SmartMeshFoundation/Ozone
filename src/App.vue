@@ -21,12 +21,15 @@ export default {
       this.$store.commit('transaction/reset', transactions)
     })
 
+    ipc.on(Types.SYNC_CONTRACT, (event, { contracts }) => {
+      this.$store.commit('contract/reset', contracts)
+    })
+
     ipc.on(Types.NODE_STATE_CHANGE, (event, state) => {
       this.$store.commit('node/update', state)
     })
 
     ipc.on(Types.SWITCH_LAN, (event, lang) => {
-      this.$store.commit('lan/updateByLan', {lan: lang})
       if (lang === 'zh') {
         lang = 'zh-hans'
         this.$i18n.locale = 'zh'
@@ -49,7 +52,8 @@ export default {
       Types.SYNC_ACCOUNT,
       Types.SYNC_TRANSACTION,
       Types.NODE_STATE_CHANGE,
-      Types.SWITCH_LAN
+      Types.SWITCH_LAN,
+      Types.SYNC_CONTRACT
     ].forEach(channel => {
       ipc.removeAllListeners(channel)
     })

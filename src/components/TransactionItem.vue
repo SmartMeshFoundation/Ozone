@@ -8,8 +8,9 @@
      </q-item-side>
      <q-item-main>
        <q-item-tile class="q-pb-sm">
-         <span v-if="item.to != null" >{{$t('tx.list.transfer')}}</span>
-         <span v-if="item.to == null" >{{$t('tx.list.abi')}}</span>
+         <span v-if="item.to != null && item.input === '0x'" >{{ $t('tx.type.a2a') }}</span>
+         <span v-if="item.to != null && item.input !== '0x'" >{{ $t('tx.type.call_c') }}</span>
+         <span v-if="item.to == null" >{{ $t('tx.type.create_c') }}</span>
        </q-item-tile>
        <q-item-tile>
          <ident-icon :value="item.from.toLowerCase()" />
@@ -24,16 +25,16 @@
      </q-item-main>
      <q-item-main class="trans-pro">
        <q-item-tile :class="{hidden: !showElapsedTime}">
-         <span> {{now(item.timestamp)}} </span>
+         <span> {{fromNow(item.timestamp)}} </span>
        </q-item-tile>
        <q-item-tile :class="{hidden: !showProgress}">
          <q-progress :percentage="progress" />
        </q-item-tile>
        <q-item-tile :class="{hidden: !showProgress}">
-         <span> {{item.confirmCount}} / {{$settings.requiredConfirmations}} {{$t('tx.list.unconfirmed')}} </span>
+         <span> {{item.confirmCount}} / {{$settings.requiredConfirmations}} {{$t('tx.list.block_confirm')}} </span>
        </q-item-tile>
        <q-item-tile :class="{hidden: !isPending}">
-         <span> {{$t('tx.list.unconfirmed')}} </span>
+         <span> {{$t('tx.list.pending')}} </span>
        </q-item-tile>
      </q-item-main>
      <q-item-side right>
@@ -56,20 +57,20 @@
        <div class="q-display-1">{{$t('tx.transfer.transaction_detail')}}</div>
      </div>
      <div class="row q-pa-md">
-       <div class="col">{{$t('tx.transfer.from')}}：</div>
-       <div>{{item.from}}</div>
-     </div>
-     <div class="row q-pa-md">
-       <div class="col">{{$t('tx.transfer.to')}}：</div>
-       <div>{{item.to}}</div>
+       <div class="col">{{$t('tx.transfer.transaction_hash')}}：</div>
+       <div>{{item.hash}}</div>
      </div>
      <div class="row q-pa-md">
        <div class="col">{{$t('tx.transfer.block_number')}}：</div>
        <div>{{item.blockNumber}}</div>
      </div>
      <div class="row q-pa-md">
-       <div class="col">{{$t('tx.transfer.transaction_hash')}}：</div>
-       <div>{{item.hash}}</div>
+       <div class="col">{{$t('tx.transfer.from')}}：</div>
+       <div>{{item.from}}</div>
+     </div>
+     <div class="row q-pa-md">
+       <div class="col">{{$t('tx.transfer.to')}}：</div>
+       <div>{{item.to}}</div>
      </div>
      <div class="row q-pa-md">
        <div class="col">{{$t('tx.transfer.confirm.transfer_amount')}}：</div>
@@ -148,7 +149,7 @@ export default {
     date (timestamp) {
       return this.$moment.unix(timestamp).format('MMMM Do')
     },
-    now (timestamp) {
+    fromNow (timestamp) {
       return this.$moment.unix(timestamp).fromNow()
     },
     toSMT (value) {
