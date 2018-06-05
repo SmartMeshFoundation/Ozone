@@ -3,6 +3,7 @@ The i18n module, loads the language files and initializes i18next
 
 @module i18n
 */
+import { app } from 'electron'
 import i18n from 'i18next'
 
 import zh from './i18n/ozone.zh.i18n.json'
@@ -36,6 +37,10 @@ i18n.getBestMatchedLangCode = langCode => {
   }
   return bestMatchedCode
 }
+
+let lan = app.getLocale()
+
+global.language = lan.indexOf('zh') !== -1 ? 'zh' : 'en'
 
 // init i18n
 i18n.init({

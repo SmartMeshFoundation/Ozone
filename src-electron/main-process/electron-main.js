@@ -44,7 +44,6 @@ global.db = db
 global.web3 = new Web3()
 global.windows = windows
 global.stateManager = stateManager
-global.language = 'zh'
 
 global.i18n = i18n
 
