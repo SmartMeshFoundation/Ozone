@@ -12,7 +12,7 @@ import logger from './logger'
 const log = logger.create('ClientBinaryManager')
 
 const BINARY_URL =
-  'https://github.com/wuynng/spectrumclient/raw/master/clientBinaries.json'
+  'https://github.com/SmartMeshFoundation/Ozone/raw/master/clientBinaries.json'
 
 import defaultClientBinaries from './client/config.json'
 

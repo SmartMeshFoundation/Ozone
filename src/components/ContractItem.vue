@@ -5,10 +5,7 @@
               <div class="q-title">{{item.name}}</div>
               <div class="q-subheading address q-mt-md" @click.stop>{{contractAddress}}</div>
             </router-link>
-            <!-- <div class="col-11 item-main" @click="$router.push('/contract/view?id='+item._id)">
-                <div class="q-title">{{item.name}}</div>
-                <div class="q-subheading address q-mt-md" @click.stop>{{contractAddress}}</div>
-            </div> -->
+
             <div class="col-1 text-center">
                 <q-btn icon="delete"
                        color="secondary"
@@ -51,8 +48,8 @@ export default {
   methods: {
     deleteItem (id) {
       this.$q.dialog({
-        title: '警告',
-        message: '删除合约：' + this.item.name,
+        title: this.$t('contract.my.delete_dialog.title'),
+        message: this.$t('contract.my.delete_dialog.message', [this.item.name]),
         ok: true,
         cancel: true
       })

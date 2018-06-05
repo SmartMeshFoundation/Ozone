@@ -11,7 +11,7 @@
             <div class="col-sm-12 col-md-6">
                 <q-list class="bg-white"
                         separator>
-                    <q-list-header>合约状态</q-list-header>
+                    <q-list-header>{{$t('contract.view.status')}}</q-list-header>
                     <q-item v-for="state in states"
                             :key="state.name">
                       <q-item-side>
@@ -41,11 +41,11 @@
             <div class="col-sm-12 col-md-6">
                 <q-list class="bg-white"
                         separator>
-                    <q-list-header>合约方法</q-list-header>
+                    <q-list-header>{{$t('contract.view.methods')}}</q-list-header>
                     <q-item>
                       <q-item-main>
                         <q-item-tile>
-                          <q-select float-label="调用合约账户"
+                          <q-select :float-label="$t('contract.view.from_label')"
                                     hide-underline
                                     v-model="from"
                                     :options="getAccounts()" />
@@ -83,8 +83,8 @@
           :loading="loading"
         >
           <template slot="top-left" slot-scope="props">
-            <q-input placeholder="起始区块号" v-model="fromBlock" class="q-mr-md"></q-input>
-            <q-btn :disable="loading" label="查询历史事件" color="secondary" @click="getPastEvents"></q-btn>
+            <q-input :placeholder="$t('contract.view.from_block')" v-model="fromBlock" class="q-mr-md"></q-input>
+            <q-btn :disable="loading" :label="$t('contract.view.btn_query')" color="secondary" @click="getPastEvents"></q-btn>
           </template>
         </q-table>
 
@@ -95,7 +95,7 @@
           color="secondary"
         >
           <template slot="top-left" slot-scope="props">
-            <q-btn :loading="watching" label="观察合约事件" color="secondary" @click="watchEvents"></q-btn>
+            <q-btn :loading="watching" :label="$t('contract.view.btn_watch')" color="secondary" @click="watchEvents"></q-btn>
           </template>
         </q-table>
 
@@ -153,9 +153,9 @@ export default {
       fromBlock: '',
       pastEvents: [],
       eventColumns: [
-        {name: 'id', label: '区块号', field: 'blockNumber', align: 'left'},
-        {name: 'event', label: '事件', field: 'event'},
-        {name: 'returnValues', label: '返回值', field: 'returnValues', align: 'left'}
+        {name: 'id', label: this.$t('contract.view.column.block_number'), field: 'blockNumber', align: 'left'},
+        {name: 'event', label: this.$t('contract.view.column.event'), field: 'event'},
+        {name: 'returnValues', label: this.$t('contract.view.column.return_val'), field: 'returnValues', align: 'left'}
       ],
       watchedEvents: [],
       watching: false,
@@ -261,8 +261,8 @@ export default {
           })
       } else {
         this.$q.dialog({
-          title: '解锁账户',
-          message: '请输入调用合约的账户密码',
+          title: this.$t('contract.view.dialog.title'),
+          message: this.$t('contract.view.dialog.message'),
           ok: true,
           cancel: true,
           prompt: {

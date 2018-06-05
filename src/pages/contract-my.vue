@@ -4,15 +4,15 @@
         <div class="row q-mb-lg">
           <q-btn-group >
             <q-btn icon="playlist_add"
-                    label="导 入"
+                    :label="$t('contract.my.btn.import')"
                     color="secondary"
                     @click="imports" />
             <q-btn icon="save"
-                    label="备 份"
+                    :label="$t('contract.my.btn.backup')"
                     color="secondary"
                     @click="backup" />
             <q-btn icon="add"
-                    label="添加合约"
+                    :label="$t('contract.my.btn.add')"
                     color="secondary"
                     @click="$router.push('/contract/my/add')" />
           </q-btn-group>
@@ -71,13 +71,13 @@ export default {
               console.log('write to: ', filename)
               fs.writeJsonSync(filename, db.contracts.data)
               this.$q.notify({
-                message: '备份成功！',
+                message: this.$t('contract.my.notify.bak_success'),
                 type: 'positive'
               })
             } catch (error) {
               console.log(error)
               this.$q.notify({
-                message: '备份失败！',
+                message: this.$t('contract.my.notify.bak_fails'),
                 type: 'negative'
               })
             }
@@ -89,7 +89,7 @@ export default {
     imports () {
       dialog.showOpenDialog(
         {
-          title: '选择合约备份文件',
+          title: this.$t('contract.my.open_dialog.title'),
           filters: [{ name: 'Json File', extensions: ['json', 'JSON'] }],
           properties: ['openFile']
         },
@@ -112,7 +112,7 @@ export default {
                   }
                 })
                 this.$q.notify({
-                  message: '成功导入 ' + data.length + ' 个合约.',
+                  message: this.$t('contract.my.notify.imp_success', [data.length]),
                   type: 'positive'
                 })
 
@@ -120,7 +120,7 @@ export default {
                   ipc.send(Types.IMPORT_CONTRACT, data)
                 }
               } else {
-                throw new Error('非法的文件格式')
+                throw new Error(this.$t('contract.my.notify.imp_invalid_format'))
               }
             } catch (error) {
               console.log(error)
@@ -139,7 +139,7 @@ export default {
   created () {
     this.$store.commit('ui/update', {
       breadcrumbs: [
-        {key: 'nav.contract.my.label', to: '/contract/my'}
+        {key: 'nav.contract.my.label'}
       ]
     })
   }

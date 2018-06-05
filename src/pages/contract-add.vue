@@ -14,7 +14,7 @@
       </div>
 
       <div class="q-mt-md">
-        <q-field :error-label="contract.add.abi.error"
+        <q-field :error-label="$t('contract.add.abi.error')"
                  :error="$v.contract.abi.$error">
         <q-input v-model="contract.abi"
                  :float-label="$t('contract.add.abi.label')"

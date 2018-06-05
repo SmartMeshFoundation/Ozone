@@ -8,7 +8,7 @@ export default ({ Vue }) => {
 
   Vue.prototype.$settings = remote.getGlobal('settings')
 
-  // 生成 identicon
+  // generate identicon
   Vue.prototype.$icon = (seed, size) => {
     return (
       cache['IDP-' + seed] ||

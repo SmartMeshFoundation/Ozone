@@ -86,7 +86,7 @@
         </q-item>
 
         <q-item to="/contract/my">
-          <q-item-side icon="code" />
+          <q-item-side icon="settings_ethernet" />
           <q-item-main :label="$t('nav.contract.my.label')"
                        :sublabel="$t('nav.contract.my.sublabel')" />
         </q-item>

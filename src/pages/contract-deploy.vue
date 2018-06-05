@@ -106,7 +106,7 @@
 
     <div class="row q-mt-md justify-center">
       <q-btn color="primary full-width"
-             :label="$('contract.deploy.btn.create')"
+             :label="$t('contract.deploy.btn.create')"
              @click="checkForm" />
     </div>
 
@@ -115,7 +115,7 @@
              :content-css="{padding: '20px'}">
 
       <div class="row justify-center q-mb-md">
-        <div class="q-display-1">{{ $('contract.deploy.confirm.title') }}</div>
+        <div class="q-display-1">{{ $t('contract.deploy.confirm.title') }}</div>
       </div>
 
       <div class="row items-center q-pa-md">
@@ -285,9 +285,9 @@ export default {
       let options = accounts.map(account => {
         return {
           label: account.name,
-          sublabel: account.deploy.ess,
-          value: account.deploy.ess,
-          avatar: this.$icon(account.deploy.ess.toLowerCase())
+          sublabel: account.address,
+          value: account.address,
+          avatar: this.$icon(account.address.toLowerCase())
         }
       })
       return options
@@ -378,7 +378,7 @@ export default {
   created () {
     this.$store.commit('ui/update', {
       breadcrumbs: [
-        {key: 'nav.contract.deploy.label', to: '/contract/deploy'}
+        {key: 'nav.contract.deploy.label'}
       ]
     })
 

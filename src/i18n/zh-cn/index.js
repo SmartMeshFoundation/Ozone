@@ -63,10 +63,11 @@ export default {
       password_msg2: '重复输入密码'
     }
   },
+
   tx: {
     list: {
       caption: '最近交易',
-      unconfirmed: '待确认',
+      pending: '待确认',
       block_confirm: '块确认',
       abi: '创建/调用合约',
       transfer: '账户间转账'
@@ -86,7 +87,7 @@ export default {
       btn: '确认转账',
       insufficient_funds: '余额不足',
       transaction_detail: '交易详情',
-      transaction_hash: '交易hash',
+      transaction_hash: '交易Hash',
       block_number: '区块高度',
       from: '转出',
       to: '转入',
@@ -98,6 +99,11 @@ export default {
         enter_pwd: '请输入账户密码',
         wrong_pwd: '密码错误！'
       }
+    },
+    type: {
+      a2a: '账户间转账',
+      call_c: '调用合约',
+      create_c: '创建合约'
     }
   },
   splash: {
@@ -177,6 +183,43 @@ export default {
       confirm: {
         title: '确认部署合约',
         placeholder: '输入合约所有者的账户密码'
+      }
+    },
+    my: {
+      btn: {
+        import: '导 入',
+        backup: '备 份',
+        add: '添加合约'
+      },
+      notify: {
+        bak_success: '备份成功！',
+        bak_fails: '备份失败！',
+        imp_success: '成功导入 {0} 个合约.',
+        imp_invalid_format: '无法识别的文件格式'
+      },
+      open_dialog: {
+        title: '选择合约备份文件'
+      },
+      delete_dialog: {
+        title: '警告',
+        message: '删除合约: {0}'
+      }
+    },
+    view: {
+      status: '查看合约状态',
+      methods: '调用合约方法',
+      from_label: '调用合约账户',
+      from_block: '起始区块号',
+      btn_query: '查询历史事件',
+      btn_watch: '监听合约事件',
+      column: {
+        block_number: '区块号',
+        event: '事件',
+        return_val: '返回值'
+      },
+      dialog: {
+        title: '解锁账户',
+        message: '请输入调用合约的账户密码'
       }
     }
   }
