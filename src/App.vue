@@ -30,19 +30,22 @@ export default {
     })
 
     ipc.on(Types.SWITCH_LAN, (event, lang) => {
+      let iLocale, mLocale, qLang
       if (lang === 'zh') {
-        lang = 'zh-hans'
-        this.$i18n.locale = 'zh'
-        // i18n for moment
-        this.$moment.locale('zh-cn')
+        qLang = 'zh-hans'
+        iLocale = 'zh'
+        mLocale = 'zh-cn'
       } else {
-        lang = 'en-us'
-        this.$i18n.locale = 'en'
-        this.$moment.locale('en')
+        qLang = 'en-us'
+        iLocale = 'en'
+        mLocale = 'en'
       }
 
+      this.$i18n.locale = iLocale
+      this.$moment.locale(mLocale)
+
       // i18n for quasar-framework
-      import(`quasar-framework/i18n/${lang}`).then(lang => {
+      import(`quasar-framework/i18n/${qLang}`).then(lang => {
         this.$q.i18n.set(lang.default)
       })
     })

@@ -1,10 +1,11 @@
 {
   "name": "ozone",
-  "version": "0.2.0-beta",
+  "version": "0.3.0-beta",
   "description": "Ozone powered by SmartMesh.io",
   "productName": "Ozone",
+  "copyright": "Copyright @ 2018 SmartMesh.io",
   "cordovaId": "io.smartmesh.ozone",
-  "author": "wuynng <wuynng@163.com>",
+  "author": "SmartMesh.io",
   "private": true,
   "scripts": {
     "dev": "quasar dev -m electron -t ios",
