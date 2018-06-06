@@ -16,7 +16,6 @@ import stateManager from '../modules/stateManager'
 import observeManager from '../modules/observeManager'
 import ipc from '../modules/ipc'
 import { Types } from '../modules/ipc/types'
-import i18n from '../modules/i18n'
 import OzoneMenu from '../modules/menu'
 
 const log = logger.create('Main')
@@ -44,8 +43,6 @@ global.db = db
 global.web3 = new Web3()
 global.windows = windows
 global.stateManager = stateManager
-
-global.i18n = i18n
 
 // prevent crashed and close gracefully
 process.on('uncaughtException', error => {

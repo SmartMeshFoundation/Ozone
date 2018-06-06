@@ -1,8 +1,43 @@
 import { Menu, app } from 'electron'
+import i18n from 'i18next'
+import zh from './i18n/ozone.zh.i18n.json'
+import en from './i18n/ozone.en.i18n.json'
 import { Types } from '../modules/ipc/types'
+
+const resources = {
+  dev: { translation: zh },
+  en: { translation: en },
+  zh: { translation: zh }
+}
+
 class OzoneMenu {
   constructor (mwin) {
     this.mwin = mwin
+    i18n.getBestMatchedLangCode = langCode => {
+      const codeList = Object.keys(resources)
+      let bestMatchedCode = langCode
+      if (codeList.indexOf(langCode) === -1) {
+        if (codeList.indexOf(langCode.substr(0, 2)) > -1) {
+          bestMatchedCode = langCode.substr(0, 2)
+        } else {
+          bestMatchedCode = 'en'
+        }
+      }
+      return bestMatchedCode
+    }
+
+    let lan = app.getLocale()
+
+    lan = lan.indexOf('zh') !== -1 ? 'zh' : 'en'
+
+    global.language = lan
+
+    i18n.init({
+      lng: lan || 'zh',
+      resources,
+      interpolation: { prefix: '__', suffix: '__' }
+    })
+    global.i18n = i18n
   }
 
   create () {
