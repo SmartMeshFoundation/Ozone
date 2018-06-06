@@ -91,17 +91,13 @@ module.exports = function (ctx) {
         mac: {
           category: 'public.app-category.productivity',
           icon: 'src-electron/icons/icon.icns',
-          target: [
-            { target: 'dmg', arch: 'x64' }
-          ],
-          artifactName: '${productName}-${os}-${platform}-${arch}-${version}.${ext}'
+          target: 'dmg',
+          artifactName: '${productName}-macosx-${version}.${ext}'
         },
         win: {
           icon: 'src-electron/icons/icon.ico',
-          target: [
-            { target: 'nsis', arch: 'x64' }
-          ],
-          artifactName: '${productName}-${os}-${platform}-${arch}-${version}.${ext}'
+          target: 'nsis',
+          artifactName: '${productName}-${platform}-x64-${version}.${ext}'
         }
       }
     },
