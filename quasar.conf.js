@@ -84,25 +84,24 @@ module.exports = function (ctx) {
       beforePackaging: function (opts) {
         // do nothings
       },
-      // packager: {
-      //   afterCopy: [(buildPath, electronVersion, platform, arch, callback) => {
-      //     const path = require('path')
-      //     const rebuild = require(path.resolve(__dirname, 'node_modules', 'electron-rebuild')).rebuild
 
-      //     rebuild({ buildPath, electronVersion, arch })
-      //       .then(() => {
-      //         console.log('Run electron-rebuild OK')
-      //         callback()
-      //       })
-      //       .catch((error) => callback(error))
-      //   }]
-      // },
       // electron-builder options
       builder: {
         appId: 'io.smartmesh.ozone',
         mac: {
-          category: 'public.app-category.education',
-          icon: 'src-electron/icons/icon.icns'
+          artifactName: '${productName}-${os}-${platform}-${arch}-${version}.${ext}',
+          category: 'public.app-category.productivity',
+          icon: 'src-electron/icons/icon.icns',
+          target: [
+            { target: 'dmg', arch: ['x64'] }
+          ]
+        },
+        win: {
+          artifactName: '${productName}-${os}-${platform}-${arch}-${version}.${ext}',
+          icon: 'src-electron/icons/icon.ico',
+          target: [
+            { target: 'nsis', arch: ['x64'] }
+          ]
         }
       }
     },
