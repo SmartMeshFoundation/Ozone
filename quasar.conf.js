@@ -89,19 +89,19 @@ module.exports = function (ctx) {
       builder: {
         appId: 'io.smartmesh.ozone',
         mac: {
-          artifactName: '${productName}-${os}-${platform}-${arch}-${version}.${ext}',
           category: 'public.app-category.productivity',
           icon: 'src-electron/icons/icon.icns',
           target: [
-            { target: 'dmg', arch: ['x64'] }
-          ]
+            { target: 'dmg', arch: 'x64' }
+          ],
+          artifactName: '${productName}-${os}-${platform}-${arch}-${version}.${ext}'
         },
         win: {
-          artifactName: '${productName}-${os}-${platform}-${arch}-${version}.${ext}',
           icon: 'src-electron/icons/icon.ico',
           target: [
-            { target: 'nsis', arch: ['x64'] }
-          ]
+            { target: 'nsis', arch: 'x64' }
+          ],
+          artifactName: '${productName}-${os}-${platform}-${arch}-${version}.${ext}'
         }
       }
     },
