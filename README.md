@@ -25,7 +25,7 @@ $ npm install -g quasar-cli
 
 Then, we checkout the source code of Ozone from github.
 ```bash
-git clone git@github.com:SmartMeshFoundation/Ozone.git
+git clone https://github.com/SmartMeshFoundation/Ozone.git
 ```
 
 ### Run Ozone
