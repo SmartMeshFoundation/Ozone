@@ -37,9 +37,28 @@
               ]
             }
           }
+        },
+        "linux": {
+          "download": {
+            "url": "https://github.com/wuynng/spectrumclient/raw/master/geth-linux-eafb37b.tar.gz",
+            "md5": "043c0310750ca515ba6585907c6c3de1",
+            "type": "tar",
+            "bin": "geth-linux-eafb37b/geth"
+          },
+          "bin": "geth",
+          "commands": {
+            "sanity": {
+              "args": [
+                "version"
+              ],
+              "output": [
+                "Smc",
+                "0.3.2"
+              ]
+            }
+          }
         }
       }
     }
   }
 }
-
