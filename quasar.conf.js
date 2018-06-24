@@ -97,7 +97,13 @@ module.exports = function (ctx) {
         win: {
           icon: 'src-electron/icons/icon.ico',
           target: 'nsis',
-          artifactName: '${productName}-${platform}-x64-${version}.${ext}'
+          artifactName: '${productName}-win64-${version}.${ext}'
+        },
+        linux: {
+          category: 'Utility',
+          icon: 'src-electron/icons/icon.png',
+          target: 'zip',
+          artifactName: '${productName}-linux64-${version}.${ext}'
         }
       }
     },
