@@ -6,7 +6,7 @@
         "mac": {
           "download": {
             "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-darwin-eafb37b.tar.gz",
-              "md5": "afca6790bc4883d2227079982fc9006d",
+            "md5": "afca6790bc4883d2227079982fc9006d",
             "type": "tar",
             "bin": "geth-darwin-eafb37b/geth"
           },
@@ -26,6 +26,26 @@
             "bin": "geth-win-eafb37b\\geth.exe"
           },
           "bin": "geth.exe",
+          "commands": {
+            "sanity": {
+              "args": [
+                "version"
+              ],
+              "output": [
+                "Smc",
+                "0.3.2"
+              ]
+            }
+          }
+        },
+        "linux": {
+          "download": {
+            "url": "https://github.com/wuynng/spectrumclient/raw/master/geth-linux-eafb37b.tar.gz",
+            "md5": "043c0310750ca515ba6585907c6c3de1",
+            "type": "tar",
+            "bin": "geth-linux-eafb37b/geth"
+          },
+          "bin": "geth",
           "commands": {
             "sanity": {
               "args": [
