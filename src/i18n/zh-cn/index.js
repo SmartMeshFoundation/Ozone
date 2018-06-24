@@ -34,7 +34,8 @@ export default {
   },
 
   notify: {
-    error_password: '账户密码错误'
+    error_password: '账户密码错误',
+    ozone_downloaded: 'ozone日志文件(ozone.log)已经下载到桌面，请使用文本编辑器查看'
   },
 
   account: {

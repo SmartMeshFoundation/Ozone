@@ -104,6 +104,23 @@
                 :key="uuid(msg)">{{msg.message}}</li>
         </ul>
 
+      <q-modal class="password-modal" v-model="showPasswordModal">
+        <div class="q-pa-md">
+          <p class="q-headline">{{ $t('contract.view.dialog.title') }}</p>
+          <p class="modify-account-name"><q-input type="password" :placeholder="$t('contract.view.dialog.message')" v-model="password"/></p>
+          <p class="modify-account-name">gasLimit: {{gas}}</p>
+          <p class="modify-account-name"><q-slider v-model="gas" :min="minGas" :max="maxGas" /></p>
+          <q-btn :label="$t('button.cancel')"
+                 color="primary"
+                 class="q-my-md cancel-btn"
+                 @click="cancel" />
+          <q-btn :label="$t('button.ok')"
+                 color="primary"
+                 class="q-my-md sub-btn"
+                 @click="submit" />
+        </div>
+      </q-modal>
+
     </q-page>
 </template>
 
@@ -146,6 +163,7 @@ const web3 = window.web3
 export default {
   data () {
     return {
+      showPasswordModal: false,
       messages: [],
       from: this.getAccounts()[0].value,
       methodInputs: this.getMethodInputs(),
@@ -159,7 +177,12 @@ export default {
       ],
       watchedEvents: [],
       watching: false,
-      loading: false
+      loading: false,
+      minGas: 0,
+      maxGas: 1,
+      password: '',
+      execMethod: {},
+      gas: 0
     }
   },
 
@@ -260,38 +283,43 @@ export default {
             this.addMessage(error.message)
           })
       } else {
-        this.$q.dialog({
-          title: this.$t('contract.view.dialog.title'),
-          message: this.$t('contract.view.dialog.message'),
-          ok: true,
-          cancel: true,
-          prompt: {
-            model: '',
-            type: 'password' // optional
-          }
-        })
-          .then((password) => {
-            web3.eth.personal.unlockAccount(this.from, password)
-              .then(() => {
-                execMethod.send({from: this.from}, (error, transactionHash) => {
-                  if (!error) {
-                    this.addMessage('Send transaction hash: ' + transactionHash)
-                  } else {
-                    this.addMessage('Send transaction error: ' + error, true)
-                  }
-                })
-              })
-              .catch((error) => {
-                this.addMessage(error, true)
-              })
-              .finally(() => {
-                web3.eth.personal.lockAccount(this.from)
-              })
+        this.showPasswordModal = true
+        Promise.all([
+          execMethod.estimateGas(),
+          web3.eth.getGasPrice()
+        ])
+          .then(([gas, price]) => {
+            this.minGas = gas
+            this.maxGas = gas * 5
+            this.gas = this.minGas
+            console.log(this.maxGas, this.minGas)
+            this.execMethod = execMethod
           })
-          .catch(() => {
-            // Picked "Cancel" or dismissed
-          })
+          .catch(error => { this.addMessage(error, true) })
       }
+    },
+
+    cancel () {
+      this.showPasswordModal = false
+      this.password = ''
+    },
+
+    submit () {
+      web3.eth.personal.unlockAccount(this.from, this.password)
+        .then(() => {
+          this.execMethod.send({from: this.from, gas: this.gas}, (error, transactionHash) => {
+            if (!error) {
+              this.addMessage('Send transaction hash: ' + transactionHash)
+            } else {
+              this.addMessage('Send transaction error: ' + error, true)
+            }
+          })
+          web3.eth.personal.lockAccount(this.from)
+        }).catch((error) => {
+          this.addMessage(error, true)
+          web3.eth.personal.lockAccount(this.from)
+        })
+      this.cancel()
     },
 
     handleResult (method, result) {

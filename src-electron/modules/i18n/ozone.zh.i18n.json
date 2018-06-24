@@ -25,6 +25,10 @@
     "hideothers": "隐藏其它",
     "unhide": "显示",
     "quit": "退出",
-    "file": "文件"
+    "file": "文件",
+    "debug":"调试"
+  },
+  "debugMenu": {
+    "log":"查看日志"
   }
 }

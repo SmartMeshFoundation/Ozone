@@ -34,7 +34,8 @@ export default {
   },
 
   notify: {
-    error_password: 'Invalid account\'s password!'
+    error_password: 'Invalid account\'s password!',
+    ozone_downloaded: 'ozone log file(ozone.log) already download to desktop,please view by text editor'
   },
 
   account: {

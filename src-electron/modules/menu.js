@@ -3,6 +3,8 @@ import i18n from 'i18next'
 import zh from './i18n/ozone.zh.i18n.json'
 import en from './i18n/ozone.en.i18n.json'
 import { Types } from '../modules/ipc/types'
+import path from 'path'
+import fs from 'fs'
 
 const resources = {
   dev: { translation: zh },
@@ -78,6 +80,18 @@ class OzoneMenu {
         return menuItem
       })
 
+    const debugSubmenus = [
+      {
+        label: global.i18n.t('debugMenu.log'),
+        click: () => {
+          console.log('查看日志')
+          let filename = path.resolve(app.getPath('userData'), 'ozone.log')
+          fs.writeFileSync(path.resolve(app.getPath('desktop'), 'ozone.log'), fs.readFileSync(filename))
+          global.windows.broadcast(Types.OZONE_LOG_DOWNLOADED)
+        }
+      }
+    ]
+
     const appMenu = [
       {
         label: global.i18n.t('appMenu.edit'),
@@ -91,6 +105,10 @@ class OzoneMenu {
             submenu: languageMenu
           }
         ]
+      },
+      {
+        label: global.i18n.t('appMenu.debug'),
+        submenu: debugSubmenus
       }
     ]
 

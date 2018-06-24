@@ -25,6 +25,10 @@
     "hideothers": "Hide Others",
     "unhide": "Unhide",
     "quit": "Quit",
-    "file": "File"
+    "file": "File",
+    "debug":"debug"
+  },
+  "debugMenu": {
+    "log":"view log"
   }
 }
