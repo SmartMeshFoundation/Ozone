@@ -90,6 +90,17 @@ app.on('ready', () => {
 
 let mainWin = null
 
+const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+  if (mainWin) {
+    if (mainWin.isMinimized()) mainWin.restore()
+    mainWin.focus()
+  }
+})
+
+if (shouldQuit) {
+  app.quit()
+}
+
 function onReady () {
   mainWin = windows.create('main', {
     primary: true,

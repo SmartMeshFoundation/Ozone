@@ -33,6 +33,10 @@ export default {
       this.$q.notify({ message: this.$t('notify.ozone_downloaded'), color: 'primary', timeout: 2000 })
     })
 
+    ipc.on(Types.OZONE_RELAUCH, (event, state) => {
+      this.$router.push({path: '/'})
+    })
+
     ipc.on(Types.SWITCH_LAN, (event, lang) => {
       let iLocale, mLocale, qLang
       if (lang === 'zh') {
@@ -61,7 +65,8 @@ export default {
       Types.NODE_STATE_CHANGE,
       Types.SWITCH_LAN,
       Types.SYNC_CONTRACT,
-      Types.OZONE_LOG_DOWNLOADED
+      Types.OZONE_LOG_DOWNLOADED,
+      Types.OZONE_RELAUCH
     ].forEach(channel => {
       ipc.removeAllListeners(channel)
     })

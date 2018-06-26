@@ -186,7 +186,7 @@ class SpectrumNode extends EventEmitter {
       log.info('Restart node', newType, newNetwork)
 
       return this.stop()
-        .then(() => this.emit('show-loading'))
+        // .then(() => this.emit('show-loading'))
         .then(() =>
           this._start(
             newType || this.type,
@@ -194,7 +194,7 @@ class SpectrumNode extends EventEmitter {
             syncMode || this.syncMode
           )
         )
-        .then(() => this.emit('hide-loading'))
+        // .then(() => this.emit('hide-loading'))
         .catch(err => {
           log.error('Error restarting node', err)
           throw err
@@ -208,7 +208,7 @@ class SpectrumNode extends EventEmitter {
    * @return {Promise}
    */
   stop () {
-    if (!this._stopPromise) {
+    if (!this._stopPromise && this.state !== STATES.STOPPING) {
       return new Q(resolve => {
         if (!this._node) {
           return resolve()

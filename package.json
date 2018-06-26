@@ -37,6 +37,7 @@
     "node-unzip-2": "^0.2.7",
     "promise-retry": "^1.1.1",
     "qrcode": "^1.2.0",
+    "rimraf": "^2.6.2",
     "solc": "^0.4.23",
     "superagent": "^3.8.2",
     "thunkify": "^2.1.2",

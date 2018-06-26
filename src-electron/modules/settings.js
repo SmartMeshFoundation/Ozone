@@ -30,7 +30,15 @@ class Settings {
   }
 
   get network () {
-    return _defaults.network
+    return this.network_ || _defaults.network
+  }
+
+  get network_ () {
+    return this._network
+  }
+
+  set network_ (nw) {
+    this._network = nw
   }
 
   get nodeType () {
@@ -121,6 +129,10 @@ class Settings {
     }
 
     return dataDir
+  }
+
+  get chainDataDir () {
+    return path.join(this.chainDataPath, 'smc', 'chaindata')
   }
 
   get ipcConnection () {

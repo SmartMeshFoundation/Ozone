@@ -29,6 +29,10 @@
     "debug":"debug"
   },
   "debugMenu": {
-    "log":"view log"
+    "log": "view log",
+    "net": "net",
+    "main": "testnet",
+    "test": "mainnet",
+    "rmData": "remove ChainData"
   }
 }
