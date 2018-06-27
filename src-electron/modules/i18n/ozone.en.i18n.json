@@ -31,8 +31,8 @@
   "debugMenu": {
     "log": "view log",
     "net": "net",
-    "main": "testnet",
-    "test": "mainnet",
+    "main": "mainnet",
+    "test": "testnet",
     "rmData": "remove ChainData"
   }
 }
