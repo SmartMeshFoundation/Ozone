@@ -1,5 +1,6 @@
 import logger from '../logger'
 import observeTransaction from '../observer/observeTransaction'
+import _ from 'lodash'
 
 const log = logger.create('ObserveBlock')
 
@@ -16,20 +17,11 @@ class ObserveBlock {
       .on('data', blockHeader => {
         // log.debug('Incoming new block's header: ', blockHeader)
         if (blockHeader.number) {
-          this._syncAccount()
-          this._updateNodeState()
+          syncAccount()
+          syncNodeState()
           observeTransaction.updateTransactions(blockHeader)
         }
       })
-  }
-
-  // update the node status
-  _updateNodeState () {
-    global.stateManager.emit('sync', 'node')
-  }
-
-  _syncAccount (blockHeader) {
-    global.stateManager.emit('sync', 'account')
   }
 
   stop () {
@@ -45,5 +37,15 @@ class ObserveBlock {
     }
   }
 }
+
+// update the node status to front end
+const syncNodeState = _.debounce(() => {
+  global.stateManager.emit('sync', 'node')
+}, 1000)
+
+// update the account to front end
+const syncAccount = _.debounce(() => {
+  global.stateManager.emit('sync', 'account')
+}, 1000)
 
 export default new ObserveBlock()

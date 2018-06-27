@@ -191,6 +191,7 @@ class OzoneMenu {
         label: global.i18n.t('debugMenu.net'),
         submenu: netMenue
       },
+      {type: 'separator'},
       {
         label: global.i18n.t('debugMenu.log'),
         click: () => {
@@ -199,6 +200,7 @@ class OzoneMenu {
           global.windows.broadcast(Types.OZONE_LOG_DOWNLOADED)
         }
       },
+      {type: 'separator'},
       {
         label: global.i18n.t('debugMenu.rmData'),
         click: () => {

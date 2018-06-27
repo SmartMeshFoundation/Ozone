@@ -14,18 +14,28 @@ class NodeState extends EventEmitter {
 
   _sync () {
     let web3 = global.web3
+    let state = {}
     Promise.all([
-      web3.eth.getBlock('latest'),
+      web3.eth.getBlockNumber(),
       web3.eth.net.getPeerCount(),
       web3.eth.getGasPrice()
     ])
-      .then(([block, peers, gasPrice]) => {
-        let state = {
-          blockNumber: block.number,
+      .then(([blockNumber, peers, gasPrice]) => {
+        state = {
+          blockNumber,
           peers,
           gasPrice
         }
+        if (state.blockNumber === 0) {
+          return web3.eth.isSyncing()
+        }
         debug('Current node state: ', state)
+        global.windows.broadcast(Types.NODE_STATE_CHANGE, state)
+      })
+      .then(syncing => {
+        if (typeof syncing === 'object') {
+          state.blockNumber = syncing.currentBlock
+        }
         global.windows.broadcast(Types.NODE_STATE_CHANGE, state)
       })
       .catch(err => {
