@@ -18,6 +18,12 @@ import ipc from '../modules/ipc'
 import { Types } from '../modules/ipc/types'
 import OzoneMenu from '../modules/menu'
 
+const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {})
+
+if (shouldQuit) {
+  process.exit(0)
+}
+
 const log = logger.create('Main')
 
 log.info('system language is ', app.getLocale())
@@ -89,17 +95,6 @@ app.on('ready', () => {
 })
 
 let mainWin = null
-
-const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
-  if (mainWin) {
-    if (mainWin.isMinimized()) mainWin.restore()
-    mainWin.focus()
-  }
-})
-
-if (shouldQuit) {
-  app.quit()
-}
 
 function onReady () {
   mainWin = windows.create('main', {
