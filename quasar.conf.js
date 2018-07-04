@@ -100,6 +100,12 @@ module.exports = function (ctx) {
           target: 'nsis',
           artifactName: '${productName}-win64-${version}.${ext}'
         },
+        //for windows package
+        nsis: {
+          oneClick: false,
+          allowToChangeInstallationDirectory: true,
+          runAfterFinish: true
+        },
         linux: {
           category: 'Utility',
           icon: 'src-electron/icons/icon.png',
