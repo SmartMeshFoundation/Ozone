@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import Q from 'bluebird'
-import fs from 'fs'
+import fs from 'fs-extra'
 import { app, dialog } from 'electron'
 import got from 'got'
 import path from 'path'
@@ -11,8 +11,7 @@ import logger from './logger'
 
 const log = logger.create('ClientBinaryManager')
 
-const BINARY_URL =
-  'https://github.com/SmartMeshFoundation/Ozone/raw/master/clientBinaries.json'
+const BINARY_URL = 'https://raw.githubusercontent.com/SmartMeshFoundation/Ozone/master/clientBinaries.json'
 
 import defaultClientBinaries from './client/config.json'
 
@@ -56,7 +55,7 @@ class Manager extends EventEmitter {
 
     // fetch config
     return got(BINARY_URL, {
-      timeout: 3000,
+      timeout: 10000,
       json: true
     })
       .then(res => {
@@ -76,7 +75,7 @@ class Manager extends EventEmitter {
 
         let localConfig
         let skipedVersion
-        const nodeVersion = latestConfig.version
+        const nodeVersion = latestConfig.clients[nodeType].version
 
         this._emit('loadConfig', 'Fetching local config')
 
@@ -145,7 +144,7 @@ class Manager extends EventEmitter {
             log.debug(
               'New client binaries config found, asking user if they wish to update...'
             )
-
+            // TODO popup window ask user
             this._writeLocalConfig(latestConfig)
             resolve(latestConfig)
           })
@@ -242,9 +241,9 @@ class Manager extends EventEmitter {
             {
               type: 'warning',
               buttons: ['OK'],
-              message: global.i18n.t('mist.errors.nodeChecksumMismatch.title'),
+              message: global.i18n.t('ozone.errors.nodeChecksumMismatch.title'),
               detail: global.i18n.t(
-                'mist.errors.nodeChecksumMismatch.description',
+                'ozone.errors.nodeChecksumMismatch.description',
                 {
                   type: nodeInfo.type,
                   version: nodeInfo.version,
@@ -254,6 +253,8 @@ class Manager extends EventEmitter {
               )
             },
             () => {
+              // remove downloaded archive.tar
+              fs.removeSync(path.join(Settings.userDataPath, 'binaries', nodeType, 'archive.tar'))
               app.quit()
             }
           )

@@ -172,26 +172,26 @@ class OzoneMenu {
         }
         return menuItem
       })
-    let net = ['test', 'main']
-    let netMenue = net.map(net_ => {
-      return {
-        label: global.i18n.t(`debugMenu.${net_}`),
-        type: 'checkbox',
-        checked: settings.network === net_,
-        click: () => {
-          settings.network_ = net_
-          this.create()
-          this.kickStart(true)
-          spectrumNode._loadDefaults()
-        }
-      }
-    })
+    // let net = ['test', 'main']
+    // let netMenue = net.map(net_ => {
+    //   return {
+    //     label: global.i18n.t(`debugMenu.${net_}`),
+    //     type: 'checkbox',
+    //     checked: settings.network === net_,
+    //     click: () => {
+    //       settings.network_ = net_
+    //       this.create()
+    //       this.kickStart(true)
+    //       spectrumNode._loadDefaults()
+    //     }
+    //   }
+    // })
     const debugSubmenus = [
-      {
-        label: global.i18n.t('debugMenu.net'),
-        submenu: netMenue
-      },
-      {type: 'separator'},
+      // {
+      //   label: global.i18n.t('debugMenu.net'),
+      //   submenu: netMenue
+      // },
+      // {type: 'separator'},
       {
         label: global.i18n.t('debugMenu.log'),
         click: () => {

@@ -34,5 +34,13 @@
     "test":"测试网络",
     "main":"主网",
     "rmData": "清除区块数据"
+  },
+  "ozone": {
+    "errors": {
+      "nodeChecksumMismatch": {
+        "title": "Checksum mismatch in downloaded node!",
+        "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
+      }
+    }
   }
 }

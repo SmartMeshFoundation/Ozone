@@ -34,5 +34,13 @@
     "main": "mainnet",
     "test": "testnet",
     "rmData": "remove ChainData"
+  },
+  "ozone": {
+    "errors": {
+      "nodeChecksumMismatch": {
+        "title": "Checksum mismatch in downloaded node!",
+        "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
+      }
+    }
   }
 }
