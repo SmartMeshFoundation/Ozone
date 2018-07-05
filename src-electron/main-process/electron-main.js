@@ -26,6 +26,7 @@ if (shouldQuit) {
 
 const log = logger.create('Main')
 
+log.info('current application\'s version: ', Settings.appVersion)
 log.info('system language is ', app.getLocale())
 
 log.info(`Running in production mode: ${Settings.inProductionMode}`)
