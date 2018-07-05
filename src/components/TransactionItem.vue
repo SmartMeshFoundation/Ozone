@@ -147,7 +147,7 @@ export default {
   },
   methods: {
     date (timestamp) {
-      return this.$moment.unix(timestamp).format('MMMM Do')
+      return this.$moment.unix(timestamp).format('YYYY-MM-DD')
     },
     fromNow (timestamp) {
       return this.$moment.unix(timestamp).fromNow()
