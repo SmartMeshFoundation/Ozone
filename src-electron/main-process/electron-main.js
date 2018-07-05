@@ -71,7 +71,7 @@ app.on('before-quit', event => {
 
     // delay quit, so the sockets can close
     setTimeout(async () => {
-      // await spectrumNode.stop()
+      await spectrumNode.stop()
 
       killedSocketsAndNodes = true
       await db.close()
