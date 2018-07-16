@@ -14,12 +14,10 @@
                     <q-list-header>{{$t('contract.view.status')}}</q-list-header>
                     <q-item v-for="state in states"
                             :key="state.name">
-                      <q-item-side>
+                      <q-item-side class="states-btn">
                         <q-btn :label="state.name" dense
                                 @click="callContract(state.name)"
-                                title="call"
-                                color="secondary"
-                                class="shadow-1" />
+                                title="call"/>
                       </q-item-side>
                         <q-item-main>
                             <q-item-tile>
@@ -59,7 +57,7 @@
                                     @click="callContract(method.name)"
                                     title="transact"
                                     color="red-3"
-                                    class="shadow-1" />
+                                    class="method-btn" />
                         </q-item-side>
                         <q-item-main>
                             <q-item-tile>
@@ -84,7 +82,7 @@
         >
           <template slot="top-left" slot-scope="props">
             <q-input :placeholder="$t('contract.view.from_block')" v-model="fromBlock" class="q-mr-md"></q-input>
-            <q-btn :disable="loading" :label="$t('contract.view.btn_query')" color="secondary" @click="getPastEvents"></q-btn>
+            <q-btn :disable="loading" class="states-btn" :label="$t('contract.view.btn_query')" @click="getPastEvents"></q-btn>
           </template>
         </q-table>
 
@@ -95,7 +93,7 @@
           color="secondary"
         >
           <template slot="top-left" slot-scope="props">
-            <q-btn :loading="watching" :label="$t('contract.view.btn_watch')" color="secondary" @click="watchEvents"></q-btn>
+            <q-btn :loading="watching" class="states-btn" :label="$t('contract.view.btn_watch')"  @click="watchEvents"></q-btn>
           </template>
         </q-table>
 
@@ -147,6 +145,15 @@
 .messages > li.error {
   color #FF0000
 }
+.states-btn
+  border 1px solid #10a0f8 !important
+  color #10a0f8
+  border-radius 2px !important
+  padding 0px 10px
+.method-btn
+  background-color #10a0f8 !important
+  border-radius 2px !important
+  padding 0px 10px
 </style>
 
 <script>

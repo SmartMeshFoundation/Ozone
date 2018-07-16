@@ -46,6 +46,8 @@
   </div>
 </template>
 <style lang="stylus">
+  .fullscreen
+    background: #ACD0FF
   div.sync-modal .modal-content
       border-radius 14px !important
       width 350px

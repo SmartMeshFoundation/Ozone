@@ -3,17 +3,14 @@
 
         <div class="row q-mb-lg">
           <q-btn-group >
-            <q-btn icon="playlist_add"
+            <q-btn class="contract-in"
                     :label="$t('contract.my.btn.import')"
-                    color="secondary"
                     @click="imports" />
-            <q-btn icon="save"
+            <q-btn class="contract-back"
                     :label="$t('contract.my.btn.backup')"
-                    color="secondary"
                     @click="backup" />
-            <q-btn icon="add"
+            <q-btn class="contract-add"
                     :label="$t('contract.my.btn.add')"
-                    color="secondary"
                     @click="$router.push('/contract/my/add')" />
           </q-btn-group>
         </div>
@@ -31,7 +28,21 @@
 .row .item {
   padding: 10px;
   background-color: #fff;
+  border-radius 2px
 }
+div.q-btn-group .q-btn
+    padding 15px 25px 15px 20px
+    background-color #10A0F8 !important
+    color white
+    font-weight bold
+div.q-btn-group .q-btn-inner
+    padding-left 20px
+button.contract-in
+    background url("../assets/in@1x.png") no-repeat 20px
+button.contract-back
+    background url("../assets/back@1x.png") no-repeat 20px
+button.contract-add
+    background url("../assets/add@1x.png") no-repeat 20px
 </style>
 
 <script>

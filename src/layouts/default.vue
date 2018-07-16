@@ -12,7 +12,7 @@
                aria-label="Menu"
                icon="menu" />
 
-        <q-breadcrumbs class="q-ml-xs" active-color="secondary" color="light">
+        <q-breadcrumbs class="q-ml-xs" color="light">
           <q-breadcrumbs-el v-for="item in breadcrumbs" :key="item.key" :label="$t(item.key)" :to="item.to"/>
         </q-breadcrumbs>
 
@@ -24,14 +24,8 @@
       <div class="bg-white">
         <div class="row flex-center q-my-sm">
           <img alt="Ozone logo"
-               src="statics/icon_smart.png"
+               src="statics/ozone-logo@1x.png"
                class="ozone-img" />
-          <q-btn class="ozone-logo" flat
-                 dense
-                 disable
-                 text-color="black"
-                 size="xl"
-                 label="OZONE">
           <q-chip dense
                   floating
                   :class="{hidden: !isTestNet}"
@@ -40,21 +34,6 @@
                   floating
                   :class="{hidden: !isPrivateNet}"
                   color="negative"> private net </q-chip>
-          </q-btn>
-        </div>
-        <div class="row q-pa-sm justify-center">
-          <q-chip dense
-                  icon="layers"
-                  title="block number"
-                  class=""> {{blockNumber}} </q-chip>
-          <q-chip dense
-                  icon="timer"
-                  title="elapsed time"
-                  class="q-ml-sm"> {{elapsedTime}} s</q-chip>
-          <q-chip dense
-                  icon="router"
-                  title="peers"
-                  class="q-ml-sm"> {{peerCount}} </q-chip>
         </div>
         <!--<div class="row q-pa-sm justify-center">
           <lang-switcher />
@@ -80,17 +59,31 @@
         <q-list-header>{{ $t('nav.header.contract') }}</q-list-header>
 
         <q-item to="/contract/deploy">
-          <q-item-side icon="code" />
+          <q-item-side class="deploy-menu" />
           <q-item-main :label="$t('nav.contract.deploy.label')"
                        :sublabel="$t('nav.contract.deploy.sublabel')" />
         </q-item>
 
         <q-item to="/contract/my">
-          <q-item-side icon="settings_ethernet" />
+          <q-item-side class="contract-menu" />
           <q-item-main :label="$t('nav.contract.my.label')"
                        :sublabel="$t('nav.contract.my.sublabel')" />
         </q-item>
       </q-list>
+      <div class="row q-pa-sm justify-center blockinfo">
+        <q-chip dense
+                icon="layers"
+                title="block number"
+                class=""> {{blockNumber}} </q-chip>
+        <q-chip dense
+                icon="timer"
+                title="elapsed time"
+                class="q-ml-sm"> {{elapsedTime}} s</q-chip>
+        <q-chip dense
+                icon="router"
+                title="peers"
+                class="q-ml-sm"> {{peerCount}} </q-chip>
+      </div>
     </q-layout-drawer>
 
     <q-page-container>
@@ -100,14 +93,12 @@
 </template>
 <style lang="stylus">
 .ozone-img
-    margin-top 18px
-    height 50px
-    width 50px
-.ozone-logo
-    margin-top 18px
-    color #333333
-    font-size 22px
-    line-height 30px
+    position fixed
+    top 30px
+    left 14px
+    margin-bottom 30px
+    height 40px
+    width 122px
 .toolbar-title
     font-size 16px
     color #788083 !important
@@ -115,8 +106,14 @@
     color: #cccccc
 .q-layout-drawer
     width: 298px
+.blockinfo
+    position absolute
+    bottom 20px
+    left 60px
 .q-layout-page
     background-color: #F1F3F6
+div.ozone-menu
+    margin-top:75px
 div.ozone-menu > .q-item.router-link-active
     background-color #F4F8F9
     border-left 3px solid #10A0F8 !important
@@ -146,9 +143,13 @@ div.ozone-menu .q-item-side
     width 30px
     height 30px
 div.wallet-menu
-    background url("../assets/wallet@2x.png") no-repeat center
+    background url("../assets/wallet@1x.png") no-repeat center
 div.trans-menu
-    background url("../assets/trans@2x.png") no-repeat center
+    background url("../assets/trans@1x.png") no-repeat center
+div.deploy-menu
+    background url("../assets/deploy@1x.png") no-repeat center
+div.contract-menu
+    background url("../assets/contract@1x.png") no-repeat center
 
 </style>
 <script>

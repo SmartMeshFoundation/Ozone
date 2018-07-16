@@ -9,8 +9,7 @@
           <strong class="account-name-title">{{account.name}}</strong>
         </q-item-tile>
         <q-item-tile class="address">{{account.address}}
-          <q-icon name="content_copy"
-                  @click.native.stop="copyAddress(account.address)" /> <div class="qr_code" @click.stop="qrcode(account.address)"></div></q-item-tile>
+          <div class="qr_code copy_address" @click.stop="copyAddress(account.address)"></div> <div class="qr_code" @click.stop="qrcode(account.address)"></div></q-item-tile>
       </q-item-main>
       <q-item-side right>
         <q-item-tile class="balance-title">{{ $t('account.balance') }}</q-item-tile>
@@ -90,10 +89,12 @@ div.verify-modal .q-btn
 div.qr_code
     display inline-block
     vertical-align middle
-    width 15px
-    height 15px
-    background url("../assets/qr.png") no-repeat center !important
+    width 16px
+    height 16px
+    background url("../assets/qr@1x.png") no-repeat center !important
     background-size cover
+div.copy_address
+    background url("../assets/copy@1x.png") no-repeat center !important
 </style>
 <script>
 import copy from 'clipboard-copy'

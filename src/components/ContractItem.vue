@@ -7,10 +7,8 @@
             </router-link>
 
             <div class="col-1 text-center">
-                <q-btn icon="delete"
-                       color="secondary"
+                <q-btn class="delete-btn"
                        @click="deleteItem(item._id)"
-                       flat
                        round
                        dense />
             </div>
@@ -19,9 +17,22 @@
 </template>
 
 <style lang="stylus">
-.item .item-main
+.item
+  width 316px
+  height 88px
+.item-main
   cursor pointer
-
+.q-title
+  font-size 16px
+.q-subheading
+  font-size 12px
+.delete-btn
+  background url("../assets/del@1x.png") no-repeat center
+  right 3px !important
+.delete-btn:hover
+  background-color #E7F5FE !important
+.q-focus-helper
+  none !important
 </style>
 
 <script>
@@ -39,7 +50,7 @@ export default {
   computed: {
     contractAddress () {
       if (this.item.contractAddress) {
-        return this.item.contractAddress
+        return this.item.contractAddress.substr(0, 18) + '...' + this.item.contractAddress.substr(this.item.contractAddress.length - 18, this.item.contractAddress - 1)
       } else {
         return 'Pending ...'
       }
