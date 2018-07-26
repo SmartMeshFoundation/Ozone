@@ -7,70 +7,70 @@
             </div>
         </div>
 
-        <div class="row q-mt-sm gutter-sm">
-            <div class="col-sm-12 col-md-6">
-                <q-list class="bg-white"
-                        separator>
-                    <q-list-header>{{$t('contract.view.status')}}</q-list-header>
-                    <q-item v-for="state in states"
-                            :key="state.name">
-                      <q-item-side class="states-btn">
-                        <q-btn :label="state.name" dense
-                                @click="callContract(state.name)"
-                                title="call"/>
-                      </q-item-side>
-                        <q-item-main>
-                            <q-item-tile>
-                                <q-input class="inputs"
-                                         v-for="input in methodInputs[state.name]"
-                                         v-model="input.value"
-                                         :key="state.name + '-input-'+input.pos"
-                                         :placeholder="'Input ' +input.pos + ': ' + input.type" />
-                            </q-item-tile>
-                            <q-item-tile class="output" v-for="(item, idx) in returnValues[state.name]"
-                                         :key="uuid(idx)">
-                                <small>Output {{idx}}: {{item.type}}: {{item.value}}</small>
-                            </q-item-tile>
-                        </q-item-main>
-                    </q-item>
-                </q-list>
-            </div>
+        <div class="contract-panel" ref="contractPanel">
+          <div ref="contractPanelLeft" class="contract-panel-l">
+            <q-list class="bg-white"
+                    separator>
+              <q-list-header>{{$t('contract.view.status')}}</q-list-header>
+              <q-item v-for="state in states"
+                      :key="state.name">
+                <q-item-side class="contract-btn states-btn">
+                  <q-btn :label="state.name" dense
+                         @click="callContract(state.name)"
+                         title="call"/>
+                </q-item-side>
+                <q-item-main>
+                  <q-item-tile>
+                    <q-input class="inputs"
+                             v-for="input in methodInputs[state.name]"
+                             v-model="input.value"
+                             :key="state.name + '-input-'+input.pos"
+                             :placeholder="'Input ' +input.pos + ': ' + input.type" />
+                  </q-item-tile>
+                  <q-item-tile class="output" v-for="(item, idx) in returnValues[state.name]"
+                               :key="uuid(idx)">
+                    <small>Output {{idx}}: {{item.type}}: {{item.value}}</small>
+                  </q-item-tile>
+                </q-item-main>
+              </q-item>
+            </q-list>
+          </div>
+          <div ref="contractPanelRight" class="contract-panel-r">
+            <q-list class="bg-white"
+                    separator>
+              <q-list-header>{{$t('contract.view.methods')}}</q-list-header>
+              <q-item>
+                <q-item-main>
+                  <q-item-tile>
+                    <q-select :float-label="$t('contract.view.from_label')"
+                              hide-underline
+                              v-model="from"
+                              :options="getAccounts()" />
+                  </q-item-tile>
+                </q-item-main>
+              </q-item>
+              <q-item v-for="method in methods"
+                      :key="method.name">
+                <q-item-side>
+                  <q-btn :label="method.name" dense
+                         @click="callContract(method.name)"
+                         title="transact"
+                         color="red-3"
+                         class="contract-btn method-btn" />
+                </q-item-side>
+                <q-item-main>
+                  <q-item-tile>
+                    <q-input class="inputs"
+                             v-for="input in methodInputs[method.name]"
+                             v-model="input.value"
+                             :key="method.name + '-input-'+input.pos"
+                             :placeholder="'Input ' +input.pos + ': ' + input.type" />
+                  </q-item-tile>
+                </q-item-main>
+              </q-item>
+            </q-list>
+          </div>
 
-            <div class="col-sm-12 col-md-6">
-                <q-list class="bg-white"
-                        separator>
-                    <q-list-header>{{$t('contract.view.methods')}}</q-list-header>
-                    <q-item>
-                      <q-item-main>
-                        <q-item-tile>
-                          <q-select :float-label="$t('contract.view.from_label')"
-                                    hide-underline
-                                    v-model="from"
-                                    :options="getAccounts()" />
-                        </q-item-tile>
-                      </q-item-main>
-                    </q-item>
-                    <q-item v-for="method in methods"
-                            :key="method.name">
-                        <q-item-side>
-                            <q-btn :label="method.name" dense
-                                    @click="callContract(method.name)"
-                                    title="transact"
-                                    color="red-3"
-                                    class="method-btn" />
-                        </q-item-side>
-                        <q-item-main>
-                            <q-item-tile>
-                                <q-input class="inputs"
-                                         v-for="input in methodInputs[method.name]"
-                                         v-model="input.value"
-                                         :key="method.name + '-input-'+input.pos"
-                                         :placeholder="'Input ' +input.pos + ': ' + input.type" />
-                            </q-item-tile>
-                        </q-item-main>
-                    </q-item>
-                </q-list>
-            </div>
         </div>
 
         <q-table class="bg-white q-mt-lg"
@@ -82,7 +82,7 @@
         >
           <template slot="top-left" slot-scope="props">
             <q-input :placeholder="$t('contract.view.from_block')" v-model="fromBlock" class="q-mr-md"></q-input>
-            <q-btn :disable="loading" class="states-btn" :label="$t('contract.view.btn_query')" @click="getPastEvents"></q-btn>
+            <q-btn :disable="loading" class="contract-btn" :label="$t('contract.view.btn_query')" @click="getPastEvents"></q-btn>
           </template>
         </q-table>
 
@@ -93,7 +93,7 @@
           color="secondary"
         >
           <template slot="top-left" slot-scope="props">
-            <q-btn :loading="watching" class="states-btn" :label="$t('contract.view.btn_watch')"  @click="watchEvents"></q-btn>
+            <q-btn :loading="watching" class="contract-btn" :label="$t('contract.view.btn_watch')"  @click="watchEvents"></q-btn>
           </template>
         </q-table>
 
@@ -123,6 +123,21 @@
 </template>
 
 <style lang="stylus">
+.contract-panel
+  display table
+  width 100%
+  margin-top 18px
+.contract-panel .contract-panel-l
+  float left
+  width 49.5%
+.contract-panel .contract-panel-r
+  float right
+  width 49.5%
+.address
+  font-size 14px
+.output
+  word-break break-all
+  word-wrap break-word
 .method, .field {
   background-color #ffffff
   padding          16px
@@ -145,15 +160,26 @@
 .messages > li.error {
   color #FF0000
 }
-.states-btn
+.contract-btn
   border 1px solid #10a0f8 !important
   color #10a0f8
   border-radius 2px !important
   padding 0px 10px
+  word-break break-all
+  word-wrap break-word
+.states-btn
+  width 120px
+  text-align center
 .method-btn
   background-color #10a0f8 !important
-  border-radius 2px !important
-  padding 0px 10px
+  width 120px
+  text-align center
+body.desktop .q-select-highlight
+  background-color #f4f8f9 !important
+.q-item.active, .q-item.router-link-active, .q-item:focus
+  background-color #f4f8f9 !important
+.q-select-highlight
+  background-color #f4f8f9 !important
 </style>
 
 <script>
@@ -413,6 +439,15 @@ export default {
       // }
       return values.join(', ')
     }
+  },
+
+  mounted () {
+    let l = this.$refs.contractPanelLeft.offsetHeight
+    let r = this.$refs.contractPanelRight.offsetHeight
+    let m = Math.max(l, r)
+    this.$refs.contractPanel.querySelectorAll('.bg-white').forEach((obj) => {
+      obj.style.height = m + 'px'
+    })
   },
 
   computed: {

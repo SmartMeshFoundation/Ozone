@@ -1,6 +1,6 @@
 <template>
     <div class="col-6">
-        <div class="row item items-start shadow-1">
+        <div class="row item items-start contract-item">
             <router-link tag="div" class="col-11 item-main" :to="'/contract/my/view?id='+item._id">
               <div class="q-title">{{item.name}}</div>
               <div class="q-subheading address q-mt-md" @click.stop>{{contractAddress}}</div>
@@ -17,14 +17,15 @@
 </template>
 
 <style lang="stylus">
-.item
+.contract-item
   width 316px
   height 88px
+  border-radius 4px !important
 .item-main
   cursor pointer
-.q-title
+.contract-item .q-title
   font-size 16px
-.q-subheading
+.contract-item .q-subheading
   font-size 12px
 .delete-btn
   background url("../assets/del@1x.png") no-repeat center

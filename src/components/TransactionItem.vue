@@ -1,25 +1,27 @@
 <template>
  <div class="trans-container" @click="viewTransaction(item)">
    <q-item class="trans-item">
-     <q-item-side>
+     <q-item-side class="trans-date">
        <div class="row justify-center">
          {{date(item.timestamp)}}
        </div>
      </q-item-side>
-     <q-item-main>
-       <q-item-tile class="q-pb-sm">
+     <q-item-main class="trans-type">
+       <q-item-tile>
          <span v-if="item.to != null && item.input === '0x'" >{{ $t('tx.type.a2a') }}</span>
          <span v-if="item.to != null && item.input !== '0x'" >{{ $t('tx.type.call_c') }}</span>
          <span v-if="item.to == null" >{{ $t('tx.type.create_c') }}</span>
        </q-item-tile>
+     </q-item-main>
+     <q-item-main class="trans-acct">
        <q-item-tile>
          <ident-icon :value="item.from.toLowerCase()" />
-         <span :title="item.from" class="trans-from"> {{accountName(item.from)}} </span>
+         <span :title="item.from"> {{accountName(item.from)}} </span>
          <span v-if="item.to != null">
-         <q-icon name="send"
+         <q-icon name="send" class="btn-send"
                  color="grey-5 q-px-md" />
          <ident-icon :value="item.to.toLowerCase()" />
-         <span :title="item.to" class="trans-to"> {{accountName(item.to)}} </span>
+         <span :title="item.to"> {{accountName(item.to)}} </span>
          </span>
        </q-item-tile>
      </q-item-main>
@@ -37,7 +39,7 @@
          <span> {{$t('tx.list.pending')}} </span>
        </q-item-tile>
      </q-item-main>
-     <q-item-side right>
+     <q-item-side>
        <q-item-tile class="trans-fee" v-if="address===undefined" color="negative">
          {{toSMT(item.value)}} {{$unit}}
        </q-item-tile>
@@ -88,7 +90,7 @@
 div.trans-container
     // height 60px
     font-size 15px
-    line-height 21px
+    line-height 40px
     color #333333
     border-radius 2px !important
     background-color #FFFFFF !important
@@ -100,17 +102,21 @@ div.trans-container:not(:first-child)
     margin-top:10px
 div.trans-container:hover
     background: #F9FEFF !important
+div.trans-date
+    width 14%
+div.trans-type
+    padding-left 10px
+    width 16%
+.btn-send
+    width 1%
+div.trans-acct
+    width 45%
+div.trans-pro
+    width 10%
 div.trans-item .q-item-side
     color #999999 !important
 div.trans-item .trans-fee
     color #FA5A53 !important
-    margin-top 25px
-div.trans-item .trans-pro
-    margin-top 25px
-div.trans-item .trans-from
-    margin-left: 10px
-div.trans-item .trans-to
-    margin-left 10px
 </style>
 
 <script>
@@ -161,7 +167,7 @@ export default {
     accountName (address) {
       let accountName = this.$store.getters['account/name'](address)
       if (accountName.length > 10) {
-        return accountName.substr(0, 10) + '...'
+        return accountName.substr(0, 6) + '...'
       }
       return accountName
     },

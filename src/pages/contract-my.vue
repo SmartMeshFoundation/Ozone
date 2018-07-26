@@ -1,7 +1,7 @@
 <template>
     <q-page class="q-pa-lg">
 
-        <div class="row q-mb-lg">
+        <div class="row q-mb-lg contract-op">
           <q-btn-group >
             <q-btn class="contract-in"
                     :label="$t('contract.my.btn.import')"
@@ -25,23 +25,28 @@
 </template>
 
 <style lang="stylus">
-.row .item {
-  padding: 10px;
+.row .item
+  padding: 18px 10px;
   background-color: #fff;
-  border-radius 2px
-}
+div.contract-op .q-btn-group
+    width 318px
+    height 36px
 div.q-btn-group .q-btn
-    padding 15px 25px 15px 20px
+    padding 0px 25px 0px 21px
     background-color #10A0F8 !important
     color white
     font-weight bold
 div.q-btn-group .q-btn-inner
     padding-left 20px
 button.contract-in
+    border-top-left-radius 2px !important
+    border-bottom-left-radius 2px !important
     background url("../assets/in@1x.png") no-repeat 20px
 button.contract-back
     background url("../assets/back@1x.png") no-repeat 20px
 button.contract-add
+    border-top-right-radius 2px !important
+    border-bottom-right-radius 2px !important
     background url("../assets/add@1x.png") no-repeat 20px
 </style>
 
