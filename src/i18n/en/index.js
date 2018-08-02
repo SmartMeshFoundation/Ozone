@@ -69,7 +69,7 @@ export default {
     list: {
       caption: 'Recent Transactions',
       pending: 'Pending...',
-      block_confirm: 'confirmation of blocks',
+      block_confirm: 'Blocks',
       abi: 'Create or invoke contract',
       transfer: 'Transfer'
     },

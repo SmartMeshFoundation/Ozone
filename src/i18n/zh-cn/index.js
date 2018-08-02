@@ -69,7 +69,7 @@ export default {
     list: {
       caption: '最近交易',
       pending: '待确认',
-      block_confirm: '块确认',
+      block_confirm: '块',
       abi: '创建/调用合约',
       transfer: '账户间转账'
     },

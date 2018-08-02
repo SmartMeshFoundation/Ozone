@@ -12,7 +12,7 @@ const _defaults = {
   ipcFile: 'smc.ipc',
   rpcPort: 18545,
   wsPort: 18546,
-  requiredConfirmations: 12
+  requiredConfirmations: 17
 }
 
 class Settings {
