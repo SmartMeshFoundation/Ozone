@@ -85,7 +85,8 @@ export default {
       showSyncing: false,
       showDownloading: false,
       totalBlock: 0,
-      synced: 0
+      synced: 0,
+      lock: this.$store.getters['lock/get']
     }
   },
   methods: {
@@ -108,7 +109,11 @@ export default {
     this.$q.loading.show(loadingOption)
     ipc.on(Types.NODE_ALL_DONE, (event, params) => {
       this.$q.loading.hide()
-      this.goto('/dashboard')
+      if (this.lock != null && this.lock.status === 1) {
+        this.goto('/lock')
+      } else {
+        this.goto('/dashboard')
+      }
     })
 
     ipc.on(Types.UI_ACTION_CLIENTBINARYSTATUS, (event, status, data) => {

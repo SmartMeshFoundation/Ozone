@@ -45,7 +45,7 @@ export default {
     mondify_name: '修改账户名称',
     btn: {
       transfer: '转账',
-      backupAccount: '备份账户',
+      backupAccount: '备份',
       importAccount: '导入账户',
       add: '创建一个新账户'
     },
@@ -223,5 +223,20 @@ export default {
         message: '请输入调用合约的账户密码'
       }
     }
+  },
+  lock: {
+    title: '登录锁设置',
+    password_msg1: '请输入登录锁密码',
+    password_msg2: '确认登录锁密码',
+    lock_wrong_pwd: '密码错误',
+    menu: '登录锁',
+    modify:
+      {
+        open: '开启登录锁',
+        modify_pwd: '修改登录锁密码',
+        password_msg1: '输入当前登录锁密码',
+        password_msg2: '输入新登录锁密码',
+        password_msg3: '确认新登录锁密码'
+      }
   }
 }

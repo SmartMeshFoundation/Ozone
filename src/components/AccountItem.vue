@@ -64,6 +64,7 @@ div.balance-value
 div.verify-modal .modal-content
     width 448px
     height 214px
+    border-radius 6px !important
 div.verify-modal .q-headline
     font-size 18px
     color #333333
@@ -80,10 +81,10 @@ div.verify-modal .q-btn
     position absolute
     right 26px
     bottom 4px
-    border-radius 2px
+    border-radius 4px
     width 70px
     height 36px
-    background-color #10A0F8 !important
+    background-color #4782F6 !important
 // .q-alert-content
 //     background-color #10A0F8 !important
 div.qr_code

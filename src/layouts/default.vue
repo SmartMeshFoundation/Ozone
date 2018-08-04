@@ -12,64 +12,20 @@
                aria-label="Menu"
                icon="menu" />
 
-        <q-breadcrumbs class="q-ml-xs" color="light">
+        <q-breadcrumbs class="q-ml-xs ozone-breadcrumbs" color="light">
           <q-breadcrumbs-el v-for="item in breadcrumbs" :key="item.key" :label="$t(item.key)" :to="item.to"/>
         </q-breadcrumbs>
 
       </q-toolbar>
-    </q-layout-header>
-
-    <q-layout-drawer v-model="leftDrawerOpen"
-                     :content-class="$q.theme === 'mat' ? 'bg-grey-2 shadow-5' : null">
-      <div class="bg-white">
-        <div class="row flex-center q-my-sm">
-          <img alt="Ozone logo"
-               src="statics/ozone-logo@1x.png"
-               class="ozone-img" />
-          <q-chip dense
-                  floating
-                  :class="{hidden: !isTestNet}"
-                  color="negative"> test net </q-chip>
-          <q-chip dense
-                  floating
-                  :class="{hidden: !isPrivateNet}"
-                  color="negative"> private net </q-chip>
-        </div>
-        <!--<div class="row q-pa-sm justify-center">
-          <lang-switcher />
-        </div>-->
+      <div class="setting-btn" @click.stop="showMenuPop=true">
+        <q-popover class="ozone-popup" v-model="showMenuPop"
+          anchor="bottom left"
+          self="top left"
+          :offset="[18,0]"
+        >
+          <div class="lock-menu" @click.stop="setting">{{ $t('lock.menu') }}</div>
+        </q-popover>
       </div>
-      <q-list class="ozone-menu" no-border
-              link
-              inset-delimiter>
-        <q-list-header>{{ $t('nav.header.account') }}</q-list-header>
-
-        <q-item to="/wallet">
-          <q-item-side class="wallet-menu" />
-          <q-item-main :label="$t('nav.wallet.label')"
-                       :sublabel="$t('nav.wallet.sublabel')" />
-        </q-item>
-
-        <q-item to="/transfer/">
-          <q-item-side class="trans-menu" />
-          <q-item-main :label="$t('nav.transfer.label')"
-                       :sublabel="$t('nav.transfer.sublabel')" />
-        </q-item>
-
-        <q-list-header>{{ $t('nav.header.contract') }}</q-list-header>
-
-        <q-item to="/contract/deploy">
-          <q-item-side class="deploy-menu" />
-          <q-item-main :label="$t('nav.contract.deploy.label')"
-                       :sublabel="$t('nav.contract.deploy.sublabel')" />
-        </q-item>
-
-        <q-item to="/contract/my">
-          <q-item-side class="contract-menu" />
-          <q-item-main :label="$t('nav.contract.my.label')"
-                       :sublabel="$t('nav.contract.my.sublabel')" />
-        </q-item>
-      </q-list>
       <div class="row q-pa-sm justify-center blockinfo">
         <q-chip dense
                 icon="layers"
@@ -84,64 +40,167 @@
                 title="peers"
                 class="q-ml-sm"> {{peerCount}} </q-chip>
       </div>
-    </q-layout-drawer>
+    </q-layout-header>
 
+    <q-layout-drawer v-model="leftDrawerOpen"
+                     :content-class="$q.theme === 'mat' ? 'bg-grey-2 shadow-5' : null">
+      <q-list class="ozone-menu" no-border
+              link
+              inset-delimiter>
+        <!--<q-list-header>{{ $t('nav.header.account') }}</q-list-header>-->
+
+        <q-item to="/wallet">
+          <q-item-side class="wallet-menu" />
+          <q-tooltip class="ozone-menu-tip" anchor="center right" self="center left" :offset="[10, 10]">
+            {{$t('nav.wallet.sublabel')}}
+          </q-tooltip>
+        </q-item>
+        <div class="menu-label">{{$t('nav.wallet.label')}}</div>
+
+        <q-item to="/transfer/">
+          <q-item-side class="trans-menu" />
+          <q-tooltip class="ozone-menu-tip" anchor="center right" self="center left" :offset="[10, 10]">
+            {{$t('nav.transfer.sublabel')}}
+          </q-tooltip>
+        </q-item>
+        <div class="menu-label">{{$t('nav.transfer.label')}}</div>
+
+        <!--<q-list-header>{{ $t('nav.header.contract') }}</q-list-header>-->
+
+        <q-item to="/contract/deploy">
+          <q-item-side class="deploy-menu" />
+          <q-tooltip class="ozone-menu-tip" anchor="center right" self="center left" :offset="[10, 10]">
+            {{$t('nav.contract.deploy.sublabel')}}
+          </q-tooltip>
+        </q-item>
+        <div class="menu-label">{{$t('nav.contract.deploy.label')}}</div>
+
+        <q-item to="/contract/my">
+          <q-item-side class="contract-menu" />
+          <q-tooltip class="ozone-menu-tip" anchor="center right" self="center left" :offset="[10, 10]">
+            {{$t('nav.contract.my.sublabel')}}
+          </q-tooltip>
+        </q-item>
+        <div class="menu-label">{{$t('nav.contract.my.label')}}</div>
+      </q-list>
+      <div class="ozone-logo">
+        <img alt="Ozone logo"
+             src="statics/ozone-logo@2x.png"
+             class="ozone-img" width="30" height="30"/>
+        <div class="logo-label">Ozone</div>
+      </div>
+    </q-layout-drawer>
     <q-page-container>
       <router-view />
     </q-page-container>
+    <q-modal class="lock-modal" v-model="showLockModal"
+             @hide="reset">
+      <div class="q-pa-md">
+        <p class="q-headline">{{ $t('lock.title') }}</p>
+        <q-field>
+          <q-input :float-label="$t('lock.password_msg1')"
+                   :autofocus="showLockModal"
+                   type="password"
+                   v-model="lockForm.password"
+                    />
+        </q-field>
+
+        <q-field>
+          <q-input :float-label="$t('lock.password_msg2')"
+                   type="password"
+                   v-model="lockForm.repeatPassword"
+                    />
+        </q-field>
+
+        <q-btn :label="$t('button.ok')"
+               color="primary"
+               class="float-right q-my-md"
+               @click="submit" />
+      </div>
+    </q-modal>
+    <q-modal class="lock-modal lock-modify-modal" v-model="showLockModidyModal"
+             @hide="reset">
+      <div class="q-pa-md">
+        <p class="q-headline">{{ $t('lock.title') }}</p>
+        <p><span class="lock-tools-title">{{ $t('lock.modify.open') }}</span><span class="lock-tools-btn"><q-toggle v-model="checked" @input="updateState"/></span></p>
+        <q-collapsible :label="$t('lock.modify.modify_pwd')">
+          <q-field>
+            <q-input :float-label="$t('lock.modify.password_msg1')"
+                     type="password"
+                     v-model="lockForm.oldpassword"
+            />
+          </q-field>
+
+          <q-field>
+            <q-input :float-label="$t('lock.modify.password_msg2')"
+                     type="password"
+                     v-model="lockForm.password"
+            />
+          </q-field>
+
+          <q-field>
+            <q-input :float-label="$t('lock.modify.password_msg3')"
+                     type="password"
+                     v-model="lockForm.repeatPassword"
+            />
+          </q-field>
+        </q-collapsible>
+
+        <q-btn :label="$t('button.ok')"
+               color="primary"
+               class="float-right q-my-md"
+               @click="modify" />
+      </div>
+    </q-modal>
   </q-layout>
 </template>
 <style lang="stylus">
-.ozone-img
-    position fixed
-    top 30px
-    left 14px
-    margin-bottom 30px
-    height 40px
-    width 122px
 .toolbar-title
     font-size 16px
     color #788083 !important
 .toolbar-btn
-    color: #cccccc
+    color: #4782F6
 .q-layout-drawer
-    width: 298px
+    width: 70px
 .blockinfo
     position absolute
-    bottom 20px
-    left 60px
+    top 7px
+    right  19px
 .q-layout-page
     background-color: #F1F3F6
-div.ozone-menu
-    margin-top:75px
-div.ozone-menu > .q-item.router-link-active
-    background-color #F4F8F9
-    border-left 3px solid #10A0F8 !important
 .q-item:after
     visibility hidden
 .q-list-header
     color #868686
     font-size 14px
     line-height 20px
-div.q-item-label
-    color #333333
-    font-size 15px
-    line-height 21px
-div.q-item-sublabel
-    color #999999
-    font-size 14px
-    line-height 20px
-div.ozone-menu .q-item
-    height 62px
-div.ozone-menu .q-item-main
-    position fixed
-    left 62px
+div.ozone-menu
+  margin-top:50px
+div.ozone-menu > .q-item.router-link-active
+  background none
+div.ozone-menu > .q-item.router-link-active > .wallet-menu
+  background url("../assets/wallet-active@1x.png") no-repeat center
+div.ozone-menu > .q-item.router-link-active > .trans-menu
+  background url("../assets/trans-active@1x.png") no-repeat center
+div.ozone-menu > .q-item.router-link-active > .deploy-menu
+  background url("../assets/deploy-active@1x.png") no-repeat center
+div.ozone-menu > .q-item.router-link-active > .contract-menu
+  background url("../assets/contract-active@1x.png") no-repeat center
+div.ozone-menu > .q-item-link:hover, q-item-link:hover
+  background none
+div.ozone-menu .menu-label
+    color #323232 !important
+    font-size 12px
+    text-align center
+    line-height 17px
+    padding-bottom 7px
+div.ozone-menu .q-item-sublabel
+  color #999999
+  font-size 14px
+  line-height 20px
 div.ozone-menu .q-item-side
-    display inline-block
-    position fixed
-    left 19px
-    width 30px
-    height 30px
+    width 32px
+    height 32px
 div.wallet-menu
     background url("../assets/wallet@1x.png") no-repeat center
 div.trans-menu
@@ -150,7 +209,93 @@ div.deploy-menu
     background url("../assets/deploy@1x.png") no-repeat center
 div.contract-menu
     background url("../assets/contract@1x.png") no-repeat center
-
+div.ozone-logo
+    position absolute
+    bottom 15px
+    width 70px
+    z-index 1000
+    text-align center
+div.ozone-logo .logo-label
+    font-size 12.8px
+    color #4782F6
+    line-height 18px
+div.ozone-breadcrumbs .text-primary
+    color #4782F6 !important
+div.setting-btn
+  position absolute
+  top 9px
+  right  180px
+  margin-right 10px
+  display inline-block
+  vertical-align middle
+  width 30px
+  height 30px
+  background url("../assets/setting@1x.png") no-repeat center !important
+  background-size cover
+  margin-left 10px
+  cursor pointer
+.ozone-menu-tip
+  background-color #000000 !important
+  font-size 12px
+  line-height 17px
+  color #ffffff
+  border-radius 6px
+  margin-left -20px
+  box-shadow none !important
+.ozone-popup
+  background-color #000000 !important
+  border-radius 6px
+  vertical-align middle
+.ozone-popup .lock-menu
+  font-size 12px
+  line-height 17px
+  color #ffffff
+  cursor pointer
+  width 62px
+  height 33px
+  padding-top 8px
+  text-align center
+div.lock-modify-modal .modal-content
+  height auto !important
+div.lock-modify-modal .lock-tools-title
+  color #323232
+  font-size 15px !important
+  line-height 21px
+div.lock-modify-modal .lock-tools-btn
+  float right
+div.lock-modal .modal-content
+  border-radius 6px !important
+  width 422px
+  height 220px
+div.lock-modal .q-headline
+  color #333333 !important
+  font-size 18px
+  line-height 25px
+div.lock-modal .text-warning
+  color #FA5A53 !important
+  font-size 15px
+  line-height 21px
+div.lock-modal .text-1
+  color #999999
+  font-size 16px
+  line-height 22px
+div.lock-modal .q-btn
+  background-color #4782F6 !important
+  border-radius 4px
+div.lock-modal .q-item
+  padding 0 0 !important
+div.lock-modal .q-collapsible-sub-item
+  padding 0 0 !important
+div.lock-modal .q-item-label
+  font-size 14px
+  color #4782F6
+div.lock-modal .q-item-main
+  flex none
+div.lock-modal .q-item-side
+  min-width 0px
+  color #4782F6
+div.lock-modal .q-item-section
+  margin-left 0px
 </style>
 <script>
 let timer
@@ -164,7 +309,17 @@ export default {
       toolbarIcon: 'layers',
       elapsedTime: 0,
       isTestNet: false,
-      isPrivateNet: false
+      isPrivateNet: false,
+      lock: this.$store.getters['lock/get'],
+      showLockModal: false,
+      showLockModidyModal: false,
+      showMenuPop: false,
+      checked: false,
+      lockForm: {
+        oldpassword: '',
+        password: '',
+        repeatPassword: ''
+      }
     }
   },
   computed: {
@@ -184,9 +339,45 @@ export default {
     }
   },
   methods: {
-
+    setting () {
+      this.showLockModidyModal = true
+      this.showMenuPop = false
+    },
+    submit () {
+      this.$store.commit('lock/insert', this.lockForm.password)
+      this.showLockModal = false
+    },
+    modify () {
+      let oldpassword = this.lockForm.oldpassword
+      if (oldpassword !== this.lock.password) {
+        return
+      }
+      if (this.lockForm.password !== this.lockForm.repeatPassword) {
+        return
+      }
+      this.$store.commit('lock/updateLockPassword', this.lockForm.password)
+      this.showLockModidyModal = false
+    },
+    reset () {
+      this.lockForm.password = ''
+      this.lockForm.repeatPassword = ''
+      this.lockForm.oldpassword = ''
+      this.showLockModal = false
+      this.showLockModidyModal = false
+    },
+    updateState (status) {
+      this.$store.commit('lock/updateLockStatus', status ? 1 : 0)
+    }
   },
   created () {
+    if (this.lock == null) {
+      this.showLockModal = true
+    } else {
+      let status = this.lock.status
+      if (status === 1) {
+        this.checked = true
+      }
+    }
     let $vm = this
     timer = setInterval(() => {
       $vm.elapsedTime += 1

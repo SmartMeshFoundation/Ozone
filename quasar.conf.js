@@ -71,7 +71,9 @@ module.exports = function (ctx) {
         'QTable',
         'QBreadcrumbs',
         'QBreadcrumbsEl',
-        'QSlider'
+        'QSlider',
+        'QPopover',
+        'QCollapsible'
       ],
       directives: ['Ripple', 'CloseOverlay'],
       // Quasar plugins

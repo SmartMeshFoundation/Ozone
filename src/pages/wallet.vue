@@ -31,7 +31,9 @@ export default {
         {key: 'nav.wallet.label', to: '/wallet'}
       ]
     })
+    if (this.lock === null) {
 
+    }
     // ipc.send(Types.SYNC_ALL_STATE)
   }
 }

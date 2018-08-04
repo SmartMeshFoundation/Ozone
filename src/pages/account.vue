@@ -4,19 +4,12 @@
       <em class="float-right text-warning">{{ $t('account.balance') }}: <ani-number :value="account.ether" /> </em>
       <ident-icon :value="account.address.toLowerCase()"
                   class="vertical-middle q-pa-xs" /> {{ account.name }}
-      <q-btn class="account-edit"
-             dense
-             round
-             color="grey-4"
-             @click="changeName" />
+      <div class="changename-btn" @click.stop="changeName"></div>
+      <div class="backup-btn" @click.stop="backup(account.address)">{{$t('account.btn.backupAccount')}}</div>
       <br/>
       <small class="account-address">{{ account.address }}</small>
     </h1>
     <br/>
-    <q-btn class="account-save" size="lg"
-           color="primary"
-           :label="$t('account.btn.backupAccount')"
-           @click="backup(account.address)" />
 
     <q-btn class="account-trans" size="lg"
            color="primary"
@@ -62,24 +55,13 @@
     font-weight normal !important
     line-height 22px !important
     margin-top 15px
-.account-edit
-    width 30px !important
-    height 30px !important
-    background url("../assets/edit@2x.png") no-repeat center !important
-    margin-left 21px
-.account-save
-    width 120px
-    font-size 14px !important
-    background-color #74CC47 !important
-    border-radius 2px
-    height 36px
 .account-trans
     width 120px
     height 36px
     font-size 14px !important
-    background-color #10A0F8  !important
+    background-color #4782F6  !important
     margin-left 16px
-    border-radius 2px
+    border-radius 4px
 .account-item .trans-title
     margin-top 60px
 div.modify-modal .modal-content
@@ -95,16 +77,36 @@ div.modify-modal .modify-account-name
   margin-top 30px !important
 div.modify-modal .q-btn
   position absolute
-  border-radius 2px
+  border-radius 4px
   width 70px
   height 36px
-  background-color #10A0F8 !important
+  background-color #4782F6 !important
 div.modify-modal .cancel-btn
   bottom 4px
   right 105px !important
 div.modify-modal .sub-btn
   bottom 4px
   right 26px !important
+div.changename-btn
+  display inline-block
+  vertical-align middle
+  width 30px
+  height 30px
+  background url("../assets/edit@2x.png") no-repeat center !important
+  background-size cover
+  margin-left 10px
+  cursor pointer
+div.backup-btn
+  display inline-block
+  border-radius 100px
+  background-color #4782F6
+  width 45px
+  height 20px
+  font-size 12px
+  color #FFFFFF
+  text-align center
+  line-height 20px
+  cursor pointer
 </style>
 
 <script>

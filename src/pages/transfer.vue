@@ -133,10 +133,10 @@ div.trans-panel
     line-height 20px
     width 120px
     height 36px
-    background-color #10A0F8 !important
+    background-color #4782F6 !important
     right 65px
 div.transfer-confirm .q-btn
-    background-color #10A0F8 !important
+    background-color #4782F6 !important
 div.password-modal .modal-content
     width 448px
     height 214px
@@ -150,10 +150,10 @@ div.password-modal .modify-account-name
     margin-top 30px !important
 div.password-modal .q-btn
     position absolute
-    border-radius 2px
+    border-radius 4px
     width 70px
     height 36px
-    background-color #10A0F8 !important
+    background-color #4782F6 !important
 div.password-modal .cancel-btn
     bottom 4px
     right 105px !important

@@ -279,13 +279,27 @@ export default {
       this.methodInputs[name].forEach(input => {
         let type = input.type
         let value = input.value
-        if (type.startsWith('uint') || type.startsWith('int')) {
-          if (value.trim().length === 0) {
-            value = 0
-          }
-          inputs.push(new BigNumber(value).toFixed())
-        } else {
+        if (type.endsWith('[]')) {
+          value = value.split(',').map(v => {
+            if (type.startsWith('uint') || type.startsWith('int')) {
+              if (v.trim().length === 0) {
+                v = 0
+              }
+              return new BigNumber(v).toFixed()
+            } else {
+              return v
+            }
+          })
           inputs.push(value)
+        } else {
+          if (type.startsWith('uint') || type.startsWith('int')) {
+            if (value.trim().length === 0) {
+              value = 0
+            }
+            inputs.push(new BigNumber(value).toFixed())
+          } else {
+            inputs.push(value)
+          }
         }
       })
       return inputs
@@ -293,11 +307,13 @@ export default {
 
     // call or send method of the contract
     callContract (name) {
+      this.minGas = 0
+      this.maxGas = 1
+      this.gas = 0
       let myContract = new web3.eth.Contract(this.abi, this.contract.contractAddress)
       let method = myContract.options.jsonInterface.find(item => {
         return item.name === name
       })
-
       let execMethod
       let inputs = this.parseInputs(name)
       console.log('inputs: ', inputs)

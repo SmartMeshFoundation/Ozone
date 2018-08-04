@@ -8,6 +8,10 @@ export default [
     component: () => import('pages/splash')
   },
   {
+    path: '/lock',
+    component: () => import('pages/lock')
+  },
+  {
     path: '/dashboard', redirect: '/wallet'
   },
   {

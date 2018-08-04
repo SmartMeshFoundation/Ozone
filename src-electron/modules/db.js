@@ -81,6 +81,10 @@ class DatabaseManager {
   get contracts () {
     return this.getCollection('contracts')
   }
+
+  get lock () {
+    return this.getCollection('lock')
+  }
 }
 
 export default new DatabaseManager()

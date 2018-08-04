@@ -79,12 +79,14 @@ h1.account-title
     width 120px
     margin-top 10px
     padding 0px 3px
-    border-radius 2px
-    background-color #10A0F8 !important
+    border-radius 4px
+    background-color #4782F6 !important
 .import-account
     margin-left 16px
 div.account-list
     margin-top -15px
+div.create-account-modal .modal-content
+    border-radius 6px !important
 div.create-account-modal .q-headline
     color #333333 !important
     font-size 18px
@@ -98,8 +100,8 @@ div.create-account-modal .text-1
     font-size 16px
     line-height 22px
 div.create-account-modal .q-btn
-    background-color #10A0F8 !important
-    border-radius 2px
+    background-color #4782F6 !important
+    border-radius 4px
 </style>
 <script>
 import { required, minLength, sameAs } from 'vuelidate/lib/validators'
