@@ -9,6 +9,7 @@ import node from './node'
 import contract from './contract'
 import ui from './ui'
 import lock from './lock'
+import token from './token'
 
 let modules = {
   account,
@@ -16,7 +17,8 @@ let modules = {
   node,
   contract,
   ui,
-  lock
+  lock,
+  token
 }
 
 const store = new Vuex.Store({ modules })

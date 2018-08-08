@@ -1,5 +1,5 @@
 <template>
-    <div class="col-6">
+    <div class="col-4">
         <div class="row item items-start contract-item">
             <router-link tag="div" class="col-11 item-main" :to="'/contract/my/view?id='+item._id">
               <div class="q-title">{{item.name}}</div>
@@ -18,7 +18,7 @@
 
 <style lang="stylus">
 .contract-item
-  width 316px
+  // width 316px
   height 88px
   border-radius 4px !important
 .item-main

@@ -230,13 +230,15 @@ export default {
     password_msg2: 'Confirm Login Lock password',
     lock_wrong_pwd: 'Wrong Password',
     menu: 'Login Lock',
+    setting_success: 'Login Lock set ok',
     modify:
       {
         open: 'Turn on Login Lock',
         modify_pwd: 'modify Login Lock Password',
         password_msg1: 'Enter Current Login Lock password',
         password_msg2: 'Enter New Login Lock password',
-        password_msg3: 'Confirm New Login Lock password'
+        password_msg3: 'Confirm New Login Lock password',
+        success: 'Login Lock modify ok'
       }
   }
 }

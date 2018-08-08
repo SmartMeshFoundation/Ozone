@@ -85,6 +85,10 @@ class DatabaseManager {
   get lock () {
     return this.getCollection('lock')
   }
+
+  get tokens () {
+    return this.getCollection('tokens')
+  }
 }
 
 export default new DatabaseManager()

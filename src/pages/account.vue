@@ -11,10 +11,20 @@
     </h1>
     <br/>
 
+    <div class="row gutter-sm">
+      <token-info v-for="item in tokens"
+                     :key="item._id"
+                     :item="item" />
+    </div>
+
+    <br/><br/>
+
     <q-btn class="account-trans" size="lg"
            color="primary"
            :label="$t('account.btn.transfer')"
            @click="$router.push('/transfer/account/' + account.address)" />
+
+    <div class="add-token-btn" @click.stop="addToken(account.address)"></div>
 
     <br><br>
 
@@ -60,7 +70,7 @@
     height 36px
     font-size 14px !important
     background-color #4782F6  !important
-    margin-left 16px
+    margin-left 0px
     border-radius 4px
 .account-item .trans-title
     margin-top 60px
@@ -107,6 +117,16 @@ div.backup-btn
   text-align center
   line-height 20px
   cursor pointer
+div.add-token-btn
+  float right
+  display inline-block
+  vertical-align middle
+  width 48px
+  height 48px
+  background url("../assets/add-token@1x.png") no-repeat center !important
+  background-size cover
+  margin-left 10px
+  cursor pointer
 </style>
 
 <script>
@@ -121,7 +141,8 @@ export default {
     return {
       showModifyModal: false,
       modifyAccountName: '',
-      trans: []
+      trans: [],
+      tokens: []
     }
   },
   computed: {
@@ -161,10 +182,16 @@ export default {
         })
         this.showModifyModal = false
       }
+    },
+    addToken (address) {
+      this.$router.push('/wallet/account/tokens/' + address)
     }
   },
 
   created () {
+    let address = this.$route.params.address.toLowerCase()
+    let tokens = this.$store.getters['contract/getTokens'](address)
+    this.tokens = tokens
     this.$store.commit('ui/update', {
       breadcrumbs: [
         { key: 'nav.wallet.label', to: '/wallet' },

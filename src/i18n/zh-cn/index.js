@@ -229,6 +229,7 @@ export default {
     password_msg1: '请输入登录锁密码',
     password_msg2: '确认登录锁密码',
     lock_wrong_pwd: '密码错误',
+    setting_success: '登录锁设置成功',
     menu: '登录锁',
     modify:
       {
@@ -236,7 +237,8 @@ export default {
         modify_pwd: '修改登录锁密码',
         password_msg1: '输入当前登录锁密码',
         password_msg2: '输入新登录锁密码',
-        password_msg3: '确认新登录锁密码'
+        password_msg3: '确认新登录锁密码',
+        success: '登录锁密码修改成功'
       }
   }
 }

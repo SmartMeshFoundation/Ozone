@@ -19,7 +19,8 @@ export default [
     component: () => import('layouts/default'),
     children: [
       { path: '', component: () => import('pages/wallet') },
-      { path: 'account/:address', component: () => import('pages/account') }
+      { path: 'account/:address', component: () => import('pages/account') },
+      { path: 'account/tokens/:address', component: () => import('pages/token-my') }
     ]
   },
   {

@@ -174,6 +174,8 @@
     color #868686
     font-size 14px
     line-height 20px
+div.q-drawer-container
+    width 70px !important
 div.ozone-menu
   margin-top:50px
 div.ozone-menu > .q-item.router-link-active
@@ -345,17 +347,21 @@ export default {
     },
     submit () {
       this.$store.commit('lock/insert', this.lockForm.password)
+      this.$q.notify(this.$t('lock.setting_success'))
       this.showLockModal = false
     },
     modify () {
       let oldpassword = this.lockForm.oldpassword
       if (oldpassword !== this.lock.password) {
+        this.showLockModidyModal = false
         return
       }
       if (this.lockForm.password !== this.lockForm.repeatPassword) {
+        this.showLockModidyModal = false
         return
       }
       this.$store.commit('lock/updateLockPassword', this.lockForm.password)
+      this.$q.notify(this.$t('lock.modify.success'))
       this.showLockModidyModal = false
     },
     reset () {
