@@ -273,10 +273,6 @@ div.lock-modal .q-headline
   color #333333 !important
   font-size 18px
   line-height 25px
-div.lock-modal .text-warning
-  color #FA5A53 !important
-  font-size 15px
-  line-height 21px
 div.lock-modal .text-1
   color #999999
   font-size 16px
@@ -347,7 +343,7 @@ export default {
     },
     submit () {
       this.$store.commit('lock/insert', this.lockForm.password)
-      this.$q.notify(this.$t('lock.setting_success'))
+      this.$q.notify({ message: this.$t('lock.setting_success'), color: 'primary', timeout: 1000 })
       this.showLockModal = false
     },
     modify () {
@@ -361,7 +357,7 @@ export default {
         return
       }
       this.$store.commit('lock/updateLockPassword', this.lockForm.password)
-      this.$q.notify(this.$t('lock.modify.success'))
+      this.$q.notify({ message: this.$t('lock.modify.success'), color: 'primary', timeout: 1000 })
       this.showLockModidyModal = false
     },
     reset () {
