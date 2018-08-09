@@ -4,7 +4,7 @@ export const get = state => id => {
 
 export const getTokens = state => address_ => {
   let tokens = window.db.tokens.find({ address: address_ })
-  if (tokens !== null) {
+  if (tokens.length > 0) {
     tokens = tokens[0]['tokens']
   } else {
     return []
