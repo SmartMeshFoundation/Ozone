@@ -161,7 +161,8 @@
 .toolbar-btn
     color: #4782F6
 .q-layout-drawer
-    width: 70px
+    width: 4.375em
+    overflow-x hidden
 .blockinfo
     position absolute
     top 7px
@@ -175,7 +176,7 @@
     font-size 14px
     line-height 20px
 div.q-drawer-container
-    width 70px !important
+    width 4.375em !important
 div.ozone-menu
   margin-top:50px
 div.ozone-menu > .q-item.router-link-active

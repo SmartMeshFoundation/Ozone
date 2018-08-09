@@ -68,7 +68,7 @@ export default {
     tokens () {
       let self = this
       let items = this.$store.getters['contract/erc20Tokens'].map(item => {
-        if (self.checkedTokens.includes(item.contractAddress)) {
+        if (self.checkedTokens.length > 0 && self.checkedTokens.includes(item.contractAddress)) {
           item['checked'] = true
         } else {
           item['checked'] = false
