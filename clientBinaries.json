@@ -1,29 +1,29 @@
 {
   "clients": {
     "Geth": {
-      "version": "0.4.0",
+      "version": "0.4.1",
       "platforms": {
         "mac": {
           "download": {
-            "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-darwin-040.tar.gz",
-            "md5": "c611cd3f458c9bd7f02142e00ab706b0",
+            "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-darwin-0_4_1.tar.gz",
+            "md5": "ee09b18970f2fb821c55af4609b218de",
             "type": "tar",
-            "bin": "geth-darwin-040/geth"
+            "bin": "geth-darwin-0_4_1/geth"
           },
           "bin": "geth",
           "commands": {
             "sanity": {
               "args": ["version"],
-              "output": ["Smc", "0.4.0"]
+              "output": ["Smc", "0.4.1"]
             }
           }
         },
         "win": {
           "download": {
-            "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-win-040.zip",
-            "md5": "e61a6564b0b16ce612a429156014866e",
+            "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-win-0_4_1.zip",
+            "md5": "d0692efd6244ca2579bf00432df284ca",
             "type": "zip",
-            "bin": "geth-win-040\\geth.exe"
+            "bin": "geth-win-0_4_1\\geth.exe"
           },
           "bin": "geth.exe",
           "commands": {
@@ -33,7 +33,7 @@
               ],
               "output": [
                 "Smc",
-                "0.4.0"
+                "0.4.1"
               ]
             }
           }
