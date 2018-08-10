@@ -6,7 +6,7 @@
         "mac": {
           "download": {
             "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-darwin-040.tar.gz",
-            "md5": "",
+            "md5": "c611cd3f458c9bd7f02142e00ab706b0",
             "type": "tar",
             "bin": "geth-darwin-040/geth"
           },
