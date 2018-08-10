@@ -1,29 +1,29 @@
 {
   "clients": {
     "Geth": {
-      "version": "0.3.2",
+      "version": "0.4.0",
       "platforms": {
         "mac": {
           "download": {
-            "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-darwin-eafb37b.tar.gz",
-            "md5": "afca6790bc4883d2227079982fc9006d",
+            "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-darwin-040.tar.gz",
+            "md5": "",
             "type": "tar",
-            "bin": "geth-darwin-eafb37b/geth"
+            "bin": "geth-darwin-040/geth"
           },
           "bin": "geth",
           "commands": {
             "sanity": {
               "args": ["version"],
-              "output": ["Smc", "0.3.2"]
+              "output": ["Smc", "0.4.0"]
             }
           }
         },
         "win": {
           "download": {
-            "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-win-eafb37b.zip",
-            "md5": "416842990b9b255d75c03302e4c45676",
+            "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-win-040.zip",
+            "md5": "e61a6564b0b16ce612a429156014866e",
             "type": "zip",
-            "bin": "geth-win-eafb37b\\geth.exe"
+            "bin": "geth-win-040\\geth.exe"
           },
           "bin": "geth.exe",
           "commands": {
@@ -33,17 +33,17 @@
               ],
               "output": [
                 "Smc",
-                "0.3.2"
+                "0.4.0"
               ]
             }
           }
         },
         "linux": {
           "download": {
-            "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-linux-eafb37b.tar.gz",
-            "md5": "043c0310750ca515ba6585907c6c3de1",
+            "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-linux-040.tar.gz",
+            "md5": "3523cc07b7cf9b56137c17074a9ea7a3",
             "type": "tar",
-            "bin": "geth-linux-eafb37b/geth"
+            "bin": "geth-linux-040/geth"
           },
           "bin": "geth",
           "commands": {
@@ -53,7 +53,7 @@
               ],
               "output": [
                 "Smc",
-                "0.3.2"
+                "0.4.0"
               ]
             }
           }
