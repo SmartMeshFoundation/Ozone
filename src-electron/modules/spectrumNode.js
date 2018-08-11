@@ -14,7 +14,7 @@ import logger from './logger'
 
 const log = logger.create('SpectrumNode')
 
-const DEFAULT_NODE_TYPE = 'geth'
+const DEFAULT_NODE_TYPE = 'smc'
 const DEFAULT_NETWORK = 'main'
 const DEFAULT_SYNCMODE = 'fast'
 

@@ -38,9 +38,9 @@ $ yarn install
 $ yarn dev
 ```
 
-For development we need a *Spectrum* node running. Start the `geth` in a separate terminal window:
+For development we need a *Spectrum* node running. Start the `smc` in a separate terminal window:
 ```bash
-$ geth --testnet --syncmode fast --ws console
+$ smc --testnet --ws console
 ```
 
 ### Issues

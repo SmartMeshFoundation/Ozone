@@ -8,7 +8,7 @@ import packageJson from '../../package.json'
 const _defaults = {
   network: process.env.PROD ? 'main' : 'test',
   syncmode: 'fast',
-  nodeType: 'geth',
+  nodeType: 'smc',
   ipcFile: 'smc.ipc',
   rpcPort: 18545,
   wsPort: 18546,

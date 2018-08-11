@@ -1,20 +1,20 @@
 {
   "clients": {
-    "Geth": {
-      "version": "0.4.1",
+    "Smc": {
+      "version": "0.5.0",
       "platforms": {
         "mac": {
           "download": {
-            "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-darwin-0_4_1.tar.gz",
-            "md5": "ee09b18970f2fb821c55af4609b218de",
+            "url": "https://raw.githubusercontent.com/wuynng/spectrumclient/master/smc-darwin-0_5_0.tar.gz",
+            "md5": "aad8aac9fa75a136eb18a817c203bbcb",
             "type": "tar",
-            "bin": "geth-darwin-0_4_1/geth"
+            "bin": "smc-darwin-0_5_0/smc"
           },
-          "bin": "geth",
+          "bin": "smc",
           "commands": {
             "sanity": {
               "args": ["version"],
-              "output": ["Smc", "0.4.1"]
+              "output": ["Smc", "0.5.0"]
             }
           }
         },
@@ -28,13 +28,8 @@
           "bin": "geth.exe",
           "commands": {
             "sanity": {
-              "args": [
-                "version"
-              ],
-              "output": [
-                "Smc",
-                "0.4.1"
-              ]
+              "args": ["version"],
+              "output": ["Smc", "0.4.1"]
             }
           }
         },
