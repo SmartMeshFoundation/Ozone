@@ -5,7 +5,7 @@
       "platforms": {
         "mac": {
           "download": {
-            "url": "https://raw.githubusercontent.com/wuynng/spectrumclient/master/smc-darwin-0_5_0.tar.gz",
+            "url": "http://spectrum-1251029933.file.myqcloud.com/package/smc-darwin-0_5_0.tar.gz",
             "md5": "aad8aac9fa75a136eb18a817c203bbcb",
             "type": "tar",
             "bin": "smc-darwin-0_5_0/smc"
@@ -20,36 +20,31 @@
         },
         "win": {
           "download": {
-            "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-win-0_4_1.zip",
-            "md5": "d0692efd6244ca2579bf00432df284ca",
+            "url": "http://spectrum-1251029933.file.myqcloud.com/package/smc-win-0_5_0.zip",
+            "md5": "92f0d1158687ff02caa3ce9308d407a5",
             "type": "zip",
-            "bin": "geth-win-0_4_1\\geth.exe"
+            "bin": "smc-win-0_5_0\\smc.exe"
           },
-          "bin": "geth.exe",
+          "bin": "smc.exe",
           "commands": {
             "sanity": {
               "args": ["version"],
-              "output": ["Smc", "0.4.1"]
+              "output": ["Smc", "0.5.0"]
             }
           }
         },
         "linux": {
           "download": {
-            "url": "http://spectrum-1251029933.file.myqcloud.com/package/geth-linux-040.tar.gz",
-            "md5": "3523cc07b7cf9b56137c17074a9ea7a3",
+            "url": "http://spectrum-1251029933.file.myqcloud.com/package/smc-linux-0_5_0.tar.gz",
+            "md5": "38e579df2d674baccdcc1130d3be41c0",
             "type": "tar",
-            "bin": "geth-linux-040/geth"
+            "bin": "smc-linux-0_5_0/smc"
           },
-          "bin": "geth",
+          "bin": "smc",
           "commands": {
             "sanity": {
-              "args": [
-                "version"
-              ],
-              "output": [
-                "Smc",
-                "0.4.0"
-              ]
+              "args": ["version"],
+              "output": ["Smc", "0.5.0"]
             }
           }
         }
