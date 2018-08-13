@@ -190,7 +190,7 @@ div.ozone-menu > .q-item.router-link-active > .deploy-menu
 div.ozone-menu > .q-item.router-link-active > .contract-menu
   background url("../assets/contract-active@1x.png") no-repeat center
 div.ozone-menu > .q-item-link:hover, q-item-link:hover
-  background none
+  background none !important
 div.ozone-menu .menu-label
     color #323232 !important
     font-size 12px
@@ -348,13 +348,17 @@ export default {
       this.showLockModal = false
     },
     modify () {
-      let oldpassword = this.lockForm.oldpassword
-      if (oldpassword !== this.lock.password) {
+      if (!this.lockForm.password || !this.lockForm.oldpassword || !this.lockForm.repeatPassword) {
         this.showLockModidyModal = false
         return
       }
+      let oldpassword = this.lockForm.oldpassword
+      if (oldpassword !== this.lock.password) {
+        this.$q.notify(this.$t('lock.modify.lock_old_wrong_pwd'))
+        return
+      }
       if (this.lockForm.password !== this.lockForm.repeatPassword) {
-        this.showLockModidyModal = false
+        this.$q.notify(this.$t('lock.modify.lock_repeat_wrong_pwd'))
         return
       }
       this.$store.commit('lock/updateLockPassword', this.lockForm.password)

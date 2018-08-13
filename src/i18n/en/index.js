@@ -238,7 +238,9 @@ export default {
         password_msg1: 'Enter Current Login Lock password',
         password_msg2: 'Enter New Login Lock password',
         password_msg3: 'Confirm New Login Lock password',
-        success: 'Login Lock modify ok'
+        success: 'Login Lock modify ok',
+        lock_old_wrong_pwd: 'Wrong Old Password',
+        lock_repeat_wrong_pwd: 'Entered passwords differ'
       }
   }
 }

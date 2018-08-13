@@ -14,7 +14,7 @@
               <q-list-header>{{$t('contract.view.status')}}</q-list-header>
               <q-item v-for="state in states"
                       :key="state.name">
-                <q-item-side class="contract-btn states-btn">
+                <q-item-side ref="statesBtn" :style="{width: maxStatesBtnWidth}" class="contract-btn states-btn">
                   <q-btn :label="state.name" dense
                          @click="callContract(state.name)"
                          title="call"/>
@@ -52,7 +52,7 @@
               <q-item v-for="method in methods"
                       :key="method.name">
                 <q-item-side>
-                  <q-btn :label="method.name" dense
+                  <q-btn ref="method-Btn" :style="{width : maxMethodBtnWidth}" :label="method.name" dense
                          @click="callContract(method.name)"
                          title="transact"
                          color="red-3"
@@ -133,6 +133,8 @@
 .contract-panel .contract-panel-r
   float right
   width 49.5%
+.contract-panel .bg-white:
+  overflow-y auto!important
 .address
   font-size 14px
 .output
@@ -161,18 +163,16 @@
   color #FF0000
 }
 .contract-btn
-  border 1px solid #10a0f8 !important
-  color #10a0f8
+  border 1px solid #4782F6 !important
+  color #4782F6
   border-radius 2px !important
   padding 0px 10px
   word-break break-all
   word-wrap break-word
 .states-btn
-  width 120px
   text-align center
 .method-btn
-  background-color #10a0f8 !important
-  width 120px
+  background-color #4782F6 !important
   text-align center
 body.desktop .q-select-highlight
   background-color #f4f8f9 !important
@@ -215,7 +215,9 @@ export default {
       maxGas: 1,
       password: '',
       execMethod: {},
-      gas: 0
+      gas: 0,
+      maxStatesBtnWidth: 'aotu',
+      maxMethodBtnWidth: 'aotu'
     }
   },
 
@@ -463,7 +465,20 @@ export default {
     let m = Math.max(l, r)
     this.$refs.contractPanel.querySelectorAll('.bg-white').forEach((obj) => {
       obj.style.height = m + 'px'
+      obj.style['overflow-y'] = 'auto'
     })
+    let statesBtns = this.$refs.statesBtn
+    let widths = statesBtns.map(statesBtn => {
+      return statesBtn.$vnode.elm.offsetWidth
+    })
+    let maxWidth = Math.max(...widths)
+    this.maxStatesBtnWidth = maxWidth + 'px'
+    let methodBtns = this.$refs.statesBtn
+    let methodWidths = methodBtns.map(statesBtn => {
+      return statesBtn.$vnode.elm.offsetWidth
+    })
+    let maxMethodWidth = Math.max(...methodWidths)
+    this.maxMethodBtnWidth = maxMethodWidth + 'px'
   },
 
   computed: {

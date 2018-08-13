@@ -1,56 +1,46 @@
 <template>
  <div class="trans-container" @click="viewTransaction(item)">
-   <q-item class="trans-item">
-     <q-item-side class="trans-date">
-       <div class="row justify-center">
-         {{date(item.timestamp)}}
-       </div>
-     </q-item-side>
-     <q-item-main class="trans-type">
-       <q-item-tile>
-         <span v-if="item.to != null && item.input === '0x'" >{{ $t('tx.type.a2a') }}</span>
-         <span v-if="item.to != null && item.input !== '0x'" >{{ $t('tx.type.call_c') }}</span>
-         <span v-if="item.to == null" >{{ $t('tx.type.create_c') }}</span>
-       </q-item-tile>
-     </q-item-main>
-     <q-item-main class="trans-acct">
-       <q-item-tile>
-         <ident-icon :value="item.from.toLowerCase()" />
-         <span :title="item.from"> {{accountName(item.from)}} </span>
-         <span v-if="item.to != null">
+   <div>{{date(item.timestamp)}}</div>
+   <div>
+     <span v-if="item.to != null && item.input === '0x'" >{{ $t('tx.type.a2a') }}</span>
+     <span v-if="item.to != null && item.input !== '0x'" >{{ $t('tx.type.call_c') }}</span>
+     <span v-if="item.to == null" >{{ $t('tx.type.create_c') }}</span>
+   </div>
+   <div>
+     <ident-icon :value="item.from.toLowerCase()" />
+     <span :title="item.from"> {{accountName(item.from)}} </span>
+     <span v-if="item.to != null">
          <q-icon name="send" class="btn-send"
                  color="grey-5 q-px-md" />
          <ident-icon :value="item.to.toLowerCase()" />
          <span :title="item.to"> {{accountName(item.to)}} </span>
          </span>
-       </q-item-tile>
-     </q-item-main>
-     <q-item-main class="trans-pro">
-       <q-item-tile :class="{hidden: !showElapsedTime}">
-         <span> {{fromNow(item.timestamp)}} </span>
-       </q-item-tile>
-       <q-item-tile :class="{hidden: !showProgress}">
-         <q-progress :percentage="progress" />
-       </q-item-tile>
-       <q-item-tile :class="{hidden: !showProgress}">
-         <span> {{item.confirmCount}} / {{$settings.requiredConfirmations}} {{$t('tx.list.block_confirm')}} </span>
-       </q-item-tile>
-       <q-item-tile :class="{hidden: !isPending}">
-         <span> {{$t('tx.list.pending')}} </span>
-       </q-item-tile>
-     </q-item-main>
-     <q-item-side>
-       <q-item-tile class="trans-fee" v-if="address===undefined" color="negative">
-         {{toSMT(item.value)}} {{$unit}}
-       </q-item-tile>
-       <q-item-tile class="trans-fee" v-if="address===item.from" color="negative">
-         -{{toSMT(item.value)}} {{$unit}}
-       </q-item-tile>
-       <q-item-tile class="trans-fee" v-if="address===item.to" color="negative">
-         +{{toSMT(item.value)}} {{$unit}}
-       </q-item-tile>
-     </q-item-side>
-   </q-item>
+   </div>
+   <div>
+     <div :class="{hidden: !showElapsedTime}">
+       <span> {{fromNow(item.timestamp)}} </span>
+     </div>
+     <div :class="{hidden: !showProgress}">
+       <q-progress :percentage="progress" />
+     </div>
+     <div :class="{hidden: !showProgress}">
+       <span> {{item.confirmCount}} / {{$settings.requiredConfirmations}} {{$t('tx.list.block_confirm')}} </span>
+     </div>
+     <div :class="{hidden: !isPending}">
+       <span> {{$t('tx.list.pending')}} </span>
+     </div>
+   </div>
+   <div>
+     <div v-if="address===undefined" color="negative">
+       {{toSMT(item.value)}} {{$unit}}
+     </div>
+     <div class="trans-fee" v-if="address===item.from">
+       -{{toSMT(item.value)}} {{$unit}}
+     </div>
+     <div class="trans-fee" v-if="address===item.to">
+       +{{toSMT(item.value)}} {{$unit}}
+     </div>
+   </div>
    <q-modal class="transfer-item" v-model="showTransactionModal"
             minimized
             :content-css="{padding: '30px'}">
@@ -96,6 +86,24 @@ div.trans-container
     background-color #FFFFFF !important
     vertical-align middle
     // padding-top 11px
+    display table
+    width 100%
+    padding 0px 0px 0px 20px
+div.trans-container div
+    display table-cell
+    line-height 60px
+    text-align left
+div.trans-container div:nth-child(1)
+    width 15%
+div.trans-container div:nth-child(2)
+    width 15%
+div.trans-container div:nth-child(3)
+  width 30%
+div.trans-container div:nth-child(4)
+  width 20%
+div.trans-container div:nth-child(5)
+  color red
+  width 20%
 div.trans-container:nth-child(1)
     // margin-top:-20px
 div.trans-container:not(:first-child)
