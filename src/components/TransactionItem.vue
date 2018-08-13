@@ -20,9 +20,9 @@
      <div :class="{hidden: !showElapsedTime}">
        <span> {{fromNow(item.timestamp)}} </span>
      </div>
-     <div :class="{hidden: !showProgress}">
+     <!--<div :class="{hidden: !showProgress}">
        <q-progress :percentage="progress" />
-     </div>
+     </div>-->
      <div :class="{hidden: !showProgress}">
        <span> {{item.confirmCount}} / {{$settings.requiredConfirmations}} {{$t('tx.list.block_confirm')}} </span>
      </div>
