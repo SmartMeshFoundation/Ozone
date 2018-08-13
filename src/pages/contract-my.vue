@@ -28,9 +28,6 @@
 .row .item
   padding: 18px 10px;
   background-color: #fff;
-div.contract-op .q-btn-group
-    width 288px
-    height 36px
 div.q-btn-group .q-btn
     padding 0px 17.5px 0px 17.5px
     background-color #4782F6 !important
