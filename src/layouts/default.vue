@@ -339,7 +339,11 @@ export default {
   },
   methods: {
     setting () {
-      this.showLockModidyModal = true
+      if (this.lock == null) {
+        this.showLockModal = true
+      } else {
+        this.showLockModidyModal = true
+      }
       this.showMenuPop = false
     },
     submit () {

@@ -7,7 +7,7 @@
       <div class="logo-label">Ozone</div>
     </div>
     <div class="login-form">
-      <div>Password:</div><div><input v-model="password" type="password" /></div><div @click.stop="login"></div>
+      <div>Password:</div><div><input v-model="password" @keyup.enter="login" type="password" /></div><div @click.stop="login"></div>
     </div>
   </div>
 </template>

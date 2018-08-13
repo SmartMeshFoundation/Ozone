@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="splash-page">
     <q-modal class="sync-modal" v-model="showSyncing"
             no-esc-dismiss
             no-backdrop-dismiss
@@ -46,7 +46,7 @@
   </div>
 </template>
 <style lang="stylus">
-  .fullscreen
+  div.q-loading
     background: #ACD0FF
   div.sync-modal .modal-content
       border-radius 14px !important
