@@ -34,10 +34,10 @@
      <div v-if="address===undefined" color="negative">
        {{toSMT(item.value)}} {{$unit}}
      </div>
-     <div class="trans-fee" v-if="address===item.from">
+     <div class="trans-fee" v-else-if="address===item.from">
        -{{toSMT(item.value)}} {{$unit}}
      </div>
-     <div class="trans-fee" v-if="address===item.to">
+     <div class="trans-fee" v-else-if="address===item.to">
        +{{toSMT(item.value)}} {{$unit}}
      </div>
    </div>
