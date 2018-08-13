@@ -56,7 +56,7 @@
       position relative
       top 5px
       left -20px
-      color #31ccec
+      color #4782F6
   div.sync-modal .sync-ign
       position absolute
       top 43px
