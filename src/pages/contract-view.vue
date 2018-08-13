@@ -42,7 +42,7 @@
               <q-item>
                 <q-item-main>
                   <q-item-tile>
-                    <q-select :float-label="$t('contract.view.from_label')"
+                    <q-select class="account-select" :float-label="$t('contract.view.from_label')"
                               hide-underline
                               v-model="from"
                               :options="getAccounts()" />
@@ -176,7 +176,7 @@
   text-align center
 body.desktop .q-select-highlight
   background-color #f4f8f9 !important
-.q-item.active, .q-item.router-link-active, .q-item:focus
+.q-item.active, .q-item:focus
   background-color #f4f8f9 !important
 .q-select-highlight
   background-color #f4f8f9 !important
