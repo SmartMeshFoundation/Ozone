@@ -18,7 +18,7 @@ export const updateAccountName = (state, obj) => {
     if (item != null) {
       console.log("Update account's name from ", item.name, ' to ', obj.name)
       item.name = obj.name
-      // accounts.update(item)
+      accounts.update(item)
     } else {
       console.log('Insert account: ', obj)
       accounts.insert({ _id: obj.address, name: obj.name })

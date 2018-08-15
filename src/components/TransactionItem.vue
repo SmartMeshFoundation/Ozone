@@ -98,9 +98,9 @@ div.trans-container div:nth-child(1)
 div.trans-container div:nth-child(2)
     width 15%
 div.trans-container div:nth-child(3)
-  width 30%
+  width 40%
 div.trans-container div:nth-child(4)
-  width 20%
+  width 10%
 div.trans-container div:nth-child(5)
   color red
   width 20%
@@ -174,8 +174,8 @@ export default {
     },
     accountName (address) {
       let accountName = this.$store.getters['account/name'](address)
-      if (accountName.length > 10) {
-        return accountName.substr(0, 6) + '...'
+      if (accountName.length > 12) {
+        return accountName.substr(0, 12) + '...'
       }
       return accountName
     },

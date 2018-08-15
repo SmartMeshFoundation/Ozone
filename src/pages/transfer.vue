@@ -190,6 +190,8 @@ export default {
       // balance: 0,
       gasFee: 0,
       total: 0,
+      gas: 0,
+      gasPrice: 0,
       disabled: false
     }
   },
@@ -237,6 +239,8 @@ export default {
             let fee = new BN(gas).times(new BN(price)).toFixed()
             console.log('transfer fee: ', fee)
             this.gasFee = web3.utils.fromWei(fee)
+            this.gas = gas
+            this.gasPrice = price
             this.total = new BN(this.gasFee).plus(new BN(this.form.amount)).toFixed()
           })
           .catch(console.log)
@@ -291,6 +295,8 @@ export default {
     },
     submit () {
       let tx = {
+        gas: this.gas,
+        gasPrice: this.gasPrice,
         from: this.form.from,
         to: this.form.to,
         value: web3.utils.toWei(this.form.amount.toString())
