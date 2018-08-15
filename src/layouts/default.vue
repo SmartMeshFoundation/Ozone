@@ -17,16 +17,16 @@
         </q-breadcrumbs>
 
       </q-toolbar>
-      <div class="setting-btn" @click.stop="showMenuPop=true">
-        <q-popover class="ozone-popup" v-model="showMenuPop"
-          anchor="bottom left"
-          self="top left"
-          :offset="[18,0]"
-        >
-          <div class="lock-menu" @click.stop="setting">{{ $t('lock.menu') }}</div>
-        </q-popover>
-      </div>
       <div class="row q-pa-sm justify-center blockinfo">
+        <div class="setting-btn" @click.stop="showMenuPop=true">
+          <q-popover class="ozone-popup" v-model="showMenuPop"
+                     anchor="bottom left"
+                     self="top left"
+                     :offset="[23,5]"
+          >
+            <div class="lock-menu" @click.stop="setting">{{ $t('lock.menu') }}</div>
+          </q-popover>
+        </div>
         <q-chip dense
                 icon="layers"
                 title="block number"
@@ -225,17 +225,12 @@ div.ozone-logo .logo-label
 div.ozone-breadcrumbs .text-primary
     color #4782F6 !important
 div.setting-btn
-  position absolute
-  top 9px
-  right  180px
   margin-right 10px
-  display inline-block
-  vertical-align middle
-  width 30px
-  height 30px
+  width 16px
+  height 16px
   background url("../assets/setting@1x.png") no-repeat center !important
   background-size cover
-  margin-left 10px
+  margin-left 12px
   cursor pointer
 .ozone-menu-tip
   background-color #000000 !important
