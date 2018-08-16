@@ -2602,9 +2602,9 @@ detect-node@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/detect-node/-/detect-node-2.0.3.tgz#a2033c09cc8e158d37748fbde7507832bd6ce127"
 
-devtron@1.4.0:
+devtron@^1.4.0:
   version "1.4.0"
-  resolved "https://registry.yarnpkg.com/devtron/-/devtron-1.4.0.tgz#b5e748bd6e95bbe70bfcc68aae6fe696119441e1"
+  resolved "http://registry.npm.taobao.org/devtron/download/devtron-1.4.0.tgz#b5e748bd6e95bbe70bfcc68aae6fe696119441e1"
   dependencies:
     accessibility-developer-tools "^2.11.0"
     highlight.js "^9.3.0"
@@ -8783,6 +8783,10 @@ vue-countup-v2@^1.0.3:
   resolved "https://registry.yarnpkg.com/vue-countup-v2/-/vue-countup-v2-1.0.3.tgz#8e64d9be34dbe16e2dafe694a6973005251de362"
   dependencies:
     lodash latest
+
+vue-devtools@^4.1.4:
+  version "4.1.4"
+  resolved "http://registry.npm.taobao.org/vue-devtools/download/vue-devtools-4.1.4.tgz#d256093d005408dbc44be9538290971e2b6f6564"
 
 vue-eslint-parser@^2.0.3:
   version "2.0.3"

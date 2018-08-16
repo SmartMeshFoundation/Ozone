@@ -4,27 +4,15 @@
  *  modify this file, but it can be used to extend your development
  *  environment.
  */
-import { app, BrowserWindow } from 'electron'
-
 // Install `electron-debug` with `devtron`
 require('electron-debug')({ showDevTools: true })
 
-// Install `vue-devtools`
-app.on('ready', () => {
-  // let installExtension = require('electron-devtools-installer')
-  // installExtension.default(installExtension.VUEJS_DEVTOOLS)
-  //   .then((name) => console.log(`Added Extension:  ${name}`))
-  //   .catch(err => {
-  //     console.log('Unable to install `vue-devtools`: \n', err)
-  //   })
-  let ext = '/Users/wu/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/4.1.4_0'
-  new Promise(() => {
-    BrowserWindow.addDevToolsExtension(ext)
-  }).then(() => {
-    console.log('Loading vue-devtools extension.')
-  }).catch(() => {
-    console.log('Failed to loading vue-devtools extension from [', ext, ']')
-  })
+const electron = require('electron')
+const path = require('path')
+
+electron.app.on('ready', () => {
+  require('devtron').install()
+  electron.BrowserWindow.addDevToolsExtension(path.join(__dirname, '..', '..', 'node_modules', 'vue-devtools', 'vender'))
 })
 
 // Require `main` process to boot app
