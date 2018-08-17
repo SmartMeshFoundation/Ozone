@@ -9,6 +9,17 @@ export const getTokens = state => address_ => {
   } else {
     return []
   }
+  if (tokens === undefined) {
+    return []
+  }
+  tokens = tokens.filter(address => {
+    let contract = state.list.find(c => c.contractAddress === address)
+    if (contract === undefined || contract === null) {
+      return false
+    } else {
+      return true
+    }
+  })
   tokens = tokens.map(address => {
     let contract = state.list.find(c => c.contractAddress === address)
     let myContract = new global.web3.eth.Contract(JSON.parse(contract.abi), address)
