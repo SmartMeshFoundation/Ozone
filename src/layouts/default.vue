@@ -344,7 +344,7 @@ export default {
     },
     submit () {
       this.$store.commit('lock/insert', this.lockForm.password)
-      this.check = true
+      this.checked = true
       this.$q.notify({ message: this.$t('lock.setting_success'), color: 'primary', timeout: 1000 })
       this.showLockModal = false
     },
