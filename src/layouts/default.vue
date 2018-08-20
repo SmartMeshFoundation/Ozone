@@ -294,6 +294,7 @@ div.lock-modal .q-item-section
 <script>
 let timer
 const web3 = window.web3
+const lockDb = window.db.lock
 
 export default {
   name: 'LayoutDefault',
@@ -304,7 +305,6 @@ export default {
       elapsedTime: 0,
       isTestNet: false,
       isPrivateNet: false,
-      lock: this.$store.getters['lock/get'],
       showLockModal: false,
       showLockModidyModal: false,
       showMenuPop: false,
@@ -334,7 +334,8 @@ export default {
   },
   methods: {
     setting () {
-      if (this.lock == null) {
+      let lock = lockDb.find().length === 0 ? null : lockDb.find()[0]
+      if (lock == null) {
         this.showLockModal = true
       } else {
         this.showLockModidyModal = true
@@ -343,6 +344,7 @@ export default {
     },
     submit () {
       this.$store.commit('lock/insert', this.lockForm.password)
+      this.check = true
       this.$q.notify({ message: this.$t('lock.setting_success'), color: 'primary', timeout: 1000 })
       this.showLockModal = false
     },
@@ -351,8 +353,9 @@ export default {
         this.showLockModidyModal = false
         return
       }
+      let lock = lockDb.find().length === 0 ? null : lockDb.find()[0]
       let oldpassword = this.lockForm.oldpassword
-      if (oldpassword !== this.lock.password) {
+      if (oldpassword !== lock.password) {
         this.$q.notify(this.$t('lock.modify.lock_old_wrong_pwd'))
         return
       }
@@ -376,10 +379,11 @@ export default {
     }
   },
   created () {
-    if (this.lock == null) {
+    let lock = lockDb.find().length === 0 ? null : lockDb.find()[0]
+    if (lock == null) {
       this.showLockModal = true
     } else {
-      let status = this.lock.status
+      let status = lock.status
       if (status === 1) {
         this.checked = true
       }
