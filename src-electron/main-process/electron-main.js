@@ -42,7 +42,7 @@ if (process.env.PROD) {
 }
 log.debug('global.__statics = ', global.__statics)
 
-global.icon = path.join(global.__statics, 'icon_smart.png')
+global.icon = path.join(global.__statics, 'icon.png')
 
 global._ = _
 global.settings = Settings
@@ -103,6 +103,7 @@ function onReady () {
     electronOptions: {
       show: false,
       title: Settings.productName,
+      icon: global.icon,
       width: 1000,
       height: 700,
       backgroundColor: '#2e2c29',
