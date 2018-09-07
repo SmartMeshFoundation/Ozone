@@ -280,12 +280,8 @@ class OzoneMenu {
       })
     } else {
       appMenu.unshift({
-        label: app.getName(),
+        label: global.i18n.t('appMenu.file'),
         submenu: [
-          {
-            role: 'about',
-            label: global.i18n.t('appMenu.about') + ' ' + app.getName()
-          },
           {
             role: 'quit',
             label: global.i18n.t('appMenu.quit') + ' ' + app.getName()
