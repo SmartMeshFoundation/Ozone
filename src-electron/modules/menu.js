@@ -215,22 +215,19 @@ class OzoneMenu {
             })
           })
         }
+      },
+      {
+        label: global.i18n.t('debugMenu.loginLock'),
+        click: () => {
+          global.windows.broadcast(Types.LOGIN_LOCK_SETTING)
+        }
       }
     ]
 
     const appMenu = [
       {
-        label: global.i18n.t('appMenu.edit'),
-        submenu: editSubmenus
-      },
-      {
-        label: global.i18n.t('appMenu.view'),
-        submenu: [
-          {
-            label: global.i18n.t('appMenu.language-switch'),
-            submenu: languageMenu
-          }
-        ]
+        label: global.i18n.t('appMenu.language-switch'),
+        submenu: languageMenu
       },
       {
         label: global.i18n.t('appMenu.debug'),

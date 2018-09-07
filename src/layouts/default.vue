@@ -18,7 +18,7 @@
 
       </q-toolbar>
       <div class="row q-pa-sm justify-center blockinfo">
-        <div class="setting-btn" @click.stop="showMenuPop=true">
+        <!--<div class="setting-btn" @click.stop="showMenuPop=true">
           <q-popover class="ozone-popup" v-model="showMenuPop"
                      anchor="bottom left"
                      self="top left"
@@ -26,7 +26,7 @@
           >
             <div class="lock-menu" @click.stop="setting">{{ $t('lock.menu') }}</div>
           </q-popover>
-        </div>
+        </div>-->
         <q-chip dense
                 icon="layers"
                 title="block number"
@@ -107,7 +107,7 @@
 
         <q-field>
           <q-input :float-label="$t('lock.password_msg2')"
-                   type="password"
+                   type="password" @keyup.enter="submit"
                    v-model="lockForm.repeatPassword"
                     />
         </q-field>
@@ -142,6 +142,7 @@
             <q-input :float-label="$t('lock.modify.password_msg3')"
                      type="password"
                      v-model="lockForm.repeatPassword"
+                     @keyup.enter="modify"
             />
           </q-field>
         </q-collapsible>
@@ -292,6 +293,8 @@ div.lock-modal .q-item-section
   margin-left 0px
 </style>
 <script>
+import {ipcRenderer as ipc} from 'electron'
+import { Types } from '../../src-electron/modules/ipc/types'
 let timer
 const web3 = window.web3
 const lockDb = window.db.lock
@@ -401,8 +404,14 @@ export default {
       }
     })
   },
+  beforeCreate () {
+    ipc.on(Types.LOGIN_LOCK_SETTING, (event) => {
+      this.setting()
+    })
+  },
   destroyed () {
     clearInterval(timer)
+    ipc.removeAllListeners(Types.LOGIN_LOCK_SETTING)
   }
 }
 </script>

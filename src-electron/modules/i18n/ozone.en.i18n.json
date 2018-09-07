@@ -26,14 +26,15 @@
     "unhide": "Unhide",
     "quit": "Quit",
     "file": "File",
-    "debug":"Debug"
+    "debug":"Manage"
   },
   "debugMenu": {
     "log": "View Log",
     "net": "Net",
     "main": "mainnet",
     "test": "testnet",
-    "rmData": "Remove ChainData"
+    "rmData": "Remove ChainData",
+    "loginLock":"Login Lock"
   },
   "ozone": {
     "errors": {

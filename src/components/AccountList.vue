@@ -110,6 +110,7 @@ import BigNumber from 'bignumber.js'
 import { Types } from '../../src-electron/modules/ipc/types'
 import { shell } from 'electron'
 import path from 'path'
+import _ from 'lodash'
 
 const ipc = window.ipc
 const web3 = window.web3
@@ -128,10 +129,18 @@ export default {
   },
   computed: {
     accounts () {
-      return this.$store.state.account.list
+      let acts = this.$store.state.account.list
+      acts = _.uniqWith(acts, (v1, v2) => {
+        return v1.address.toLowerCase() === v2.address.toLowerCase()
+      })
+      return acts
     },
     total () {
-      let total = this.$store.state.account.list.reduce((prev, curr) => {
+      let acts = this.$store.state.account.list
+      acts = _.uniqWith(acts, (v1, v2) => {
+        return v1.address.toLowerCase() === v2.address.toLowerCase()
+      })
+      let total = acts.reduce((prev, curr) => {
         return prev.plus(curr.balance)
       }, new BigNumber(0))
       return new BigNumber(web3.utils.fromWei(total.toFixed())).toFixed(3, 1)

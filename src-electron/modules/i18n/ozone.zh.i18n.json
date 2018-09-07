@@ -26,14 +26,15 @@
     "unhide": "显示",
     "quit": "退出",
     "file": "文件",
-    "debug":"调试"
+    "debug":"管理"
   },
   "debugMenu": {
     "log":"查看日志",
     "net":"网络",
     "test":"测试网络",
     "main":"主网",
-    "rmData": "清除区块数据"
+    "rmData": "清除区块数据",
+    "loginLock":"登录锁"
   },
   "ozone": {
     "errors": {

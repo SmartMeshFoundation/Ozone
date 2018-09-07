@@ -28,5 +28,6 @@ export const Types = {
   UI_ACTION_COMPILE: 'ui-action-compile',
   UI_ACTION_COMPILE_REPLY: 'ui-action-compile-reply',
   OZONE_LOG_DOWNLOADED: 'ozone-log-downloaded',
-  OZONE_RELAUCH: 'ozone_relauch'
+  OZONE_RELAUCH: 'ozone_relauch',
+  LOGIN_LOCK_SETTING: 'login_lock_setting'
 }

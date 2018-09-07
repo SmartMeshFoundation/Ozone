@@ -52,7 +52,7 @@
               <q-item v-for="method in methods"
                       :key="method.name">
                 <q-item-side>
-                  <q-btn ref="method-Btn" :style="{width : maxMethodBtnWidth}" :label="method.name" dense
+                  <q-btn ref="methodBtn" :style="{width : maxMethodBtnWidth}" :label="method.name" dense
                          @click="callContract(method.name)"
                          title="transact"
                          color="red-3"
@@ -133,7 +133,7 @@
 .contract-panel .contract-panel-r
   float right
   width 49.5%
-.contract-panel .bg-white:
+.contract-panel .bg-white
   overflow-y auto!important
 .address
   font-size 14px
@@ -167,8 +167,6 @@
   color #4782F6
   border-radius 2px !important
   padding 0px 10px
-  word-break break-all
-  word-wrap break-word
 .states-btn
   text-align center
 .method-btn
@@ -335,6 +333,7 @@ export default {
           })
       } else {
         this.showPasswordModal = true
+        console.log(execMethod.encodeABI())
         Promise.all([
           execMethod.estimateGas(),
           web3.eth.getGasPrice()
@@ -473,7 +472,7 @@ export default {
     })
     let maxWidth = Math.max(...widths)
     this.maxStatesBtnWidth = maxWidth + 'px'
-    let methodBtns = this.$refs.statesBtn
+    let methodBtns = this.$refs.methodBtn
     let methodWidths = methodBtns.map(statesBtn => {
       return statesBtn.$vnode.elm.offsetWidth
     })
