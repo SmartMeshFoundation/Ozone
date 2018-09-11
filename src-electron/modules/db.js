@@ -89,6 +89,10 @@ class DatabaseManager {
   get tokens () {
     return this.getCollection('tokens')
   }
+
+  get about () {
+    return this.getCollection('about')
+  }
 }
 
 export default new DatabaseManager()

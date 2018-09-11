@@ -58,7 +58,7 @@ export default {
       title: 'Create a new address',
       text1: 'Set a password for your account.',
       text2: 'Please remember your password. If you forget the password, there will be no way to retrieve it.',
-      password_tip1: 'The password of account must not be less than 8 characters',
+      password_tip1: 'The password of account must be between 6 and 16 characters',
       password_msg1: 'Enter password',
       password_tip2: 'Entered passwords differ, please try again.',
       password_msg2: 'Confirm password'

@@ -58,7 +58,7 @@ export default {
       title: '建一个新账户',
       text1: '为你的账户设置密码。',
       text2: '请牢记你的密码，如果遗忘密码将没有任何途径可以找回！',
-      password_tip1: '账户密码必须不少于8位',
+      password_tip1: '账户密码必须由6到16个字符组成',
       password_msg1: '输入账户密码',
       password_tip2: '两次输入的密码不一致，请重新输入！',
       password_msg2: '重复输入密码'

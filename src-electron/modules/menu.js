@@ -14,6 +14,7 @@ import observeManager from '../modules/observeManager'
 import nodeSync from '../modules/nodeSync'
 import logger from '../modules/logger'
 import rimraf from 'rimraf'
+import _ from 'lodash'
 const log = logger.create('Menu')
 
 const resources = {
@@ -50,6 +51,19 @@ class OzoneMenu {
       interpolation: { prefix: '__', suffix: '__' }
     })
     global.i18n = i18n
+    this.updateAbout()
+  }
+
+  updateAbout () {
+    let about = {copyright: settings.appCopyright, version: global.i18n.t('ozone.version') + ' ' + settings.appVersion + ' (' + settings.appVersion + ')', appname: settings.appName, title: global.i18n.t('ozone.about')}
+    let aboutInDb = global.db.about.by('_id', 1)
+    if (aboutInDb) {
+      _.extend(aboutInDb, about)
+      global.db.about.update(aboutInDb)
+    } else {
+      about['_id'] = 1
+      global.db.about.insert(about)
+    }
   }
 
   kickStart (restart) {
@@ -136,6 +150,8 @@ class OzoneMenu {
   }
 
   create () {
+    this.updateAbout()
+
     const selectionMenu = Menu.buildFromTemplate([
       { role: 'copy', label: global.i18n.t('selectionMenu.copy'), accelerator: 'CmdOrCtrl+C' },
       { type: 'separator' },
@@ -280,11 +296,40 @@ class OzoneMenu {
       })
     } else {
       appMenu.unshift({
-        label: global.i18n.t('appMenu.file'),
+        label: app.getName(),
         submenu: [
           {
-            role: 'quit',
-            label: global.i18n.t('appMenu.quit') + ' ' + app.getName()
+            label: global.i18n.t('appMenu.about') + ' ' + app.getName(),
+            click: () => {
+              let aboutWindow = global.windows.create('about', {
+                electronOptions: {
+                  show: false,
+                  width: 284,
+                  height: 160,
+                  backgroundColor: '#ECECEC',
+                  useContentSize: true,
+                  minimizable: false,
+                  maximizable: false,
+                  alwaysOnTop: true,
+                  fullscreen: false,
+                  fullscreenable: false,
+                  resizable: false,
+                  webPreferences: {
+                    preload: path.resolve(global.__statics, 'preload.js'),
+                    'overlay-fullscreen-video': true,
+                    'overlay-scrollbars': true
+                  }
+                }
+              })
+              let awin = aboutWindow.window
+              awin.once('ready-to-show', () => {
+                aboutWindow.show()
+              })
+              let aboutUrl = process.env.PROD
+                ? `file://${__dirname}/about.html`
+                : `http://localhost:8080/about.html`
+              aboutWindow.load(aboutUrl)
+            }
           }
         ]
       })

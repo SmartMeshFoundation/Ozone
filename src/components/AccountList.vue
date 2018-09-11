@@ -104,7 +104,7 @@ div.create-account-modal .q-btn
     border-radius 4px
 </style>
 <script>
-import { required, minLength, sameAs } from 'vuelidate/lib/validators'
+import { required, minLength, maxLength, sameAs } from 'vuelidate/lib/validators'
 
 import BigNumber from 'bignumber.js'
 import { Types } from '../../src-electron/modules/ipc/types'
@@ -189,7 +189,8 @@ export default {
     form: {
       password: {
         required,
-        minLength: minLength(8)
+        minLength: minLength(6),
+        maxLength: maxLength(16)
       },
       repeatPassword: {
         sameAsPassword: sameAs('password')

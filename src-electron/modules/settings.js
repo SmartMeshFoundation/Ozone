@@ -91,6 +91,10 @@ class Settings {
     return packageJson.license
   }
 
+  get appCopyright () {
+    return packageJson.copyright
+  }
+
   get inProductionMode () {
     return process.env.PROD
   }
