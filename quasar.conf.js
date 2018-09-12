@@ -24,6 +24,7 @@ module.exports = function (ctx) {
         let path = require('path')
         cfg.plugins.push(new HtmlWebpackPlugin({
           filename: 'about.html',
+          inject: false,
           template: path.resolve(__dirname, 'src/about.html'),
         }))
         cfg.module.rules.push({
