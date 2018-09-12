@@ -20,6 +20,12 @@ module.exports = function (ctx) {
       // extractCSS: false,
       // useNotifier: false,
       extendWebpack (cfg) {
+        let HtmlWebpackPlugin = require('html-webpack-plugin')
+        let path = require('path')
+        cfg.plugins.push(new HtmlWebpackPlugin({
+          filename: 'about.html',
+          template: path.resolve(__dirname, 'src/about.html'),
+        }))
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,

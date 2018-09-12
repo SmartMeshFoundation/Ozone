@@ -325,6 +325,7 @@ class OzoneMenu {
               awin.once('ready-to-show', () => {
                 aboutWindow.show()
               })
+              awin.setMenu(null)
               let aboutUrl = process.env.PROD
                 ? `file://${__dirname}/about.html`
                 : `http://localhost:8080/about.html`
