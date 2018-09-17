@@ -184,6 +184,7 @@ body.desktop .q-select-highlight
 import moment from 'moment'
 import uuidv4 from 'uuid/v4'
 import BigNumber from 'bignumber.js'
+import _ from 'lodash'
 // import _ from 'lodash'
 
 // import { Types } from '../../src-electron/modules/ipc/types.js'
@@ -233,6 +234,9 @@ export default {
 
     getAccounts () {
       let list = this.$store.state.account.list
+      list = _.uniqWith(list, (v1, v2) => {
+        return v1.address.toLowerCase() === v2.address.toLowerCase()
+      })
       let options = list.map(account => {
         return {
           label: account.name,
@@ -333,9 +337,8 @@ export default {
           })
       } else {
         this.showPasswordModal = true
-        console.log(execMethod.encodeABI())
         Promise.all([
-          execMethod.estimateGas(),
+          execMethod.estimateGas({from: '0x0000000000000000000000000000000000000000'}),
           web3.eth.getGasPrice()
         ])
           .then(([gas, price]) => {
