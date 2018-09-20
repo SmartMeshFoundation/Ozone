@@ -21,7 +21,7 @@ const SYNC_CHECK_INTERVAL_MS = 2000
 class NodeSync extends EventEmitter {
   constructor () {
     super()
-
+    this.finished = false
     spectrumNode.on('state', _.bind(this._onNodeStateChanged, this))
   }
 
@@ -60,6 +60,7 @@ class NodeSync extends EventEmitter {
       })
     })
       .then(() => {
+        this.finished = true
         this.emit('finished')
       })
       .catch(err => {

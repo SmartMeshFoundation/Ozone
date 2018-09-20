@@ -122,6 +122,20 @@ function onReady () {
     mainWin.show()
   })
 
+  if (process.platform === 'darwin') {
+    mwin.on('close', e => {
+      if (mwin.isMinimized()) {
+        mwin = null
+      } else {
+        e.preventDefault()
+        if (nodeSync.finished) {
+          mainWin.send(Types.HIDE_WINDOW)
+        }
+        mwin.minimize()
+      }
+    })
+  }
+
   mwin.webContents.on('did-finish-load', kickStart)
 
   let ozoneMenu = new OzoneMenu(mwin)

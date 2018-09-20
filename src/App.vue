@@ -37,6 +37,10 @@ export default {
       this.$router.push({path: '/'})
     })
 
+    ipc.on(Types.HIDE_WINDOW, (event) => {
+      this.$router.push({path: '/lock'})
+    })
+
     ipc.on(Types.SWITCH_LAN, (event, lang) => {
       let iLocale, mLocale, qLang
       if (lang === 'zh') {
@@ -66,7 +70,8 @@ export default {
       Types.SWITCH_LAN,
       Types.SYNC_CONTRACT,
       Types.OZONE_LOG_DOWNLOADED,
-      Types.OZONE_RELAUCH
+      Types.OZONE_RELAUCH,
+      Types.HIDE_WINDOW
     ].forEach(channel => {
       ipc.removeAllListeners(channel)
     })

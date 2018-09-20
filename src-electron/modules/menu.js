@@ -1,4 +1,4 @@
-import { Menu, app } from 'electron'
+import { Menu, app, Tray } from 'electron'
 import i18n from 'i18next'
 import zh from './i18n/ozone.zh.i18n.json'
 import en from './i18n/ozone.en.i18n.json'
@@ -239,6 +239,41 @@ class OzoneMenu {
         }
       }
     ]
+
+    if (process.platform === 'win32') {
+      if (this.tray) {
+        this.tray.destroy()
+      }
+      this.tray = new Tray(path.join(global.__statics, 'tray.ico'))
+      this.mwin.on('close', (event) => {
+        this.mwin.hide()
+        this.mwin.setSkipTaskbar(true)
+        event.preventDefault()
+      })
+      this.mwin.on('show', () => {
+        this.tray.setHighlightMode('always')
+      })
+      this.mwin.on('hide', () => {
+        if (nodeSync.finished) {
+          this.mwin.send(Types.HIDE_WINDOW)
+        }
+        this.tray.setHighlightMode('never')
+      })
+      const contextMenu = Menu.buildFromTemplate([
+        {label: global.i18n.t('tray.open'),
+          click: () => {
+            this.mwin.isVisible() ? this.mwin.hide() : this.mwin.show()
+            this.mwin.isVisible() ? this.mwin.setSkipTaskbar(false) : this.mwin.setSkipTaskbar(true)
+          }},
+        {label: global.i18n.t('tray.close'), click: () => { this.mwin.destroy() }}
+      ])
+      this.tray.setToolTip('Ozone')
+      this.tray.setContextMenu(contextMenu)
+      this.tray.on('double-click', () => {
+        this.mwin.isVisible() ? this.mwin.hide() : this.mwin.show()
+        this.mwin.isVisible() ? this.mwin.setSkipTaskbar(false) : this.mwin.setSkipTaskbar(true)
+      })
+    }
 
     const appMenu = [
       {

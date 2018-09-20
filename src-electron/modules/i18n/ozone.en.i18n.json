@@ -45,5 +45,9 @@
     },
     "version": "version",
     "about": "about"
+  },
+  "tray": {
+    "open": "open Ozone",
+    "close": "quit Ozone"
   }
 }

@@ -45,5 +45,9 @@
     },
     "version": "版本",
     "about": "关于"
+  },
+  "tray": {
+    "open": "打开Ozone",
+    "close": "退出Ozone"
   }
 }

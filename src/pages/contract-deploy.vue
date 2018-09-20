@@ -282,6 +282,9 @@ export default {
   computed: {
     options () {
       let accounts = this.$store.state.account.list
+      accounts = _.uniqWith(accounts, (v1, v2) => {
+        return v1.address.toLowerCase() === v2.address.toLowerCase()
+      })
       let options = accounts.map(account => {
         return {
           label: account.name,
