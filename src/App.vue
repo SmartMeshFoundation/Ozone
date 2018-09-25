@@ -7,6 +7,7 @@
 <script>
 import {ipcRenderer as ipc} from 'electron'
 import { Types } from '../src-electron/modules/ipc/types'
+const lockDb = window.db.lock
 
 export default {
   name: 'App',
@@ -38,7 +39,10 @@ export default {
     })
 
     ipc.on(Types.HIDE_WINDOW, (event) => {
-      this.$router.push({path: '/lock'})
+      let lock = lockDb.find().length === 0 ? null : lockDb.find()[0]
+      if (lock != null && lock.status === 1) {
+        this.$router.push({path: '/lock'})
+      }
     })
 
     ipc.on(Types.SWITCH_LAN, (event, lang) => {

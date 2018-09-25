@@ -61,12 +61,12 @@
 </style>
 
 <script>
-
+const lockDb = window.db.lock
 export default {
   data () {
     return {
       password: '',
-      lock: this.$store.getters['lock/get']
+      lock: lockDb.find().length === 0 ? null : lockDb.find()[0]
     }
   },
   methods: {
