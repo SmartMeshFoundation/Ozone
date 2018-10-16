@@ -239,8 +239,10 @@ export default {
         password_msg2: '输入新登录锁密码',
         password_msg3: '确认新登录锁密码',
         success: '登录锁密码修改成功',
-        lock_old_wrong_pwd: '原登录锁密码错误',
-        lock_repeat_wrong_pwd: '两次输入的密码不一致'
+        lock_old_wrong_pwd: '原始密码错误',
+        lock_blank_pwd: '密码不能为空',
+        lock_length_pwd: '请输入8-20位密码',
+        lock_repeat_wrong_pwd: '两次输入密码不一致'
       }
   }
 }

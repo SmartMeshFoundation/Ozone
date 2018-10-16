@@ -346,20 +346,38 @@ export default {
       this.showMenuPop = false
     },
     submit () {
+      if (!this.lockForm.password) {
+        this.$q.notify(this.$t('lock.modify.lock_blank_pwd'))
+        return
+      }
+      let len = this.lockForm.password.length
+      if (len < 8 || len > 20) {
+        this.$q.notify(this.$t('lock.modify.lock_length_pwd'))
+        return
+      }
+      if (this.lockForm.password !== this.lockForm.repeatPassword) {
+        this.$q.notify(this.$t('lock.modify.lock_repeat_wrong_pwd'))
+        return
+      }
       this.$store.commit('lock/insert', this.lockForm.password)
       this.checked = true
       this.$q.notify({ message: this.$t('lock.setting_success'), color: 'primary', timeout: 1000 })
       this.showLockModal = false
     },
     modify () {
-      if (!this.lockForm.password || !this.lockForm.oldpassword || !this.lockForm.repeatPassword) {
-        this.showLockModidyModal = false
-        return
-      }
       let lock = lockDb.find().length === 0 ? null : lockDb.find()[0]
       let oldpassword = this.lockForm.oldpassword
       if (oldpassword !== lock.password) {
         this.$q.notify(this.$t('lock.modify.lock_old_wrong_pwd'))
+        return
+      }
+      if (this.lockForm.password === '') {
+        this.$q.notify(this.$t('lock.modify.lock_blank_pwd'))
+        return
+      }
+      let len = this.lockForm.password.length
+      if (len < 8 || len > 20) {
+        this.$q.notify(this.$t('lock.modify.lock_length_pwd'))
         return
       }
       if (this.lockForm.password !== this.lockForm.repeatPassword) {

@@ -240,6 +240,8 @@ export default {
         password_msg3: 'Confirm New Login Lock password',
         success: 'Login Lock modify ok',
         lock_old_wrong_pwd: 'Wrong Old Password',
+        lock_blank_pwd: 'password can not be empty',
+        lock_length_pwd: 'Please enter 8-20 password',
         lock_repeat_wrong_pwd: 'Entered passwords differ'
       }
   }
