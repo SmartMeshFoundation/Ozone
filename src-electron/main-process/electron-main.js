@@ -29,7 +29,11 @@ if (shouldQuit) {
   }
   if (mainWin && mainWin.isMinimized()) {
     mainWin.mwin.focus()
-  }yegger.create('Main')
+  }
+  process.exit(0)
+}
+
+const log = logger.create('Main')
 
 log.info('current application\'s version: ', Settings.appVersion)
 log.info('system language is ', app.getLocale())
