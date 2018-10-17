@@ -20,16 +20,17 @@ import OzoneMenu from '../modules/menu'
 
 let mainWin = null
 
-const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {})
+const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+  if (mainWin && !mainWin.window.isVisible()) {
+    mainWin.window.show()
+    mainWin.window.setSkipTaskbar(true)
+  }
+  if (mainWin && mainWin.window.isMinimized()) {
+    mainWin.window.focus()
+  }
+})
 
 if (shouldQuit) {
-  if (mainWin && !mainWin.mwin.isVisible()) {
-    mainWin.mwin.show()
-    mainWin.mwin.setSkipTaskbar(true)
-  }
-  if (mainWin && mainWin.isMinimized()) {
-    mainWin.mwin.focus()
-  }
   process.exit(0)
 }
 
