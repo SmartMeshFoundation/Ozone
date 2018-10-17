@@ -269,7 +269,7 @@ class OzoneMenu {
       ])
       this.tray.setToolTip('Ozone')
       this.tray.setContextMenu(contextMenu)
-      this.tray.on('double-click', () => {
+      this.tray.on('click', () => {
         this.mwin.isVisible() ? this.mwin.hide() : this.mwin.show()
         this.mwin.isVisible() ? this.mwin.setSkipTaskbar(false) : this.mwin.setSkipTaskbar(true)
       })

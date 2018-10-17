@@ -18,13 +18,18 @@ import ipc from '../modules/ipc'
 import { Types } from '../modules/ipc/types'
 import OzoneMenu from '../modules/menu'
 
+let mainWin = null
+
 const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {})
 
 if (shouldQuit) {
-  process.exit(0)
-}
-
-const log = logger.create('Main')
+  if (mainWin && !mainWin.mwin.isVisible()) {
+    mainWin.mwin.show()
+    mainWin.mwin.setSkipTaskbar(true)
+  }
+  if (mainWin && mainWin.isMinimized()) {
+    mainWin.mwin.focus()
+  }yegger.create('Main')
 
 log.info('current application\'s version: ', Settings.appVersion)
 log.info('system language is ', app.getLocale())
@@ -94,8 +99,6 @@ app.on('ready', () => {
       app.quit()
     })
 })
-
-let mainWin = null
 
 function onReady () {
   mainWin = windows.create('main', {
