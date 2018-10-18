@@ -98,7 +98,8 @@ export default {
         fee: 'Fee',
         total: 'Total Amount',
         enter_pwd: 'Please enter password',
-        wrong_pwd: 'Wrong Password!'
+        wrong_pwd: 'Wrong Password!',
+        muti_keystore: 'multiple keys match address, please remove duplicates from keystore!'
       }
     },
     type: {

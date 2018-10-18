@@ -98,7 +98,8 @@ export default {
         fee: '手续费',
         total: '总金额',
         enter_pwd: '请输入账户密码',
-        wrong_pwd: '密码错误！'
+        wrong_pwd: '密码错误！',
+        muti_keystore: '该地址匹配到多个keystore文件，请将重复的删除！'
       }
     },
     type: {

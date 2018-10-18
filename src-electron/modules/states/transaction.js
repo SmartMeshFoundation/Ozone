@@ -48,7 +48,14 @@ class TransactionState extends EventEmitter {
       })
       .catch(error => {
         log.error(error)
-        let reply = { error: 'invalid-password' }
+        let errorMessage = error.message
+        let key = 'invalid-password'
+        if (errorMessage.includes('could not decrypt key with given passphrase')) {
+          key = 'invalid-password'
+        } else if (errorMessage.includes('multiple keys match address')) {
+          key = 'multiple-keystore'
+        }
+        let reply = { error: key }
         event.sender.send(Types.SEND_TRANSACTION_REPLY, reply)
       })
       .finally(() => {

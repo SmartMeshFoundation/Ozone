@@ -327,6 +327,9 @@ export default {
       if (reply.error && reply.error === 'invalid-password') {
         $vm.$q.notify(this.$t('tx.transfer.confirm.wrong_pwd'))
         $vm.disabled = false
+      } else if (reply.error && reply.error === 'multiple-keystore') {
+        $vm.$q.notify(this.$t('tx.transfer.confirm.muti_keystore'))
+        $vm.disabled = false
       } else {
         $vm.$router.push('/wallet')
       }
