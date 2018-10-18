@@ -3,3 +3,7 @@ export const update = (state, data) => {
   state.peers = data.peers
   state.gasPrice = data.gasPrice
 }
+
+export const setNetType = (state, type) => {
+  state.netType = type
+}

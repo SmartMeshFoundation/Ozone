@@ -1,4 +1,10 @@
-import { Menu, app, Tray } from 'electron'
+import {
+  Menu,
+  app,
+  Tray,
+  shell,
+  BrowserWindow
+} from 'electron'
 import i18n from 'i18next'
 import zh from './i18n/ozone.zh.i18n.json'
 import en from './i18n/ozone.en.i18n.json'
@@ -7,14 +13,14 @@ import path from 'path'
 import fs from 'fs'
 import settings from './settings'
 import spectrumNode from '../modules/spectrumNode'
-import Q from 'bluebird'
-import clientBinaryManager from '../modules/clientBinaryManager'
-import stateManager from '../modules/stateManager'
-import observeManager from '../modules/observeManager'
+
 import nodeSync from '../modules/nodeSync'
 import logger from '../modules/logger'
 import rimraf from 'rimraf'
 import _ from 'lodash'
+
+import { EventEmitter } from 'events'
+
 const log = logger.create('Menu')
 
 const resources = {
@@ -23,8 +29,9 @@ const resources = {
   zh: { translation: zh }
 }
 
-class OzoneMenu {
+class OzoneMenu extends EventEmitter {
   constructor (mwin) {
+    super()
     this.mwin = mwin
     i18n.getBestMatchedLangCode = langCode => {
       const codeList = Object.keys(resources)
@@ -64,89 +71,6 @@ class OzoneMenu {
       about['_id'] = 1
       global.db.about.insert(about)
     }
-  }
-
-  kickStart (restart) {
-    // client binary stuff
-    clientBinaryManager.on('status', (status, data) => {
-      global.windows.broadcast(Types.UI_ACTION_CLIENTBINARYSTATUS, status, data)
-    })
-
-    // node connection stuff
-    spectrumNode.on('nodeConnectionTimeout', () => {
-      global.windows.broadcast(Types.UI_ACTION_NODE_STATUS, 'connectionTimeout')
-    })
-
-    spectrumNode.on('nodeLog', data => {
-      global.windows.broadcast(Types.UI_ACTION_NODE_LOGTEXT, data.replace(/^.*[0-9]]/, ''))
-    })
-
-    // state change
-    spectrumNode.on('state', (state, stateAsText) => {
-      global.windows.broadcast(
-        'uiAction_nodeStatus',
-        stateAsText,
-        spectrumNode.STATES.ERROR === state ? spectrumNode.lastError : null
-      )
-    })
-
-    // capture sync results
-    const syncResultPromise = new Q((resolve, reject) => {
-      nodeSync.on('nodeSyncing', result => {
-        global.windows.broadcast(Types.NODE_SYNC_STATUS, 'inProgress', result)
-      })
-
-      nodeSync.on('stopped', () => {
-        global.windows.broadcast(Types.NODE_SYNC_STATUS, 'stopped')
-      })
-
-      nodeSync.on('error', err => {
-        log.error('Error syncing node', err)
-
-        reject(err)
-      })
-
-      nodeSync.on('finished', () => {
-        nodeSync.removeAllListeners('error')
-        nodeSync.removeAllListeners('finished')
-
-        resolve()
-      })
-      nodeSync.on('syncBlock', (results) => {
-        this.mwin.webContents.send(Types.SYNC_BLOCK_NUMBER, results.currentBlock, results.highestBlock)
-      })
-    })
-
-    Q.resolve()
-      .then(() => {
-        observeManager.stop()
-        global.windows.broadcast(Types.OZONE_RELAUCH)
-        return clientBinaryManager.init(true)
-      }).then(() => {
-        if (restart) {
-          return spectrumNode.restart(settings.nodeType, settings.network, settings.syncmode)
-        }
-        return spectrumNode.init()
-      })
-      .then(() => {
-        log.info('Spectrum node restarted.')
-      })
-      .then(function doSync () {
-        return syncResultPromise
-      })
-      .then(function allDone () {
-        log.info('all done!')
-
-        // sync data to front-end vuex store
-        stateManager.emit('sync')
-
-        observeManager.start()
-
-        global.windows.broadcast(Types.NODE_ALL_DONE)
-      })
-      .catch(err => {
-        log.error('Error starting up node and/or syncing', err)
-      })
   }
 
   create () {
@@ -208,30 +132,30 @@ class OzoneMenu {
       //   submenu: netMenue
       // },
       // {type: 'separator'},
-      {
-        label: global.i18n.t('debugMenu.log'),
-        click: () => {
-          let filename = path.resolve(app.getPath('userData'), 'ozone.log')
-          fs.writeFileSync(path.resolve(app.getPath('desktop'), 'ozone.log'), fs.readFileSync(filename))
-          global.windows.broadcast(Types.OZONE_LOG_DOWNLOADED)
-        }
-      },
-      {type: 'separator'},
-      {
-        label: global.i18n.t('debugMenu.rmData'),
-        click: () => {
-          spectrumNode.stop().then(() => {
-            rimraf(settings.chainDataDir, (err) => {
-              if (err) {
-                log.error('remove chain data encounter an error:', err)
-              } else {
-                log.info('remove chain data success')
-                this.kickStart()
-              }
-            })
-          })
-        }
-      },
+      // {
+      //   label: global.i18n.t('debugMenu.log'),
+      //   click: () => {
+      //     let filename = path.resolve(app.getPath('userData'), 'ozone.log')
+      //     fs.writeFileSync(path.resolve(app.getPath('desktop'), 'ozone.log'), fs.readFileSync(filename))
+      //     global.windows.broadcast(Types.OZONE_LOG_DOWNLOADED)
+      //   }
+      // },
+      // {type: 'separator'},
+      // {
+      //   label: global.i18n.t('debugMenu.rmData'),
+      //   click: () => {
+      //     spectrumNode.stop().then(() => {
+      //       rimraf(settings.chainDataDir, (err) => {
+      //         if (err) {
+      //           log.error('remove chain data encounter an error:', err)
+      //         } else {
+      //           log.info('remove chain data success')
+      //           this.kickStart()
+      //         }
+      //       })
+      //     })
+      //   }
+      // },
       {
         label: global.i18n.t('debugMenu.loginLock'),
         click: () => {
@@ -370,6 +294,64 @@ class OzoneMenu {
         ]
       })
     }
+
+    const devSubMenus = [
+      {
+        label: global.i18n.t('devMenu.net.label'),
+        submenu: [
+          {
+            label: global.i18n.t('devMenu.net.main'),
+            type: 'checkbox'
+          },
+          {
+            label: global.i18n.t('devMenu.net.test'),
+            type: 'checkbox'
+          }
+        ]
+      },
+      { type: 'separator' },
+      {
+        label: global.i18n.t('debugMenu.rmData'),
+        click: () => {
+          global.windows.broadcast(Types.MENU_ACTION_RMDATA)
+        }
+      },
+      {
+        label: global.i18n.t('debugMenu.log'),
+        click: () => {
+          let filename = path.resolve(app.getPath('userData'), 'ozone.log')
+          fs.writeFileSync(path.resolve(app.getPath('desktop'), 'ozone.log'), fs.readFileSync(filename))
+          global.windows.broadcast(Types.OZONE_LOG_DOWNLOADED)
+        }
+      },
+      { type: 'separator' },
+      {
+        label: global.i18n.t('devMenu.remix'),
+        click (menuItem, browserWindow, event) {
+          shell.openExternal('https://remix.ethereum.org')
+        }
+      }
+    ]
+
+    if (process.env.DEV) {
+      devSubMenus.push(
+        {
+          'label': global.i18n.t('devMenu.devtools'),
+          accelerator: 'Alt+CommandOrControl+I',
+          click () {
+            const curWindow = BrowserWindow.getFocusedWindow()
+            if (curWindow) {
+              curWindow.toggleDevTools()
+            }
+          }
+        }
+      )
+    }
+
+    appMenu.push({
+      label: global.i18n.t('devMenu.label'),
+      submenu: devSubMenus
+    })
 
     var osxMenu = Menu.buildFromTemplate(appMenu)
     Menu.setApplicationMenu(osxMenu)

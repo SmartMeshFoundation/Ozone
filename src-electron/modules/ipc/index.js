@@ -1,7 +1,9 @@
 import compiler from './compiler'
+import common from './common'
 
 const channels = [
-  compiler
+  compiler,
+  common
 ]
 
 class IpcManager {

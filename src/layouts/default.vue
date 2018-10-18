@@ -27,10 +27,17 @@
             <div class="lock-menu" @click.stop="setting">{{ $t('lock.menu') }}</div>
           </q-popover>
         </div>-->
+
+        <q-chip v-if="netType === 'test'"
+                dense
+                color="negative"
+                title="network"
+                class=""> {{$t('netType.test')}} </q-chip>
+
         <q-chip dense
                 icon="layers"
                 title="block number"
-                class=""> {{blockNumber}} </q-chip>
+                class="q-ml-sm"> {{blockNumber}} </q-chip>
         <q-chip dense
                 icon="timer"
                 title="elapsed time"
@@ -39,6 +46,7 @@
                 icon="router"
                 title="peers"
                 class="q-ml-sm"> {{peerCount}} </q-chip>
+
       </div>
     </q-layout-header>
 
@@ -328,6 +336,9 @@ export default {
     },
     breadcrumbs () {
       return this.$store.state.ui.breadcrumbs
+    },
+    netType () {
+      return this.$store.state.node.netType
     }
   },
   watch: {
@@ -420,6 +431,26 @@ export default {
       } else if (num !== 1 && num !== 19840711) {
         this.isPrivateNet = true
       }
+    })
+
+    ipc.on(Types.MENU_ACTION_RMDATA, (event) => {
+      this.$q.dialog({
+        title: this.$t('dialog.rmdata.title'),
+        message: this.$t('dialog.rmdata.message'),
+        color: 'primary',
+        // optional; we want an "OK" button
+        ok: true, // takes i18n value, or String for "OK" button label
+        // optional; we want a "Cancel" button
+        cancel: true, // takes i18n value, or String for "Cancel" button label
+        preventClose: true
+      })
+        .then(() => {
+          this.$q.loading.show()
+          ipc.send(Types.MENU_ACTION_RMDATA_CONFIRM)
+        })
+        .catch(() => {
+          console.log('Cancel rm chaindata')
+        })
     })
   },
   beforeCreate () {

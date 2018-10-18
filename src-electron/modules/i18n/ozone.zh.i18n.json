@@ -36,6 +36,18 @@
     "rmData": "清除区块数据",
     "loginLock":"登录锁"
   },
+  "devMenu": {
+    "label": "开发",
+    "net": {
+      "label": "网络",
+      "main": "主网",
+      "test": "测试网络",
+      "private": "私网"
+    },
+    "remix": "打开Remix",
+    "devtools": "开发者工具"
+  },
+
   "ozone": {
     "errors": {
       "nodeChecksumMismatch": {
