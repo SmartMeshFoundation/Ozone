@@ -36,6 +36,18 @@
     "rmData": "Remove ChainData",
     "loginLock":"Login Lock"
   },
+  "devMenu": {
+    "label": "Development",
+    "net": {
+      "label": "Network",
+      "main": "Main",
+      "test": "Test",
+      "private": "Private"
+    },
+    "remix": "Open Remix",
+    "devtools": "DevTools"
+  },
+
   "ozone": {
     "errors": {
       "nodeChecksumMismatch": {

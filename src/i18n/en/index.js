@@ -245,5 +245,15 @@ export default {
         lock_length_pwd: 'Please enter 8-20 password',
         lock_repeat_wrong_pwd: 'Entered passwords differ'
       }
+  },
+  dialog: {
+    rmdata: {
+      title: 'WARNING: Clean Chaindata',
+      message: 'The block database will be cleared and the application will be restarted. Please confirm!'
+    }
+  },
+  netType: {
+    test: '测试网',
+    main: '主网'
   }
 }

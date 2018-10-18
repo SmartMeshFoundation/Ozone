@@ -87,7 +87,7 @@ app.on('before-quit', event => {
       killedSocketsAndNodes = true
       await db.close()
 
-      app.quit()
+      app.exit()
     }, 500)
   } else {
     log.info('About to quit...')

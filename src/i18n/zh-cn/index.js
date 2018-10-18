@@ -245,5 +245,15 @@ export default {
         lock_length_pwd: '请输入8-20位密码',
         lock_repeat_wrong_pwd: '两次输入密码不一致'
       }
+  },
+  dialog: {
+    rmdata: {
+      title: '数据删除警告',
+      message: '即将清除区块数据库并重启应用，请确认！'
+    }
+  },
+  netType: {
+    test: '测试网',
+    main: '主网'
   }
 }
