@@ -262,7 +262,13 @@ class OzoneMenu {
       const contextMenu = Menu.buildFromTemplate([
         {label: global.i18n.t('tray.open'),
           click: () => {
-            this.mwin.isVisible() ? this.mwin.hide() : this.mwin.show()
+            if (this.mwin.isVisible()) {
+              if (this.mwin.isMinimized()) {
+                this.mwin.show()
+              }
+            } else {
+              this.mwin.show()
+            }
             this.mwin.isVisible() ? this.mwin.setSkipTaskbar(false) : this.mwin.setSkipTaskbar(true)
           }},
         {label: global.i18n.t('tray.close'), click: () => { this.mwin.destroy() }}
@@ -270,7 +276,13 @@ class OzoneMenu {
       this.tray.setToolTip('Ozone')
       this.tray.setContextMenu(contextMenu)
       this.tray.on('click', () => {
-        this.mwin.isVisible() ? this.mwin.hide() : this.mwin.show()
+        if (this.mwin.isVisible()) {
+          if (this.mwin.isMinimized()) {
+            this.mwin.show()
+          }
+        } else {
+          this.mwin.show()
+        }
         this.mwin.isVisible() ? this.mwin.setSkipTaskbar(false) : this.mwin.setSkipTaskbar(true)
       })
     }

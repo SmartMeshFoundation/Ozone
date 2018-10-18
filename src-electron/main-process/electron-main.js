@@ -136,13 +136,16 @@ function onReady () {
         mwin = null
       } else {
         e.preventDefault()
-        if (nodeSync.finished) {
-          mainWin.send(Types.HIDE_WINDOW)
-        }
         mwin.minimize()
       }
     })
   }
+
+  mwin.on('minimize', (event) => {
+    if (nodeSync.finished) {
+      mainWin.send(Types.HIDE_WINDOW)
+    }
+  })
 
   mwin.webContents.on('did-finish-load', kickStart)
 
