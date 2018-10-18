@@ -31,15 +31,18 @@
      </div>
    </div>
    <div>
-     <div v-if="address===undefined" color="negative">
-       {{toSMT(item.value)}} {{$unit}}
-     </div>
-     <div class="trans-fee" v-else-if="address===item.from">
-       -{{toSMT(item.value)}} {{$unit}}
-     </div>
-     <div class="trans-fee" v-else-if="address===item.to">
-       +{{toSMT(item.value)}} {{$unit}}
-     </div>
+    <span v-if="checkTransDir() === 1" style="font-size:14px;background-color: #F8A656;display: block;line-height: 30px;text-align: center;width: 100%;color: white;border-radius: 4px;margin: 0 0 !important;">
+     OUT
+    </span>
+    <span v-if="checkTransDir() === 2" style="font-size:14px;background-color: #6BC408;display: block;line-height: 30px;text-align: center;width: 100%;color: white;border-radius: 4px;margin: 0 0 !important;">
+     IN
+    </span>
+    <span v-if="checkTransDir() === 0" style="font-size:14px;background-color: #6ecafc;display: block;line-height: 30px;text-align: center;width: 100%;color: white;border-radius: 2px;margin: 0 0 !important;">
+     SELF
+    </span>
+   </div>
+   <div>
+     {{toSMT(item.value)}} {{$unit}}
    </div>
    <q-modal class="transfer-item" v-model="showTransactionModal"
             minimized
@@ -98,12 +101,15 @@ div.trans-container div:nth-child(1)
 div.trans-container div:nth-child(2)
     width 15%
 div.trans-container div:nth-child(3)
-  width 40%
+  width 37%
 div.trans-container div:nth-child(4)
   width 10%
 div.trans-container div:nth-child(5)
+  padding-right 4px
+  width 5%
+div.trans-container div:nth-child(6)
   color red
-  width 20%
+  width 18%
 div.trans-container:nth-child(1)
     // margin-top:-20px
 div.trans-container:not(:first-child)
@@ -140,7 +146,8 @@ export default {
     return {
       address: this.$route.params.address,
       showTransactionModal: false,
-      gasFee: 0
+      gasFee: 0,
+      accounts: []
     }
   },
   computed: {
@@ -172,6 +179,31 @@ export default {
       }
       return web3.utils.fromWei(new BigNumber(value).toFixed())
     },
+    checkTransDir () {
+      let from = this.item.from.toLowerCase()
+      let to = this.item.to.toLowerCase()
+      if (from === to) {
+        return 0
+      }
+      if (this.address !== undefined) {
+        if (from === this.address.toLowerCase()) {
+          return 1
+        }
+        if (to === this.address.toLowerCase()) {
+          return 2
+        }
+      } else {
+        if (this.accounts.includes(from) && this.accounts.includes(to)) {
+          return 0
+        }
+        if (this.accounts.includes(from)) {
+          return 1
+        }
+        if (this.accounts.includes(to)) {
+          return 2
+        }
+      }
+    },
     accountName (address) {
       let accountName = this.$store.getters['account/name'](address)
       if (accountName.length > 12) {
@@ -180,7 +212,6 @@ export default {
       return accountName
     },
     viewTransaction (item) {
-      console.log(this.item)
       this.showTransactionModal = true
       if (!this.item.receipt) {
         this.estimateGas()
@@ -209,6 +240,13 @@ export default {
           .catch(console.log)
       }
     }, 400)
+  },
+  created () {
+    let accounts = this.$store.state.account.list
+    accounts = accounts.map((account) => {
+      return account['address'].toLowerCase()
+    })
+    this.accounts = accounts
   }
 }
 </script>
