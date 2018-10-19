@@ -249,11 +249,11 @@ export default {
   dialog: {
     rmdata: {
       title: '数据删除警告',
-      message: '即将清除区块数据库并重启应用，请确认！'
+      message: '即将清除区块数据库并重启应用。重新同步数据需要花费较长时间，请确认！'
     }
   },
-  netType: {
-    test: '测试网',
-    main: '主网'
+  network: {
+    test: '测试网络',
+    main: '主网络'
   }
 }

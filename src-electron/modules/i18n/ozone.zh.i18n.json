@@ -40,7 +40,7 @@
     "label": "开发",
     "net": {
       "label": "网络",
-      "main": "主网",
+      "main": "主网络",
       "test": "测试网络",
       "private": "私网"
     },

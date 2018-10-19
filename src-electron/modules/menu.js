@@ -313,11 +313,13 @@ class OzoneMenu extends EventEmitter {
         submenu: [
           {
             label: global.i18n.t('devMenu.net.main'),
-            type: 'checkbox'
+            type: 'checkbox',
+            checked: settings.network === 'main'
           },
           {
             label: global.i18n.t('devMenu.net.test'),
-            type: 'checkbox'
+            type: 'checkbox',
+            checked: settings.network === 'test'
           }
         ]
       },

@@ -93,6 +93,10 @@ class DatabaseManager {
   get about () {
     return this.getCollection('about')
   }
+
+  get sysconfig () {
+    return this.getCollection('sysconfig')
+  }
 }
 
 export default new DatabaseManager()

@@ -28,11 +28,11 @@
           </q-popover>
         </div>-->
 
-        <q-chip v-if="netType === 'test'"
+        <q-chip v-if="network === 'test'"
                 dense
                 color="negative"
                 title="network"
-                class=""> {{$t('netType.test')}} </q-chip>
+                class=""> {{$t('network.test')}} </q-chip>
 
         <q-chip dense
                 icon="layers"
@@ -337,8 +337,8 @@ export default {
     breadcrumbs () {
       return this.$store.state.ui.breadcrumbs
     },
-    netType () {
-      return this.$store.state.node.netType
+    network () {
+      return this.$store.state.node.network
     }
   },
   watch: {

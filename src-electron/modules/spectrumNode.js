@@ -68,24 +68,12 @@ class SpectrumNode extends EventEmitter {
     return this._syncMode
   }
 
-  get isEth () {
-    return this._type === 'eth'
-  }
-
-  get isGeth () {
-    return this._type === 'geth'
-  }
-
   get isMainNetwork () {
     return this.network === 'main'
   }
 
   get isTestNetwork () {
     return this.network === 'test'
-  }
-
-  get isRinkebyNetwork () {
-    return this.network === 'rinkeby'
   }
 
   get isDevNetwork () {

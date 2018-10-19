@@ -252,8 +252,8 @@ export default {
       message: 'The block database will be cleared and the application will be restarted. Please confirm!'
     }
   },
-  netType: {
-    test: '测试网',
-    main: '主网'
+  network: {
+    test: 'Test Network',
+    main: 'Main Network'
   }
 }

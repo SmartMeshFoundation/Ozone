@@ -30,14 +30,10 @@ class Settings {
   }
 
   get network () {
-    return this.network_ || _defaults.network
+    return this._network_ || _defaults.network
   }
 
-  get network_ () {
-    return this._network
-  }
-
-  set network_ (nw) {
+  set network (nw) {
     this._network = nw
   }
 

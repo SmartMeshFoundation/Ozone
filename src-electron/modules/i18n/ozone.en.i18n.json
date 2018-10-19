@@ -40,8 +40,8 @@
     "label": "Development",
     "net": {
       "label": "Network",
-      "main": "Main",
-      "test": "Test",
+      "main": "Main Network",
+      "test": "Test Network",
       "private": "Private"
     },
     "remix": "Open Remix",

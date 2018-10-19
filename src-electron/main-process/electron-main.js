@@ -17,6 +17,7 @@ import observeManager from '../modules/observeManager'
 import ipc from '../modules/ipc'
 import { Types } from '../modules/ipc/types'
 import OzoneMenu from '../modules/menu'
+import settings from '../modules/settings'
 
 let mainWin = null
 
@@ -98,12 +99,21 @@ app.on('ready', () => {
   // initialise the db
   global.db
     .init()
+    .then(loadSysconfig)
     .then(onReady)
     .catch(err => {
       log.error(err)
       app.quit()
     })
 })
+
+function loadSysconfig () {
+  const network = db.sysconfig.by('_id', 'network')
+  log.info(`Load config network=${network}`)
+  if (network) {
+    settings.network = network
+  }
+}
 
 function onReady () {
   mainWin = windows.create('main', {

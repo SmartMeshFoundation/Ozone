@@ -4,6 +4,6 @@ export const update = (state, data) => {
   state.gasPrice = data.gasPrice
 }
 
-export const setNetType = (state, type) => {
-  state.netType = type
+export const setNetwork = (state, type) => {
+  state.network = type
 }
