@@ -13,6 +13,7 @@ import path from 'path'
 import fs from 'fs'
 import settings from './settings'
 import spectrumNode from '../modules/spectrumNode'
+import Windows from './windows'
 
 import nodeSync from '../modules/nodeSync'
 import logger from '../modules/logger'
@@ -96,7 +97,7 @@ class OzoneMenu extends EventEmitter {
 
     const currentLanguage = global.language
 
-    const languageMenu = Object.keys(global.i18n.options.resources)
+    const languageSubMenus = Object.keys(global.i18n.options.resources)
       .filter(langCode => langCode !== 'dev')
       .map(langCode => {
         const menuItem = {
@@ -112,50 +113,8 @@ class OzoneMenu extends EventEmitter {
         }
         return menuItem
       })
-    // let net = ['test', 'main']
-    // let netMenue = net.map(net_ => {
-    //   return {
-    //     label: global.i18n.t(`debugMenu.${net_}`),
-    //     type: 'checkbox',
-    //     checked: settings.network === net_,
-    //     click: () => {
-    //       settings.network_ = net_
-    //       this.create()
-    //       this.kickStart(true)
-    //       spectrumNode._loadDefaults()
-    //     }
-    //   }
-    // })
+
     const debugSubmenus = [
-      // {
-      //   label: global.i18n.t('debugMenu.net'),
-      //   submenu: netMenue
-      // },
-      // {type: 'separator'},
-      // {
-      //   label: global.i18n.t('debugMenu.log'),
-      //   click: () => {
-      //     let filename = path.resolve(app.getPath('userData'), 'ozone.log')
-      //     fs.writeFileSync(path.resolve(app.getPath('desktop'), 'ozone.log'), fs.readFileSync(filename))
-      //     global.windows.broadcast(Types.OZONE_LOG_DOWNLOADED)
-      //   }
-      // },
-      // {type: 'separator'},
-      // {
-      //   label: global.i18n.t('debugMenu.rmData'),
-      //   click: () => {
-      //     spectrumNode.stop().then(() => {
-      //       rimraf(settings.chainDataDir, (err) => {
-      //         if (err) {
-      //           log.error('remove chain data encounter an error:', err)
-      //         } else {
-      //           log.info('remove chain data success')
-      //           this.kickStart()
-      //         }
-      //       })
-      //     })
-      //   }
-      // },
       {
         label: global.i18n.t('debugMenu.loginLock'),
         click: () => {
@@ -214,7 +173,7 @@ class OzoneMenu extends EventEmitter {
     const appMenu = [
       {
         label: global.i18n.t('appMenu.language-switch'),
-        submenu: languageMenu
+        submenu: languageSubMenus
       },
       {
         label: global.i18n.t('appMenu.debug'),
@@ -312,14 +271,31 @@ class OzoneMenu extends EventEmitter {
         label: global.i18n.t('devMenu.net.label'),
         submenu: [
           {
+            id: 'mainNet',
             label: global.i18n.t('devMenu.net.main'),
             type: 'checkbox',
-            checked: settings.network === 'main'
+            checked: settings.network === 'main',
+            click: () => {
+              this.changeNetwork('main')
+            }
           },
           {
+            id: 'testNet',
             label: global.i18n.t('devMenu.net.test'),
             type: 'checkbox',
-            checked: settings.network === 'test'
+            checked: settings.network === 'test',
+            click: () => {
+              this.changeNetwork('test')
+            }
+          },
+          {
+            id: 'devMode',
+            label: global.i18n.t('devMenu.net.dev'),
+            type: 'checkbox',
+            checked: settings.network === 'dev',
+            click: () => {
+              this.changeNetwork('dev')
+            }
           }
         ]
       },
@@ -367,8 +343,8 @@ class OzoneMenu extends EventEmitter {
       submenu: devSubMenus
     })
 
-    var osxMenu = Menu.buildFromTemplate(appMenu)
-    Menu.setApplicationMenu(osxMenu)
+    this.menu = Menu.buildFromTemplate(appMenu)
+    Menu.setApplicationMenu(this.menu)
 
     this.mwin.webContents.removeAllListeners('context-menu')
     this.mwin.webContents.on('context-menu', (e, props) => {
@@ -379,6 +355,24 @@ class OzoneMenu extends EventEmitter {
         selectionMenu.popup(this.mwin)
       }
     })
+  }
+
+  changeNetwork (network) {
+    if (settings.network !== network) {
+      log.debug(`Change network from '${settings.network}' to '${network}'`)
+      settings.network = network
+      Windows.broadcast(Types.MENU_ACTION_CHANGE_NETWORK, network)
+      if (process.env.DEV) {
+        setTimeout(() => {
+          app.quit()
+        }, 3000)
+      } else {
+        setTimeout(() => {
+          app.relaunch()
+          app.quit()
+        }, 3000)
+      }
+    }
   }
 }
 

@@ -70,16 +70,39 @@ class DatabaseManager {
     })
   }
 
+  resetCollections () {
+    const network = settings.network
+    if (network === 'dev') {
+      this._db.removeCollection('transactions_dev')
+      this._db.removeCollection('contracts_dev')
+      this._db.removeCollection('tokens_dev')
+    }
+  }
+
   get accounts () {
     return this.getCollection('accounts')
   }
 
   get transactions () {
-    return this.getCollection('transactions')
+    const network = settings.network
+    if (network === 'test') {
+      return this.getCollection('transactions_test')
+    } else if (network === 'dev') {
+      return this.getCollection('transactions_dev')
+    } else {
+      return this.getCollection('transactions')
+    }
   }
 
   get contracts () {
-    return this.getCollection('contracts')
+    const network = settings.network
+    if (network === 'test') {
+      return this.getCollection('contracts_test')
+    } else if (network === 'dev') {
+      return this.getCollection('contracts_dev')
+    } else {
+      return this.getCollection('contracts')
+    }
   }
 
   get lock () {
@@ -87,7 +110,14 @@ class DatabaseManager {
   }
 
   get tokens () {
-    return this.getCollection('tokens')
+    const network = settings.network
+    if (network === 'test') {
+      return this.getCollection('tokens_test')
+    } else if (network === 'dev') {
+      return this.getCollection('tokens_dev')
+    } else {
+      return this.getCollection('tokens')
+    }
   }
 
   get about () {

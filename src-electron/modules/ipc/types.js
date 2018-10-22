@@ -32,5 +32,6 @@ export const Types = {
   LOGIN_LOCK_SETTING: 'login_lock_setting',
   HIDE_WINDOW: 'hide_window',
   MENU_ACTION_RMDATA: 'menu_action_rmdata',
-  MENU_ACTION_RMDATA_CONFIRM: 'menu_action_rmdata_confirm'
+  MENU_ACTION_RMDATA_CONFIRM: 'menu_action_rmdata_confirm',
+  MENU_ACTION_CHANGE_NETWORK: 'menu_action_change_network'
 }

@@ -254,6 +254,7 @@ export default {
   },
   network: {
     test: 'Test Network',
-    main: 'Main Network'
+    main: 'Main Network',
+    dev: 'Development Mode'
   }
 }

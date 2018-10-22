@@ -36,10 +36,7 @@ const STATES = {
 class SpectrumNode extends EventEmitter {
   constructor () {
     super()
-
     this.STATES = STATES
-
-    this._loadDefaults()
 
     this._node = null
     this._type = null
@@ -126,43 +123,20 @@ class SpectrumNode extends EventEmitter {
    * @return {Promise}
    */
   init () {
-    let rpcPort = Settings.rpcPort
-    let wsPort = Settings.wsPort
-    return new Q((resolve, reject) => {
-      Q.all([this._checkPort(rpcPort), this._checkPort(wsPort)])
-        .then(() => {
-          reject()
-        })
-        .catch(() => {
-          resolve()
-        })
+    this._loadDefaults()
+    log.info(`Node type: ${this.defaultNodeType}`)
+    log.info(`Network: ${this.defaultNetwork}`)
+    log.info(`SyncMode: ${this.defaultSyncMode}`)
+
+    // if not, start node yourself
+    return this._start(
+      this.defaultNodeType,
+      this.defaultNetwork,
+      this.defaultSyncMode
+    ).catch(err => {
+      log.error('Failed to start node', err)
+      throw err
     })
-      .then(() => {
-        return this._web3Init()
-      })
-      .then(() => {
-        log.info('web3 connected to exists node success!')
-        this.state = STATES.CONNECTED
-      })
-      .catch(() => {
-        log.warn(
-          "Failed to connect to node. Maybe it's not running so let's start our own..."
-        )
-
-        log.info(`Node type: ${this.defaultNodeType}`)
-        log.info(`Network: ${this.defaultNetwork}`)
-        log.info(`SyncMode: ${this.defaultSyncMode}`)
-
-        // if not, start node yourself
-        return this._start(
-          this.defaultNodeType,
-          this.defaultNetwork,
-          this.defaultSyncMode
-        ).catch(err => {
-          log.error('Failed to start node', err)
-          throw err
-        })
-      })
   }
 
   restart (newType, newNetwork, syncMode) {
@@ -173,20 +147,22 @@ class SpectrumNode extends EventEmitter {
 
       log.info('Restart node', newType, newNetwork)
 
-      return this.stop()
-        // .then(() => this.emit('show-loading'))
-        .then(() =>
-          this._start(
-            newType || this.type,
-            newNetwork || this.network,
-            syncMode || this.syncMode
+      return (
+        this.stop()
+          // .then(() => this.emit('show-loading'))
+          .then(() =>
+            this._start(
+              newType || this.type,
+              newNetwork || this.network,
+              syncMode || this.syncMode
+            )
           )
-        )
-        // .then(() => this.emit('hide-loading'))
-        .catch(err => {
-          log.error('Error restarting node', err)
-          throw err
-        })
+          // .then(() => this.emit('hide-loading'))
+          .catch(err => {
+            log.error('Error restarting node', err)
+            throw err
+          })
+      )
     })
   }
 
@@ -309,10 +285,15 @@ class SpectrumNode extends EventEmitter {
 
     let providerUrl = Settings.ipcConnection
 
+    if (this._network === 'dev') {
+      providerUrl = 'ws://localhost:18546'
+    }
+
     return pretry(
       (retry, number) => {
         log.debug(`web3 try to set provider ${number} times.`)
-        if (providerUrl.startsWith('http:') || providerUrl.startsWith('ws:')) {
+        if (providerUrl.startsWith('ws:')) {
+          log.debug(`Set websocket provider: ${providerUrl}`)
           global.web3.setProvider(providerUrl)
         } else {
           global.web3.setProvider(
@@ -384,7 +365,7 @@ class SpectrumNode extends EventEmitter {
    */
   __startProcess (nodeType, network, binPath, _syncMode) {
     let syncMode = _syncMode
-    if (nodeType === 'geth' && !syncMode) {
+    if (nodeType === 'smc' && !syncMode) {
       syncMode = 'fast'
     }
 
@@ -401,107 +382,121 @@ class SpectrumNode extends EventEmitter {
 
             return reject(err)
           }
-
-          let args
-
-          switch (network) {
-            // Starts Ropsten network
-            case 'test':
-              args = ['--testnet', '--syncmode', syncMode]
-              break
-
-            // Starts Main net
-            default:
-              args = ['--syncmode', syncMode]
-          }
-
-          const nodeOptions = Settings.nodeOptions
-
-          if (nodeOptions && nodeOptions.length) {
-            log.debug('Custom node options', nodeOptions)
-
-            args = args.concat(nodeOptions)
-          }
-
-          log.trace('Spawn', binPath, args)
-
-          const proc = spawn(binPath, args)
-
-          // node has a problem starting
-          proc.once('error', error => {
-            if (STATES.STARTING === this.state) {
-              this.state = STATES.ERROR
-
-              log.info('Node startup error')
-
-              // TODO: detect this properly
-              // this.emit('nodeBinaryNotFound');
-
-              reject(error)
-            }
-          })
-
-          // we need to read the buff to prevent node from not working
-          proc.stderr.pipe(
-            fs.createWriteStream(Settings.constructUserDataPath('node.log'), {
-              flags: 'a'
-            })
-          )
-
-          // when proc outputs data
-          proc.stdout.on('data', data => {
-            log.trace('Got stdout data')
-
-            this.emit('data', data)
-
-            // check for startup errors
-            if (STATES.STARTING === this.state) {
-              const dataStr = data.toString().toLowerCase()
-
-              if (nodeType === 'geth') {
-                if (dataStr.indexOf('fatal: error') >= 0) {
-                  const error = new Error(`Geth error: ${dataStr}`)
-
-                  if (dataStr.indexOf('bind') >= 0) {
-                    error.tag = UNABLE_TO_BIND_PORT_ERROR
-                  }
-
-                  log.debug(error)
-
-                  return reject(error)
-                }
-              }
-            }
-          })
-
-          // when proc outputs data in stderr
-          proc.stderr.on('data', data => {
-            log.trace('Got stderr data')
-
-            this.emit('data', data)
-          })
-
-          this.on('data', _.bind(this._logNodeData, this))
-
-          // when data is first received
-          this.once('data', () => {
-            /*
-                        We wait a short while before marking startup as successful
-                        because we may want to parse the initial node output for
-                        errors, etc (see geth port-binding error above)
-                    */
-            setTimeout(() => {
-              if (STATES.STARTING === this.state) {
-                log.info(
-                  `${NODE_START_WAIT_MS}ms elapsed, assuming node started up successfully`
-                )
-
-                resolve(proc)
-              }
-            }, NODE_START_WAIT_MS)
-          })
         }
       )
+
+      let args
+
+      switch (network) {
+        // Starts test network
+        case 'test':
+          args = [
+            '--testnet',
+            '--rpc', '--wsapi=eth,net,web3,personal', '--rpccorsdomain', 'http://localhost:18545',
+            '--ws', '--wsapi=eth,net,web3,personal', '--wsorigins', '*'
+          ]
+          break
+
+        case 'dev':
+          args = [
+            '--dev',
+            '--rpc', '--wsapi=eth,net,web3,personal', '--rpccorsdomain', 'http://localhost:18545',
+            '--ws', '--wsapi=eth,net,web3,personal', '--wsorigins', '*'
+          ]
+          break
+
+        // Starts Main net
+        default:
+          args = ['--syncmode', syncMode]
+      }
+
+      const nodeOptions = Settings.nodeOptions
+
+      if (nodeOptions && nodeOptions.length) {
+        log.debug('Custom node options', nodeOptions)
+
+        args = args.concat(nodeOptions)
+      }
+
+      log.debug('Start node options: ', args)
+
+      log.trace('Spawn', binPath, args)
+
+      const proc = spawn(binPath, args)
+
+      // node has a problem starting
+      proc.once('error', error => {
+        if (STATES.STARTING === this.state) {
+          this.state = STATES.ERROR
+
+          log.info('Node startup error')
+
+          // TODO: detect this properly
+          // this.emit('nodeBinaryNotFound');
+
+          reject(error)
+        }
+      })
+
+      // we need to read the buff to prevent node from not working
+      proc.stderr.pipe(
+        fs.createWriteStream(Settings.constructUserDataPath('node.log'), {
+          flags: 'a'
+        })
+      )
+
+      // when proc outputs data
+      proc.stdout.on('data', data => {
+        log.trace('Got stdout data')
+
+        this.emit('data', data)
+
+        // check for startup errors
+        if (STATES.STARTING === this.state) {
+          const dataStr = data.toString().toLowerCase()
+
+          if (nodeType === 'geth') {
+            if (dataStr.indexOf('fatal: error') >= 0) {
+              const error = new Error(`Geth error: ${dataStr}`)
+
+              if (dataStr.indexOf('bind') >= 0) {
+                error.tag = UNABLE_TO_BIND_PORT_ERROR
+              }
+
+              log.debug(error)
+
+              return reject(error)
+            }
+          }
+        }
+      })
+
+      // when proc outputs data in stderr
+      proc.stderr.on('data', data => {
+        log.trace('Got stderr data')
+
+        this.emit('data', data)
+      })
+
+      this.on('data', _.bind(this._logNodeData, this))
+
+      // when data is first received
+      this.once('data', () => {
+        /*
+                    We wait a short while before marking startup as successful
+                    because we may want to parse the initial node output for
+                    errors, etc (see geth port-binding error above)
+                */
+        setTimeout(() => {
+          if (STATES.STARTING === this.state) {
+            log.info(
+              `${NODE_START_WAIT_MS}ms elapsed, assuming node started up successfully`
+            )
+
+            resolve(proc)
+          }
+        }, NODE_START_WAIT_MS)
+      })
     })
   }
 

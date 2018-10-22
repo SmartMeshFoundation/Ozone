@@ -22,6 +22,7 @@
     <q-btn class="account-btn import-account" size="lg"
            color="primary"
            :label="$t('account.btn.importAccount')"
+           :disable="$settings.network === 'dev'"
            @click="importAccount()" />
 
     <!-- Create Account Modal -->

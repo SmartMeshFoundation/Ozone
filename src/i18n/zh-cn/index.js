@@ -254,6 +254,7 @@ export default {
   },
   network: {
     test: '测试网络',
-    main: '主网络'
+    main: '主网络',
+    dev: '开发模式'
   }
 }

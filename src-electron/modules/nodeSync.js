@@ -13,6 +13,7 @@ import { ipcMain as ipc } from 'electron'
 import spectrumNode from './spectrumNode'
 import logger from './logger'
 import { Types } from './ipc/types'
+import Settings from './settings'
 
 const log = logger.create('NodeSync')
 
@@ -177,23 +178,25 @@ class NodeSync extends EventEmitter {
   }
 
   _onNodeStateChanged (state) {
-    switch (state) { // eslint-disable-line default-case
-      // stop syncing when node about to be stopped
-      case spectrumNode.STATES.STOPPING:
-        log.info('Spectrum node stopping, so stop sync')
+    if (Settings.network !== 'dev') {
+      switch (state) { // eslint-disable-line default-case
+        // stop syncing when node about to be stopped
+        case spectrumNode.STATES.STOPPING:
+          log.info('Spectrum node stopping, so stop sync')
 
-        this.stop()
-        break
-      // auto-sync whenever node gets connected
-      case spectrumNode.STATES.CONNECTED:
-        log.info('Spectrum node connected, re-start sync')
+          this.stop()
+          break
+        // auto-sync whenever node gets connected
+        case spectrumNode.STATES.CONNECTED:
+          log.info('Spectrum node connected, re-start sync')
 
-        // stop syncing, then start again
-        this.stop().then(() => {
-          this.start()
-        })
+          // stop syncing, then start again
+          this.stop().then(() => {
+            this.start()
+          })
 
-        break
+          break
+      }
     }
   }
 }

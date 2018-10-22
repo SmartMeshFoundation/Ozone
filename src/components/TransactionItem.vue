@@ -30,7 +30,7 @@
        <span> {{$t('tx.list.pending')}} </span>
      </div>
    </div>
-   <div>
+   <!-- <div>
     <span v-if="checkTransDir() === 1" style="font-size:14px;background-color: #F8A656;display: block;line-height: 30px;text-align: center;width: 100%;color: white;border-radius: 4px;margin: 0 0 !important;">
      OUT
     </span>
@@ -40,9 +40,9 @@
     <span v-if="checkTransDir() === 0" style="font-size:14px;background-color: #6ecafc;display: block;line-height: 30px;text-align: center;width: 100%;color: white;border-radius: 2px;margin: 0 0 !important;">
      SELF
     </span>
-   </div>
-   <div>
-     {{toSMT(item.value)}} {{$unit}}
+   </div> -->
+   <div :style="{color: signColor, overflow: 'hidden'}">
+     {{sign}}{{toSMT(item.value)}} {{$unit}}
    </div>
    <q-modal class="transfer-item" v-model="showTransactionModal"
             minimized
@@ -105,8 +105,9 @@ div.trans-container div:nth-child(3)
 div.trans-container div:nth-child(4)
   width 10%
 div.trans-container div:nth-child(5)
-  padding-right 4px
-  width 5%
+  padding-right 16px
+  // width 5%
+  text-align right
 div.trans-container div:nth-child(6)
   color red
   width 18%
@@ -164,6 +165,29 @@ export default {
     },
     isPending () {
       return this.item.blockNumber == null
+    },
+    sign () {
+      let from = this.item.from.toLowerCase()
+      // let to = this.item.to.toLowerCase()
+      let s = ''
+      if (this.address) {
+        let a = this.address.toLowerCase()
+        if (a === from) {
+          s = '-'
+        } else {
+          s = '+'
+        }
+      }
+      return s
+    },
+    signColor () {
+      if (this.sign === '-') {
+        return 'red'
+      } else if (this.sign === '+') {
+        return 'green'
+      } else {
+        return '#0c0c0c'
+      }
     }
   },
   methods: {
@@ -204,6 +228,7 @@ export default {
         }
       }
     },
+
     accountName (address) {
       let accountName = this.$store.getters['account/name'](address)
       if (accountName.length > 12) {

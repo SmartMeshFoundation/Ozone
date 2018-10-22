@@ -42,7 +42,8 @@
       "label": "网络",
       "main": "主网络",
       "test": "测试网络",
-      "private": "私网"
+      "private": "私网",
+      "dev": "开发模式"
     },
     "remix": "打开Remix",
     "devtools": "开发者工具"

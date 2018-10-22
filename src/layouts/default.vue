@@ -28,12 +28,6 @@
           </q-popover>
         </div>-->
 
-        <q-chip v-if="network === 'test'"
-                dense
-                color="negative"
-                title="network"
-                class=""> {{$t('network.test')}} </q-chip>
-
         <q-chip dense
                 icon="layers"
                 title="block number"
@@ -46,6 +40,18 @@
                 icon="router"
                 title="peers"
                 class="q-ml-sm"> {{peerCount}} </q-chip>
+
+       <q-chip v-if="network === 'test'"
+                dense
+                color="negative"
+                title="network"
+                class="q-ml-md"> {{$t('network.test')}} </q-chip>
+
+        <q-chip v-if="network === 'dev'"
+                dense
+                color="negative"
+                title="network"
+                class="q-ml-md"> {{$t('network.dev')}} </q-chip>
 
       </div>
     </q-layout-header>
@@ -338,7 +344,7 @@ export default {
       return this.$store.state.ui.breadcrumbs
     },
     network () {
-      return this.$store.state.node.network
+      return this.$settings.network
     }
   },
   watch: {
@@ -452,6 +458,10 @@ export default {
           console.log('Cancel rm chaindata')
         })
     })
+
+    ipc.on(Types.MENU_ACTION_CHANGE_NETWORK, (event, net) => {
+      this.$q.loading.show()
+    })
   },
   beforeCreate () {
     ipc.on(Types.LOGIN_LOCK_SETTING, (event) => {
@@ -461,6 +471,8 @@ export default {
   destroyed () {
     clearInterval(timer)
     ipc.removeAllListeners(Types.LOGIN_LOCK_SETTING)
+    ipc.removeAllListeners(Types.MENU_ACTION_RMDATA)
+    ipc.removeAllListeners(Types.MENU_ACTION_CHANGE_NETWORK)
   }
 }
 </script>

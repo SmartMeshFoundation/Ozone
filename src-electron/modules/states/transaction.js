@@ -4,6 +4,7 @@ import moment from 'moment'
 import _ from 'lodash'
 import logger from '../logger'
 import { Types } from '../ipc/types'
+import Settings from '../settings'
 
 const log = logger.create('TransactionState')
 

@@ -5,7 +5,7 @@
       <ident-icon :value="account.address.toLowerCase()"
                   class="vertical-middle q-pa-xs" /> {{ account.name }}
       <div class="changename-btn" @click.stop="changeName"></div>
-      <div class="backup-btn" @click.stop="backup(account.address)">{{$t('account.btn.backupAccount')}}</div>
+      <div v-if="$settings.network !== 'dev'" class="backup-btn" @click.stop="backup(account.address)">{{$t('account.btn.backupAccount')}}</div>
       <br/>
       <small class="account-address">{{ account.address }}</small>
     </h1>

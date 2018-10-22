@@ -5,6 +5,8 @@ import fs from 'fs-extra'
 
 import packageJson from '../../package.json'
 
+import db from './db'
+
 const _defaults = {
   network: process.env.PROD ? 'main' : 'test',
   syncmode: 'fast',
@@ -17,12 +19,17 @@ const _defaults = {
 
 class Settings {
   constructor () {
-    this.init()
+    this._log = logger.create('Settings')
   }
 
-  init () {
-    logger.setup({loglevel: this.loglevel})
-    this._log = logger.create('Settings')
+  loadSysconfig () {
+    const sysconfig = db.sysconfig
+    const network = sysconfig.by('_id', 'network')
+    const netConfig = network ? network.config : null
+    this._log.debug(`Load sysconfig: network=${netConfig}`)
+    if (netConfig) {
+      this.network = netConfig
+    }
   }
 
   get syncmode () {
@@ -30,11 +37,22 @@ class Settings {
   }
 
   get network () {
-    return this._network_ || _defaults.network
+    return this._network || _defaults.network
   }
 
   set network (nw) {
     this._network = nw
+    let network = db.sysconfig.by('_id', 'network')
+    if (network) {
+      network.config = nw
+      db.sysconfig.update(network)
+    } else {
+      network = {
+        _id: 'network',
+        config: nw
+      }
+      db.sysconfig.insert(network)
+    }
   }
 
   get nodeType () {

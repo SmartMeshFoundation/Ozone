@@ -42,7 +42,8 @@
       "label": "Network",
       "main": "Main Network",
       "test": "Test Network",
-      "private": "Private"
+      "private": "Private",
+      "dev": "Development Mode"
     },
     "remix": "Open Remix",
     "devtools": "DevTools"
