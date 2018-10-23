@@ -50,7 +50,7 @@
         <q-chip v-if="network === 'dev'"
                 dense
                 color="negative"
-                title="network"
+                title="ws://localhost:18546, http://localhost:18545"
                 class="q-ml-md"> {{$t('network.dev')}} </q-chip>
 
       </div>
