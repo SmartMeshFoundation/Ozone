@@ -13,6 +13,20 @@
                        dense />
             </div>
         </div>
+      <q-modal class="verify-modal" v-model="showConfirmModal">
+        <div class="q-pa-md">
+          <p class="q-headline">{{ $t('contract.my.delete_dialog.title') }}</p>
+          <p class="text-1">{{ $t('contract.my.delete_dialog.message', [item.name]) }}</p>
+          <q-btn :label="$t('button.ok')"
+                 color="primary"
+                 class="float-right q-my-md"
+                 @click="confirmDel" />
+          <q-btn style="right: 107px" :label="$t('button.cancel')"
+                 color="primary"
+                 class="float-right q-my-md"
+                 @click="showConfirmModal = false" />
+        </div>
+      </q-modal>
     </div>
 </template>
 
@@ -41,6 +55,7 @@
 export default {
   data () {
     return {
+      showConfirmModal: false
     }
   },
   props: {
@@ -59,7 +74,7 @@ export default {
   },
   methods: {
     deleteItem (id) {
-      this.$q.dialog({
+      /* this.$q.dialog({
         title: this.$t('contract.my.delete_dialog.title'),
         message: this.$t('contract.my.delete_dialog.message', [this.item.name]),
         ok: true,
@@ -70,7 +85,11 @@ export default {
         })
         .catch(() => {
           // Picked "Cancel" or dismissed
-        })
+        }) */
+      this.showConfirmModal = true
+    },
+    confirmDel () {
+      this.$store.commit('contract/remove', this.item._id)
     }
   }
 }
