@@ -35,6 +35,7 @@ export default {
 
   notify: {
     error_password: 'Invalid account\'s password!',
+    muti_keystore: 'multiple keys match address, please remove duplicates from keystore!',
     ozone_downloaded: 'ozone log file(ozone.log) already download to desktop,please view by text editor'
   },
 
@@ -250,6 +251,10 @@ export default {
     rmdata: {
       title: 'WARNING: Clean Chaindata',
       message: 'The block database will be cleared and the application will be restarted. Please confirm!'
+    },
+    swichNet: {
+      title: 'WARNING: Switch Network',
+      message: 'The Network will be changed and the application will be restarted. Please confirm!'
     }
   },
   network: {

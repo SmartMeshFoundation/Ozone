@@ -37,6 +37,19 @@ class IpcCommunicator {
         })
       })
     })
+    ipc.on(Types.MENU_ACTION_CHANGE_NETWORK_CONFIRM, (event) => {
+      log.debug('Will change network...')
+      if (process.env.DEV) {
+        setTimeout(() => {
+          app.quit()
+        }, 3000)
+      } else {
+        setTimeout(() => {
+          app.relaunch()
+          app.quit()
+        }, 3000)
+      }
+    })
   }
 }
 

@@ -252,7 +252,12 @@ export default {
         .catch((err) => {
           console.log(err)
           this.$q.loading.hide()
-          this.$q.notify(this.$t('notify.error_password'))
+          let errorMessage = err.message
+          if (errorMessage.includes('could not decrypt key with given passphrase')) {
+            this.$q.notify(this.$t('notify.error_password'))
+          } else if (errorMessage.includes('multiple keys match address')) {
+            this.$q.notify(this.$t('notify.muti_keystore'))
+          }
         })
     },
 

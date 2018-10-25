@@ -362,7 +362,7 @@ class OzoneMenu extends EventEmitter {
       log.debug(`Change network from '${settings.network}' to '${network}'`)
       settings.network = network
       Windows.broadcast(Types.MENU_ACTION_CHANGE_NETWORK, network)
-      if (process.env.DEV) {
+      /* if (process.env.DEV) {
         setTimeout(() => {
           app.quit()
         }, 3000)
@@ -371,7 +371,7 @@ class OzoneMenu extends EventEmitter {
           app.relaunch()
           app.quit()
         }, 3000)
-      }
+      } */
     }
   }
 }

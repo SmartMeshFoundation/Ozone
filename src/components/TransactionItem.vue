@@ -8,13 +8,13 @@
    </div>
    <div>
      <ident-icon :value="item.from.toLowerCase()" />
-     <span :title="item.from"> {{accountName(item.from)}} </span>
+     <span class="text-overflow" :title="item.from"> {{accountName(item.from)}} </span>
      <span v-if="item.to != null">
          <q-icon name="send" class="btn-send"
                  color="grey-5 q-px-md" />
          <ident-icon :value="item.to.toLowerCase()" />
-         <span :title="item.to"> {{accountName(item.to)}} </span>
-         </span>
+         <span class="text-overflow" :title="item.to"> {{accountName(item.to)}} </span>
+     </span>
    </div>
    <div>
      <div :class="{hidden: !showElapsedTime}">
@@ -101,16 +101,20 @@ div.trans-container div:nth-child(1)
 div.trans-container div:nth-child(2)
     width 15%
 div.trans-container div:nth-child(3)
-  width 37%
+  width 40%
 div.trans-container div:nth-child(4)
   width 10%
 div.trans-container div:nth-child(5)
-  padding-right 16px
-  // width 5%
-  text-align right
-div.trans-container div:nth-child(6)
   color red
-  width 18%
+  width 20%
+.text-overflow{
+  display inline-block
+  width 6.5em
+  overflow hidden
+  text-overflow ellipsis
+  white-space nowrap
+  vertical-align middle
+}
 div.trans-container:nth-child(1)
     // margin-top:-20px
 div.trans-container:not(:first-child)
@@ -231,9 +235,6 @@ export default {
 
     accountName (address) {
       let accountName = this.$store.getters['account/name'](address)
-      if (accountName.length > 12) {
-        return accountName.substr(0, 12) + '...'
-      }
       return accountName
     },
     viewTransaction (item) {

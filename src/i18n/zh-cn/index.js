@@ -35,6 +35,7 @@ export default {
 
   notify: {
     error_password: '账户密码错误',
+    muti_keystore: '该地址匹配到多个keystore文件，请将重复的删除！',
     ozone_downloaded: 'ozone日志文件(ozone.log)已经下载到桌面，请使用文本编辑器查看'
   },
 
@@ -250,6 +251,10 @@ export default {
     rmdata: {
       title: '数据删除警告',
       message: '即将清除区块数据库并重启应用。重新同步数据需要花费较长时间，请确认！'
+    },
+    swichNet: {
+      title: '网络切换警告',
+      message: '即将切换网络并重启应用，请确认！'
     }
   },
   network: {

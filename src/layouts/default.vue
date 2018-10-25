@@ -167,6 +167,34 @@
                @click="modify" />
       </div>
     </q-modal>
+    <q-modal class="verify-modal" v-model="showVerifyModal">
+      <div class="q-pa-md">
+        <p class="q-headline">{{ $t('dialog.rmdata.title') }}</p>
+        <p class="text-1">{{ $t('dialog.rmdata.message') }}</p>
+        <q-btn :label="$t('button.ok')"
+               color="primary"
+               class="float-right q-my-md"
+               @click="rmData" />
+        <q-btn style="right: 107px" :label="$t('button.cancel')"
+               color="primary"
+               class="float-right q-my-md"
+               @click="showVerifyModal = false" />
+      </div>
+    </q-modal>
+    <q-modal class="verify-modal" v-model="showChangeModal">
+      <div class="q-pa-md">
+        <p class="q-headline">{{ $t('dialog.swichNet.title') }}</p>
+        <p class="text-1">{{ $t('dialog.swichNet.message') }}</p>
+        <q-btn :label="$t('button.ok')"
+               color="primary"
+               class="float-right q-my-md"
+               @click="changeNet" />
+        <q-btn style="right: 107px" :label="$t('button.cancel')"
+               color="primary"
+               class="float-right q-my-md"
+               @click="showChangeModal = false" />
+      </div>
+    </q-modal>
   </q-layout>
 </template>
 <style lang="stylus">
@@ -330,7 +358,9 @@ export default {
         oldpassword: '',
         password: '',
         repeatPassword: ''
-      }
+      },
+      showVerifyModal: false,
+      showChangeModal: false
     }
   },
   computed: {
@@ -414,6 +444,14 @@ export default {
     },
     updateState (status) {
       this.$store.commit('lock/updateLockStatus', status ? 1 : 0)
+    },
+    rmData () {
+      this.$q.loading.show()
+      ipc.send(Types.MENU_ACTION_RMDATA_CONFIRM)
+    },
+    changeNet () {
+      this.$q.loading.show()
+      ipc.send(Types.MENU_ACTION_CHANGE_NETWORK_CONFIRM)
     }
   },
   created () {
@@ -440,7 +478,7 @@ export default {
     })
 
     ipc.on(Types.MENU_ACTION_RMDATA, (event) => {
-      this.$q.dialog({
+      /* this.$q.dialog({
         title: this.$t('dialog.rmdata.title'),
         message: this.$t('dialog.rmdata.message'),
         color: 'primary',
@@ -456,14 +494,15 @@ export default {
         })
         .catch(() => {
           console.log('Cancel rm chaindata')
-        })
+        }) */
+      this.showVerifyModal = true
     })
 
     ipc.on(Types.MENU_ACTION_CHANGE_NETWORK, (event, net) => {
-      this.$q.loading.show()
+      // this.$q.loading.show()
+      this.showChangeModal = true
     })
-  },
-  beforeCreate () {
+
     ipc.on(Types.LOGIN_LOCK_SETTING, (event) => {
       this.setting()
     })

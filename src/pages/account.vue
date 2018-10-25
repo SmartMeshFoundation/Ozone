@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-lg account-item">
     <h1 class="account-name">
-      <em class="float-right text-warning">{{ $t('account.balance') }}: <ani-number :value="account.ether" /> </em>
+      <em style="letter-spacing: 0.1em" class="float-right text-warning">{{ $t('account.balance') }}: <ani-number :value="account.ether" /> </em>
       <ident-icon :value="account.address.toLowerCase()"
                   class="vertical-middle q-pa-xs" /> {{ account.name }}
       <div class="changename-btn" @click.stop="changeName"></div>

@@ -14,8 +14,9 @@
               <q-list-header>{{$t('contract.view.status')}}</q-list-header>
               <q-item v-for="state in states"
                       :key="state.name">
-                <q-item-side ref="statesBtn" :style="{width: maxStatesBtnWidth}" class="contract-btn states-btn">
-                  <q-btn :label="state.name" dense
+                <q-item-side>
+                  <q-btn :style="{width: maxStatesBtnWidth}" ref="statesBtn" :label="state.name" dense
+                         class="contract-btn states-btn"
                          @click="callContract(state.name)"
                          title="call"/>
                 </q-item-side>
@@ -55,7 +56,6 @@
                   <q-btn ref="methodBtn" :style="{width : maxMethodBtnWidth}" :label="method.name" dense
                          @click="callContract(method.name)"
                          title="transact"
-                         color="red-3"
                          class="contract-btn method-btn" />
                 </q-item-side>
                 <q-item-main>
@@ -102,7 +102,7 @@
                 :key="uuid(msg)">{{msg.message}}</li>
         </ul>
 
-      <q-modal class="password-modal" v-model="showPasswordModal">
+      <q-modal class="pub-contract" v-model="showPasswordModal">
         <div class="q-pa-md">
           <p class="q-headline">{{ $t('contract.view.dialog.title') }}</p>
           <p class="modify-account-name"><q-input type="password" :placeholder="$t('contract.view.dialog.message')" v-model="password"/></p>
@@ -170,7 +170,6 @@
 .states-btn
   text-align center
 .method-btn
-  background-color #4782F6 !important
   text-align center
 body.desktop .q-select-highlight
   background-color #f4f8f9 !important
@@ -178,6 +177,29 @@ body.desktop .q-select-highlight
   background-color #f4f8f9 !important
 .q-select-highlight
   background-color #f4f8f9 !important
+div.pub-contract .modal-content
+  width 448px
+  height 300px
+div.pub-contract .q-headline
+  font-size 18px
+  color #333333
+  line-height 25px
+  margin-top 14px
+  margin-left 8px
+div.pub-contract .modify-account-name
+  margin-top 30px !important
+div.pub-contract .q-btn
+  position absolute
+  border-radius 4px
+  width 70px
+  height 36px
+  background-color #4782F6 !important
+div.pub-contract .cancel-btn
+  bottom 4px
+  right 105px !important
+div.pub-contract .sub-btn
+  bottom 4px
+  right 26px !important
 </style>
 
 <script>
