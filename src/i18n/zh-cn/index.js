@@ -34,6 +34,7 @@ export default {
   },
 
   notify: {
+    blank_password: '未输入密码',
     error_password: '账户密码错误',
     muti_keystore: '该地址匹配到多个keystore文件，请将重复的删除！',
     ozone_downloaded: 'ozone日志文件(ozone.log)已经下载到桌面，请使用文本编辑器查看'

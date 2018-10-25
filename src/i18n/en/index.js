@@ -34,6 +34,7 @@ export default {
   },
 
   notify: {
+    blank_password: 'Empty Password',
     error_password: 'Invalid account\'s password!',
     muti_keystore: 'multiple keys match address, please remove duplicates from keystore!',
     ozone_downloaded: 'ozone log file(ozone.log) already download to desktop,please view by text editor'

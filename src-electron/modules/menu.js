@@ -273,7 +273,7 @@ class OzoneMenu extends EventEmitter {
           {
             id: 'mainNet',
             label: global.i18n.t('devMenu.net.main'),
-            type: 'checkbox',
+            type: 'radio',
             checked: settings.network === 'main',
             click: () => {
               this.changeNetwork('main')
@@ -282,7 +282,7 @@ class OzoneMenu extends EventEmitter {
           {
             id: 'testNet',
             label: global.i18n.t('devMenu.net.test'),
-            type: 'checkbox',
+            type: 'radio',
             checked: settings.network === 'test',
             click: () => {
               this.changeNetwork('test')
@@ -291,7 +291,7 @@ class OzoneMenu extends EventEmitter {
           {
             id: 'devMode',
             label: global.i18n.t('devMenu.net.dev'),
-            type: 'checkbox',
+            type: 'radio',
             checked: settings.network === 'dev',
             click: () => {
               this.changeNetwork('dev')
@@ -372,6 +372,7 @@ class OzoneMenu extends EventEmitter {
           app.quit()
         }, 3000)
       } */
+      this.create()
     }
   }
 }

@@ -358,7 +358,6 @@ export default {
             this.addMessage(error.message)
           })
       } else {
-        this.showPasswordModal = true
         Promise.all([
           execMethod.estimateGas({from: '0x0000000000000000000000000000000000000000'}),
           web3.eth.getGasPrice()
@@ -369,6 +368,7 @@ export default {
             this.gas = this.minGas
             console.log(this.maxGas, this.minGas)
             this.execMethod = execMethod
+            this.showPasswordModal = true
           })
           .catch(error => { this.addMessage(error, true) })
       }
@@ -380,6 +380,10 @@ export default {
     },
 
     submit () {
+      if (this.password === '') {
+        this.$q.notify(this.$t('notify.blank_password'))
+        return
+      }
       web3.eth.personal.unlockAccount(this.from, this.password)
         .then(() => {
           this.execMethod.send({from: this.from, gas: this.gas}, (error, transactionHash) => {
@@ -390,11 +394,20 @@ export default {
             }
           })
           web3.eth.personal.lockAccount(this.from)
+          this.cancel()
         }).catch((error) => {
+          let errorMessage = error.message
           this.addMessage(error, true)
           web3.eth.personal.lockAccount(this.from)
+          if (errorMessage.includes('could not decrypt key with given passphrase')) {
+            this.$q.notify(this.$t('notify.error_password'))
+            return
+          } else if (errorMessage.includes('multiple keys match address')) {
+            this.$q.notify(this.$t('notify.muti_keystore'))
+            return
+          }
+          this.cancel()
         })
-      this.cancel()
     },
 
     handleResult (method, result) {
