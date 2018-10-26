@@ -30,6 +30,11 @@ class Settings {
     if (netConfig) {
       this.network = netConfig
     }
+    const language = sysconfig.by('_id', 'language')
+    const lanConfig = language ? language.config : null
+    if (lanConfig) {
+      this.language = lanConfig
+    }
   }
 
   get syncmode () {
@@ -38,6 +43,25 @@ class Settings {
 
   get network () {
     return this._network || _defaults.network
+  }
+
+  get language () {
+    return this._language
+  }
+
+  set language (lan) {
+    this._language = lan
+    let lan_ = db.sysconfig.by('_id', 'language')
+    if (lan_) {
+      lan_.config = lan
+      db.sysconfig.update(lan_)
+    } else {
+      lan_ = {
+        _id: 'language',
+        config: lan
+      }
+      db.sysconfig.insert(lan_)
+    }
   }
 
   set network (nw) {

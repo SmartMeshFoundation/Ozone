@@ -9,6 +9,8 @@ import i18n from 'i18next'
 import zh from './i18n/ozone.zh.i18n.json'
 import en from './i18n/ozone.en.i18n.json'
 
+import db from './db'
+
 const resources = {
   dev: { translation: zh },
   en: { translation: en },

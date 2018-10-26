@@ -49,7 +49,11 @@ class OzoneMenu extends EventEmitter {
 
     lan = lan.indexOf('zh') !== -1 ? 'zh' : 'en'
 
-    global.language = lan
+    if (settings.language) {
+      lan = settings.language
+    } else {
+      settings.language = lan
+    }
 
     i18n.init({
       lng: lan || 'zh',
@@ -93,7 +97,7 @@ class OzoneMenu extends EventEmitter {
     ]
     const inputMenu = Menu.buildFromTemplate(editSubmenus)
 
-    const currentLanguage = global.language
+    const currentLanguage = settings.language
 
     const languageSubMenus = Object.keys(global.i18n.options.resources)
       .filter(langCode => langCode !== 'dev')
@@ -103,6 +107,7 @@ class OzoneMenu extends EventEmitter {
           type: 'checkbox',
           checked: langCode === currentLanguage,
           click: () => {
+            settings.language = langCode
             this.mwin.webContents.send(Types.SWITCH_LAN, langCode)
             global.language = langCode
             global.i18n.changeLanguage(langCode)
