@@ -37,8 +37,10 @@ class IpcCommunicator {
         })
       })
     })
-    ipc.on(Types.MENU_ACTION_CHANGE_NETWORK_CONFIRM, (event) => {
+    ipc.on(Types.MENU_ACTION_CHANGE_NETWORK_CONFIRM, (event, net) => {
       log.debug('Will change network...')
+      settings.network = net
+      global.menu.create()
       if (process.env.DEV) {
         setTimeout(() => {
           app.quit()
@@ -49,6 +51,15 @@ class IpcCommunicator {
           app.quit()
         }, 3000)
       }
+    })
+    ipc.on(Types.MENU_ACTION_CHANGE_NETWORK_CANCEL, (event) => {
+      global.menu.create()
+    })
+    ipc.on(Types.HIDE_MENU, (event) => {
+      global.menu.create(true)
+    })
+    ipc.on(Types.SHOW_MENU, (event) => {
+      global.menu.create()
     })
   }
 }

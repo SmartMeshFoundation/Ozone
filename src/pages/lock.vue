@@ -61,6 +61,8 @@
 </style>
 
 <script>
+import {ipcRenderer as ipc} from 'electron'
+import { Types } from '../../src-electron/modules/ipc/types'
 const lockDb = window.db.lock
 export default {
   data () {
@@ -73,12 +75,14 @@ export default {
     login () {
       if (this.password === this.lock.password) {
         this.$router.push('/dashboard')
+        ipc.send(Types.SHOW_MENU)
       } else {
         this.$q.notify(this.$t('lock.lock_wrong_pwd'))
       }
     }
   },
   created () {
+    ipc.send(Types.HIDE_MENU)
   },
   destroyed () {
 

@@ -31,8 +31,11 @@ export const Types = {
   OZONE_RELAUCH: 'ozone_relauch',
   LOGIN_LOCK_SETTING: 'login_lock_setting',
   HIDE_WINDOW: 'hide_window',
+  HIDE_MENU: 'hide_menu',
+  SHOW_MENU: 'show_menu',
   MENU_ACTION_RMDATA: 'menu_action_rmdata',
   MENU_ACTION_RMDATA_CONFIRM: 'menu_action_rmdata_confirm',
   MENU_ACTION_CHANGE_NETWORK: 'menu_action_change_network',
-  MENU_ACTION_CHANGE_NETWORK_CONFIRM: 'menu_action_change_network_confirm'
+  MENU_ACTION_CHANGE_NETWORK_CONFIRM: 'menu_action_change_network_confirm',
+  MENU_ACTION_CHANGE_NETWORK_CANCEL: 'menu_action_change_network_cancel'
 }

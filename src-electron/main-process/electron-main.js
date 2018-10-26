@@ -153,6 +153,7 @@ function onReady () {
   mwin.webContents.on('did-finish-load', kickStart)
 
   let ozoneMenu = new OzoneMenu(mwin)
+  global.menu = ozoneMenu
   ozoneMenu.create()
   /** for context menus */
 

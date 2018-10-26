@@ -192,7 +192,7 @@
         <q-btn style="right: 107px" :label="$t('button.cancel')"
                color="primary"
                class="float-right q-my-md"
-               @click="showChangeModal = false" />
+               @click="cancelChange" />
       </div>
     </q-modal>
   </q-layout>
@@ -360,7 +360,8 @@ export default {
         repeatPassword: ''
       },
       showVerifyModal: false,
-      showChangeModal: false
+      showChangeModal: false,
+      net: ''
     }
   },
   computed: {
@@ -451,7 +452,11 @@ export default {
     },
     changeNet () {
       this.$q.loading.show()
-      ipc.send(Types.MENU_ACTION_CHANGE_NETWORK_CONFIRM)
+      ipc.send(Types.MENU_ACTION_CHANGE_NETWORK_CONFIRM, this.net)
+    },
+    cancelChange () {
+      this.showChangeModal = false
+      ipc.send(Types.MENU_ACTION_CHANGE_NETWORK_CANCEL)
     }
   },
   created () {
@@ -500,6 +505,7 @@ export default {
 
     ipc.on(Types.MENU_ACTION_CHANGE_NETWORK, (event, net) => {
       // this.$q.loading.show()
+      this.net = net
       this.showChangeModal = true
     })
 

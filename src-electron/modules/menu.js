@@ -12,12 +12,10 @@ import { Types } from '../modules/ipc/types'
 import path from 'path'
 import fs from 'fs'
 import settings from './settings'
-import spectrumNode from '../modules/spectrumNode'
 import Windows from './windows'
 
 import nodeSync from '../modules/nodeSync'
 import logger from '../modules/logger'
-import rimraf from 'rimraf'
 import _ from 'lodash'
 
 import { EventEmitter } from 'events'
@@ -74,7 +72,7 @@ class OzoneMenu extends EventEmitter {
     }
   }
 
-  create () {
+  create (hide) {
     this.updateAbout()
 
     const selectionMenu = Menu.buildFromTemplate([
@@ -174,12 +172,15 @@ class OzoneMenu extends EventEmitter {
       {
         label: global.i18n.t('appMenu.language-switch'),
         submenu: languageSubMenus
-      },
-      {
-        label: global.i18n.t('appMenu.debug'),
-        submenu: debugSubmenus
       }
     ]
+
+    if (!hide) {
+      appMenu.push({
+        label: global.i18n.t('appMenu.debug'),
+        submenu: debugSubmenus
+      })
+    }
 
     if (process.platform === 'darwin') {
       appMenu.unshift({
@@ -273,7 +274,7 @@ class OzoneMenu extends EventEmitter {
           {
             id: 'mainNet',
             label: global.i18n.t('devMenu.net.main'),
-            type: 'radio',
+            type: 'checkbox',
             checked: settings.network === 'main',
             click: () => {
               this.changeNetwork('main')
@@ -282,7 +283,7 @@ class OzoneMenu extends EventEmitter {
           {
             id: 'testNet',
             label: global.i18n.t('devMenu.net.test'),
-            type: 'radio',
+            type: 'checkbox',
             checked: settings.network === 'test',
             click: () => {
               this.changeNetwork('test')
@@ -291,7 +292,7 @@ class OzoneMenu extends EventEmitter {
           {
             id: 'devMode',
             label: global.i18n.t('devMenu.net.dev'),
-            type: 'radio',
+            type: 'checkbox',
             checked: settings.network === 'dev',
             click: () => {
               this.changeNetwork('dev')
@@ -338,10 +339,12 @@ class OzoneMenu extends EventEmitter {
       )
     }
 
-    appMenu.push({
-      label: global.i18n.t('devMenu.label'),
-      submenu: devSubMenus
-    })
+    if (!hide) {
+      appMenu.push({
+        label: global.i18n.t('devMenu.label'),
+        submenu: devSubMenus
+      })
+    }
 
     this.menu = Menu.buildFromTemplate(appMenu)
     Menu.setApplicationMenu(this.menu)
@@ -360,7 +363,6 @@ class OzoneMenu extends EventEmitter {
   changeNetwork (network) {
     if (settings.network !== network) {
       log.debug(`Change network from '${settings.network}' to '${network}'`)
-      settings.network = network
       Windows.broadcast(Types.MENU_ACTION_CHANGE_NETWORK, network)
       /* if (process.env.DEV) {
         setTimeout(() => {
@@ -372,8 +374,8 @@ class OzoneMenu extends EventEmitter {
           app.quit()
         }, 3000)
       } */
-      this.create()
     }
+    this.create()
   }
 }
 
