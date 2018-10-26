@@ -168,14 +168,13 @@ class OzoneMenu extends EventEmitter {
       })
     }
 
-    const appMenu = [
-      {
-        label: global.i18n.t('appMenu.language-switch'),
-        submenu: languageSubMenus
-      }
-    ]
+    const appMenu = []
 
     if (!hide) {
+      appMenu.push({
+        label: global.i18n.t('appMenu.language-switch'),
+        submenu: languageSubMenus
+      })
       appMenu.push({
         label: global.i18n.t('appMenu.debug'),
         submenu: debugSubmenus
