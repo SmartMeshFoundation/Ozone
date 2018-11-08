@@ -1,6 +1,6 @@
 # Ozone
 
-![Ozone logo 1024 .png](https://upload-images.jianshu.io/upload_images/528413-baa9e03f3ccc9f5b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/200)
+![](https://upload-images.jianshu.io/upload_images/528413-72dcd32e1999371a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/300)
 
 The project demonstrates how to access and use *Spectrum* network infrastructure.
 
