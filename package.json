@@ -16,7 +16,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bignumber.js": "^6.0.0",
     "blockies": "^0.0.2",
     "bluebird": "^3.5.1",
