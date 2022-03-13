@@ -1,50 +1,50 @@
 {
   "clients": {
     "Smc": {
-      "version": "0.5.0",
+      "version": "1.0.1",
       "platforms": {
         "mac": {
           "download": {
-            "url": "http://spectrum-1251029933.file.myqcloud.com/package/smc-darwin-0_5_0.tar.gz",
-            "md5": "aad8aac9fa75a136eb18a817c203bbcb",
+            "url": "http://spectrum-1251029933.file.myqcloud.com/package/smc-darwin-1_1_0.tar.gz",
+            "md5": "9e760b6c49bdcaf6f76b8119237369ff",
             "type": "tar",
-            "bin": "smc-darwin-0_5_0/smc"
+            "bin": "smc-darwin-1_1_0/smc"
           },
           "bin": "smc",
           "commands": {
             "sanity": {
               "args": ["version"],
-              "output": ["Smc", "0.5.0"]
+              "output": ["Smc", "1.1.0"]
             }
           }
         },
         "win": {
           "download": {
-            "url": "http://spectrum-1251029933.file.myqcloud.com/package/smc-win-0_5_0.zip",
-            "md5": "92f0d1158687ff02caa3ce9308d407a5",
+            "url": "http://spectrum-1251029933.file.myqcloud.com/package/smc-win-1_1_0.zip",
+            "md5": "22e84e7ca509f2c3113bf32e5fb49855",
             "type": "zip",
-            "bin": "smc-win-0_5_0\\smc.exe"
+            "bin": "smc-win-1_1_0\\smc.exe"
           },
           "bin": "smc.exe",
           "commands": {
             "sanity": {
               "args": ["version"],
-              "output": ["Smc", "0.5.0"]
+              "output": ["Smc", "1.1.0"]
             }
           }
         },
         "linux": {
           "download": {
-            "url": "http://spectrum-1251029933.file.myqcloud.com/package/smc-linux-0_5_0.tar.gz",
-            "md5": "38e579df2d674baccdcc1130d3be41c0",
+            "url": "http://spectrum-1251029933.file.myqcloud.com/package/smc-linux-1_1_0.tar.gz",
+            "md5": "47d45f14da1a237ca3b75b8f1499589a",
             "type": "tar",
-            "bin": "smc-linux-0_5_0/smc"
+            "bin": "smc-linux-1_1_0/smc"
           },
           "bin": "smc",
           "commands": {
             "sanity": {
               "args": ["version"],
-              "output": ["Smc", "0.5.0"]
+              "output": ["Smc", "1.1.0"]
             }
           }
         }
