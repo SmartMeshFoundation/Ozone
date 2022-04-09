@@ -33,7 +33,7 @@
     "log-rotate": "^0.2.7",
     "log4js": "^2.5.3",
     "lokijs": "^1.5.3",
-    "moment": "^2.21.0",
+    "moment": "^2.29.2",
     "node-unzip-2": "^0.2.7",
     "promise-retry": "^1.1.1",
     "qrcode": "^1.2.0",
